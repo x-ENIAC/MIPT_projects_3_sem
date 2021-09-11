@@ -77,18 +77,23 @@ int main() {
 	second_canvas.draw_coordinate_axes(render, BLACK);
     second_canvas.draw_parabola(render, BLACK);
 
-	Vector vector (370, SCREEN_HEIGHT - 420, 470, SCREEN_HEIGHT -  320, true);
-	vector.draw_vector(render, RED, RED, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
+	Vector vector_ (370, SCREEN_HEIGHT - 420, 470, SCREEN_HEIGHT -  320, true);
+	vector_.draw_vector(render, RED, RED, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 
-	Vector vector2 (335, SCREEN_HEIGHT - 620, 350, SCREEN_HEIGHT - 550 , true);
-	vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
+	Vector vector2 = {};
+	vector2 = vector_;
+
+	/*vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 
 	vector2.move_vector_to_point(470, SCREEN_HEIGHT - 320);
 	vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 
 	vector += vector2;
-	vector.draw_vector(render, BLUE, BLUE, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
-	
+	vector.draw_vector(render, BLUE, BLUE, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);*/
+
+	vector_.get_perpendicular();
+
+	vector_.draw_vector(render, BLUE, BLUE, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 	SDL_RenderPresent(render);
 
 	SDL_Event event = {};
@@ -100,29 +105,27 @@ int main() {
 				is_run = false;
 			}
 		}
-	}	
 
-	for(int i = 0; i <= 100; ++i) {
-		vector.rotate_clockwize_vector(5.0);
+
+		vector_.rotate_clockwize_vector(5.0);
 		vector2.rotate_clockwize_vector(5.0);
 
 		SDL_RenderPresent(render);    
-    	SDL_Delay(100);
+	    SDL_Delay(100);
 
 		first_canvas.draw_coordinate_axes(render, BLACK);
-    	first_canvas.draw_parabola(render, BLACK);
+	    first_canvas.draw_parabola(render, BLACK);
 
 		second_canvas.draw_coordinate_axes(render, BLACK);
-    	second_canvas.draw_parabola(render, BLACK);    	
+	    second_canvas.draw_parabola(render, BLACK);    	
 
-    	vector.draw_vector(render, RED, RED, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
-    	vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
+	    vector_.draw_vector(render, RED, RED, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
+	    vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 	}
 
-
-    SDL_RenderPresent(render);    
+    SDL_RenderPresent(render);  
 
     quit(window, render);
 
-  return 0;
+  	return sdl_status;
 }

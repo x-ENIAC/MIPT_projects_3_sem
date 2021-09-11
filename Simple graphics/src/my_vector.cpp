@@ -10,8 +10,12 @@ void Vector::update_angle()  {
 void Vector::calculate_angle() {
 	if(x_begin == x_end)
 		angle = 0;
-	else
+	else {
 		angle = atan(((y_end - y_begin)) / (x_end - x_begin)) * ONE_HUNDRER_EIGHTY / M_PI;
+		angle = (int)(ONE_HUNDRER_EIGHTY + angle) % (int)ONE_HUNDRER_EIGHTY;
+	}
+
+	update_angle();
 }
 
 double Vector::get_length_vector() {
@@ -127,7 +131,7 @@ void Vector::set_y_end(const double new_y_end) {
   	y_end = new_y_end;
 }
 
-void Vector::operator=(const Vector& vector) {
+Vector& Vector::operator=(const Vector& vector) {
 	x_begin = vector.x_begin;
 	y_begin = vector.y_begin;
 
@@ -135,6 +139,8 @@ void Vector::operator=(const Vector& vector) {
 	y_end = vector.y_end;
 
 	calculate_angle();
+
+	return *this;
 }
 
 void Vector::operator+=(const Vector& vector) {
@@ -153,4 +159,26 @@ void Vector::from_pixels_to_algebraic(const Canvas canvas) {
 
   	x_begin = canvas.get_x_center_coord_system();
   	y_begin = canvas.get_y_center_coord_system();
+}
+
+void Vector::get_perpendicular() {
+	double half_length = get_length_vector() / 2.0;
+
+	double half_x = (x_begin + x_end) / 2.0;
+	double half_y = (y_begin + y_end) / 2.0;
+
+	double x_up_half = half_x + half_length * cos((NINETY + angle) * M_PI / ONE_HUNDRER_EIGHTY);
+	double y_up_half = half_y + half_length * sin((NINETY + angle) * M_PI / ONE_HUNDRER_EIGHTY);
+
+	double x_down_half = half_x - half_length * cos((NINETY + angle) * M_PI / ONE_HUNDRER_EIGHTY);
+	double y_down_half = half_y - half_length * sin((NINETY + angle) * M_PI / ONE_HUNDRER_EIGHTY);
+	
+
+	x_begin = x_down_half;
+	y_begin = y_down_half;
+
+	x_end = x_up_half;
+	y_end = y_up_half;
+
+	calculate_angle();
 }

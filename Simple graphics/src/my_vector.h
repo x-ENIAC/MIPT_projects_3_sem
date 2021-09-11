@@ -27,6 +27,15 @@ const double ANGLE_OF_ARROW_WINGS              =     20;
 class Vector {
   public:
 
+  	Vector() :
+  		x_begin 	 ( 0 ),
+  		y_begin 	 ( 0 ),
+  		x_end   	 ( 0 ),
+  		y_end   	 ( 0 ),
+  		angle        ( 0 ),
+  		is_need_bold ( 0 )
+  	{}
+
   	Vector(const double par_x_begin, const double par_y_begin, const double par_x_end, const double par_y_end, const bool par_is_need_bold) :
   		x_begin 	 ( par_x_begin ),
   		y_begin 	 ( par_y_begin ),
@@ -56,7 +65,7 @@ class Vector {
   		is_need_bold = false;
   	}
 
-  	void operator=(const Vector& vector);
+  	Vector& operator=(const Vector& vector);
 
   	void operator+=(const Vector& vector);
 
@@ -67,6 +76,8 @@ class Vector {
   	void calculate_angle();
 
     double get_length_vector();	
+
+    void get_perpendicular();
 
   	void draw_vector(SDL_Renderer* render, const Colour line_color, const Colour wings_color, const double  first_wings_angle,
   																				              const double second_wings_angle);

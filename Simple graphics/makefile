@@ -6,7 +6,7 @@ LD = g++
 
 WARNINGS = -Wall -Wextra
 STANDARD = 
-OPTIMIZATION = -O1
+OPTIMIZATION = -O1 -Wno-reorder
 
 CFLAGS = $(WARNINGS) $(STANDARD) $(OPTIMIZATION)
 LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image
