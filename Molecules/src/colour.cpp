@@ -38,10 +38,3 @@ Colour&  Colour::operator+=(const Colour& color) {
 
 	return *this;
 }
-
-/*Colour operator*(const Colour& first_colour, const Colour& second_colour) {
-	return Colour((first_colour.red   * second_colour.red) > 256 ? 255 : (first_colour.red   * second_colour.red),
-		   		  (first_colour.blue  * second_colour.blue) > 256 ? 255 : (first_colour.blue  * second_colour.blue),
-		   		  (first_colour.green * second_colour.green) > 256 ? 255 : (first_colour.green * second_colour.green),
-		   		  (first_colour.alpha * second_colour.alpha) > 256 ? 255 : (first_colour.alpha * second_colour.alpha));
-}*/

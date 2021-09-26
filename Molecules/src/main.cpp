@@ -1,20 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+
 #include "molecule.h"
-#include "molecule_manager.h"
+#include "shape_manager.h"
+#include "rectangle.h"
 
 const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720; 
 
+extern Collision_detection_table collision_detected_table(3);
+extern Collision_response_table collision_responsed_table(3);
+
 enum SDL_STATUSES {
 	SDL_OKEY		   = 0,
 	BAD_SDL_INIT       = 1,
-	WINDOW_NOT_CREATE  = 2,
-	SURFACE_NOT_CREATE = 3,
-	RENDER_NOT_CREATE  = 4,
-	PICTURE_NOT_INIT   = 5,
-	TEXTURE_NOT_CREATE = 6,
+	BAD_TTF_INIT       = 2,
+	WINDOW_NOT_CREATE  = 3,
+	SURFACE_NOT_CREATE = 4,
+	RENDER_NOT_CREATE  = 5,
+	PICTURE_NOT_INIT   = 6,
+	TEXTURE_NOT_CREATE = 7,
 };
 
 #define CHECK_SDL_STATUS                        							\
@@ -29,8 +37,8 @@ SDL_STATUSES initialize(SDL_Window* &window, SDL_Renderer* &render) {
     	return BAD_SDL_INIT;
   	}
 
-  	window = SDL_CreateWindow("Textures", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-    			                          SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+  	window = SDL_CreateWindow("Molecules", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+    			                           SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
   	if(!window)
     	return WINDOW_NOT_CREATE;
 
@@ -54,8 +62,8 @@ void quit(SDL_Window* &window, SDL_Renderer* &render) {
 
 int main() {
 	srand(time(NULL));
-    SDL_Window*   window     = NULL;
-    SDL_Renderer* render     = NULL;
+    SDL_Window*   window = NULL;
+    SDL_Renderer* render = NULL;
 
     SDL_STATUSES sdl_status = initialize(window, render);
     CHECK_SDL_STATUS
@@ -63,16 +71,20 @@ int main() {
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderClear(render);
 
-	Molecule_manager molecule_manager = {};
-	for(int i = 0; i < 500; ++i) {
-		molecule_manager.add_object(CIRCLE, Point(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, Colour(255 - 5 * i, rand() % 256, rand() % 256, 255)), 
-											5, 5, rand() % 100, rand() % 100);
-	}
+	Shape_manager shape_manager = {};
 
-	molecule_manager.add_object(CIRCLE, Point(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT, Colour(255 - rand() % 256, rand() % 256, rand() % 256, 255)), 
-										70, 5000, 0, 0);	
+	Molecule m1( Point(50, 50), 50, 50, rand() % 10, rand() % 10, Colour(255, 0, 0, 255), CIRCLE, true );
+	//shape_manager.add_object(&m1);
 
-	int count = 0;
+	Molecule m2( Point(70, 370), 60, 70, rand() % 50, -(rand() % 50), Colour(0, 255, 0, 255), CIRCLE, true );
+	//shape_manager.add_object(&m2);	
+
+	Rectangle r1( Point(170, 170), 100, rand() % 10 + 5, rand() % 10 + 5, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
+	shape_manager.add_object(&r1);
+
+	Rectangle r2( Point(570, 470), 100, rand() % 10 + 5, rand() % 10 + 5, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
+	shape_manager.add_object(&r2);	
+
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -83,13 +95,14 @@ int main() {
 			}
 		}
 
-		molecule_manager.update_molecule();
-		molecule_manager.collision_detection(SCREEN_WIDTH, SCREEN_HEIGHT);
+		shape_manager.update_molecule();
+		shape_manager.collision_detection(SCREEN_WIDTH, SCREEN_HEIGHT);
     	SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     	SDL_RenderClear(render);
 
-		for(size_t i = 0; i < molecule_manager.count_objects; ++i) {
-			molecule_manager.molecule[i].draw_molecule(render);
+		for(size_t i = 0; i < shape_manager.count_objects; ++i) {
+			if(shape_manager.shapes[i]->get_is_active())
+				shape_manager.shapes[i]->draw_molecule(render);
 		}
 
 		SDL_RenderPresent(render);

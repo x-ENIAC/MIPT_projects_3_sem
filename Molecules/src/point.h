@@ -71,6 +71,13 @@ class Point {
   		return *this;
   	}  
 
+  	Point operator+(const Point& second) {
+  		Point result (*this);
+  		result += second;
+
+  		return result;
+  	}	  	
+
   	Point operator-(const Point& second) {
   		Point result (*this);
   		result -= second;
