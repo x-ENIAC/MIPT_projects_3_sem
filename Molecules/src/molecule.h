@@ -10,21 +10,20 @@
 class Shape;
 class Molecule : public Shape {
   public:
-    Molecule() : 
-        Shape(),
-        radius ( 0 )
-    {}
+    Molecule() : Shape() {
+        radius = 0;
+    }
 
   	Molecule(const Point par_point, const double par_radius,  const double par_mass, 
              const double par_x_speed, const double par_y_speed, const Colour par_color, const Type_object par_type, const bool par_is_active) :
-        Shape (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active),
-        radius (par_radius)
-    {}
+        Shape (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+        radius = par_radius;
+    }
 
     void collision_detection() {
      
 
-        printf("collision_detection molecule\n");
+        //printf("collision_detection molecule\n");
     }
 
     bool is_touch_each_other(const Molecule* other_shape) const {

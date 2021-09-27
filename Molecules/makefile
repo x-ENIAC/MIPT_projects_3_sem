@@ -4,7 +4,7 @@ ARGS =
 CPP = g++
 LD = g++
 
-WARNINGS = -Wall -Wextra
+WARNINGS = 
 STANDARD = 
 OPTIMIZATION = -O1 -Wno-reorder
 
@@ -48,7 +48,7 @@ callgrind_debug: all
 	valgrind --dump-instr=yes --tool=callgrind  ./$(CUR_PROG) $(ARGS)
 	
 debug: all
-	valgrind ./$(CUR_PROG) $(ARGS)	
+	valgrind --track-origins=yes ./$(CUR_PROG) $(ARGS)	
 
 clean:
 	rm *.o

@@ -23,15 +23,15 @@ const double DOUBLE_SUBTRACTION_DELTA          = 0.000001;
 class Vector {
   public:
 
-  	Vector() :
-  		point_begin ( Point(0., 0.) ),
-  		point_end   ( Point(0., 0.) )
-  	{}
+  	Vector() {
+  		point_begin = Point(0., 0.);
+  		point_end   = Point(0., 0.);
+  	}
 
-  	Vector(const Point par_point_begin, const Point par_point_end) :
-  		point_begin  ( par_point_begin ),
-  		point_end 	 ( par_point_end )
-  	{}
+  	Vector(const Point par_point_begin, const Point par_point_end) {
+  		point_begin = par_point_begin ;
+  		point_end 	= par_point_end;
+  	}
 
 
   	Vector& operator=(const Vector& vector);

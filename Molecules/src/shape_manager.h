@@ -20,15 +20,19 @@ class Shape_manager {
   	size_t count_non_active_objects;
 
   	Shape_manager() {
-  	 	shapes = new Shape*[1];
+  	 	shapes = new Shape*;
   	 	count_objects = 0;
   	 	count_non_active_objects = 0;
   	}
 
   	~Shape_manager() {
-  		//for(size_t i = 0; i < count_objects; ++i)
+  		printf("Destruct, %ld\n", count_objects);
+  		//for(size_t i = 0; i < count_objects; ++i) {
+  		//	printf("Delete\n");
   		//	delete[] shapes[i];
+  		//}
   	 	//delete[] shapes;
+
 
   	 	count_objects = 0;
   	}
@@ -39,69 +43,98 @@ class Shape_manager {
   	}
 
   	void collision_detection(const int screen_width, const int screen_height) {
-	  	for(size_t first = 0; first < count_objects; ++first)
-	  		shapes[first]->collision_with_a_wall(screen_width, screen_height);
+  		int now_count_object = count_objects;
 
-	  	for(size_t first = 0; first < count_objects; ++first) {
-	  	 	for(size_t second = 0; second < count_objects; ++second) {
-	  	 		if(first == second || !shapes[first]->get_is_active() || !shapes[second]->get_is_active())
+  		//printf("begin collision_detection\n");
+	  	for(size_t first = 0; first < now_count_object; ++first) {
+	  		if(shapes[first]->get_type() != WALL && shapes[first]->get_is_active())
+	  			shapes[first]->collision_with_a_wall(screen_width, screen_height);
+	  	}
+
+	  	for(size_t first = 0; first < now_count_object; ++first) {
+	  	 	for(size_t second = 0; second < now_count_object; ++second) {
+	  	 		if(first == second || !shapes[first]->get_is_active() || !shapes[second]->get_is_active() || shapes[first]->get_type() == WALL || shapes[second]->get_type() == WALL)
 	  	 			continue;
 
 	  	 		int first_type  = shapes[first]->get_type();
 	  	 		int second_type = shapes[second]->get_type();
 
-	  	 		bool is_collision = collision_detected_table.collide_table[first_type][second_type](shapes[first], shapes[second]);
-	  	 		if(is_collision && first_type == CIRCLE && second_type == CIRCLE) {
-	  	 			printf("bum circle circle\n");
-	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
-					count_non_active_objects += 2;
 
+	  	 		bool is_collision = collision_detected_table.collide_table[first_type][second_type](shapes[first], shapes[second]);
+
+	  	 		if(is_collision && first_type == CIRCLE && second_type == CIRCLE) {
 
 					Rectangle* new_rect = new Rectangle;
-					set_values_to_rectangle_after_circles_collide(new_rect, (Molecule*)shapes[first], (Molecule*)shapes[second]);
+					get_new_rectangle_after_circles_collide(new_rect, (Molecule*)shapes[first], (Molecule*)shapes[second]);
+
 					add_object(new_rect);
+					//shapes[first]->move_molecule(DELTA_TIME);
+	  	 			//shapes[second]->move_molecule(DELTA_TIME);
+	  	 			shapes[count_objects - 1]->move_molecule(DELTA_TIME);
+	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+					count_non_active_objects += 2;	  	 			
 	  	 		}
 
 	  	 		else
 				if(is_collision && (first_type == CIRCLE && second_type == RECTANGLE || first_type == RECTANGLE && second_type == CIRCLE)) {
-	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
-	  	 			++count_non_active_objects;
+
 
 	  	 			shapes[first]->move_molecule(DELTA_TIME);
 	  	 			shapes[second]->move_molecule(DELTA_TIME);
 
+	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+	  	 			++count_non_active_objects;	  	 			
 	  	 		}
 
 	  	 		else
 	  	 		if(is_collision && first_type == RECTANGLE && second_type == RECTANGLE) {
-	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
-	  	 			count_non_active_objects += 2;
+
 
 	  	 			Point collision_point = get_rectangles_collision_point((Rectangle*)shapes[first], (Rectangle*)shapes[second]);
-	  	 			double small_masses = (shapes[first]->get_mass() + shapes[second]->get_mass()) / 10.0;
+	  	 			double small_masses = (shapes[first]->get_mass() + shapes[second]->get_mass()) / 5.0;
 
-	  	 			for(int i = 0; i < 10; ++i) {
-	  	 				Molecule* new_molecule = new Molecule;
-
-	  	 				Point now_point(collision_point);
+	  	 			for(int i = 0; i < 7; ++i) {
 	  	 				int sign_x = 1, sign_y = 1;
 	  	 				if(rand() % 2)
 	  	 					sign_x = -1;
 	  	 				if(rand() % 2)
-	  	 					sign_y = -1;
+	  	 					sign_y = -1;	  	 
 
-	  	 				set_values_to_circle_after_rectangles_collide(new_molecule, collision_point, 10.0, small_masses, rand() % 15 * sign_x, rand() % 15 * sign_y, 
+	  	 				double new_x = collision_point.x + sign_x * (rand() % 10);
+	  	 				double new_y = collision_point.y + sign_y * (rand() % 10);	  	 				
+
+	  	 				Molecule* new_molecule = new Molecule;
+	  	 				set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), 15.0, small_masses, rand() % 15 * sign_x, rand() % 15 * sign_y, 
 	  	 															  Colour(255, 0, 0, 255), CIRCLE, true);
 
-	  	 				new_molecule->move_molecule(500 * DELTA_TIME);
+
+	  	 				new_molecule->move_molecule(100 * DELTA_TIME);
+
 	  	 				add_object(new_molecule);
-	  	 			}  	 			
+	  	 				collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+	  	 			}  	
+
+	  	 			count_non_active_objects += 2;	  	 			
 	  	 		}
 	  		}
 	  	}
+
+		/*printf("-------- @@@ types ---------------\n");
+		for(size_t i = 0; i < count_objects; ++i) {
+			printf("%d ", shapes[i]->get_type());
+		}		
+		printf("\n----------------------------\n\n");
+
+		printf("-------- @@@ is_active ---------------\n");
+		for(size_t i = 0; i < count_objects; ++i) {
+			printf("%d ", shapes[i]->get_is_active());
+		}		
+		printf("\n----------------------------\n\n");			  	
+
+	  	printf("end collision_detection\n");*/
   	}
 
-  	void set_values_to_rectangle_after_circles_collide(Rectangle* new_rect, Molecule* first, Molecule* second) {
+  	void get_new_rectangle_after_circles_collide(Rectangle* &new_rect, Molecule* first, Molecule* second) {
   		Point first_center  = first->get_center();
 	  	Point second_center = second->get_center();
 
@@ -133,7 +166,11 @@ class Shape_manager {
   		vector_to_collision_point.set_point_end ( vector_to_collision_point.get_point_end() + first_center );
   		vector_to_collision_point.set_point_begin ( first_center );
 
+  		//Rectangle new_rect( vector_to_collision_point.get_point_end(), first->get_mass() + second->get_mass(), 
+  		//					res_impulse.get_x_end(), res_impulse.get_y_end(), Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true);
+
   		new_rect->set_center ( vector_to_collision_point.get_point_end() );
+
   		new_rect->set_mass   ( first->get_mass() + second->get_mass() );
   		new_rect->set_x_speed( res_impulse.get_x_end() );
   		new_rect->set_y_speed( res_impulse.get_y_end() );
@@ -142,6 +179,8 @@ class Shape_manager {
   		new_rect->set_height ( 100.0 );
   		new_rect->set_type   ( RECTANGLE );
   		new_rect->set_is_active(true);
+
+  		//return new_rect;
   	}
 
   	Point get_rectangles_collision_point(Rectangle* first, Rectangle* second) {
@@ -163,7 +202,6 @@ class Shape_manager {
 		if(is_point_belongs_to_rectangle(second, Point( first_x_right_down, first_y_right_down )))
 			return Point( first_x_right_down, first_y_right_down );
 
-		printf("bad???\n");
 		return Point(0, 0);
   	}
 
@@ -181,9 +219,8 @@ class Shape_manager {
   	}
 
 	void add_object(Shape* new_object) {
-		shapes[count_objects] = new Shape[1];
+		shapes[count_objects] = new Shape;
   	 	shapes[count_objects] = new_object;
-  	 	printf("ass, count %d, count_non_active_objects %d\n", count_objects + 1, count_non_active_objects);
   	 	++count_objects;
   	}
 };

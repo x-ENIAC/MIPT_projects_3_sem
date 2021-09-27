@@ -9,6 +9,7 @@ enum Type_object {
     WALL      = 0,
     CIRCLE    = 1,
     RECTANGLE = 2,
+    AAAAAAAAA = 66,
 };
 
 class Shape {
@@ -55,7 +56,7 @@ class Shape {
         printf("collision_detection shape\n");
     } 
 
-    virtual void draw_molecule(SDL_Renderer* render) {};    
+    virtual void draw_molecule(SDL_Renderer* render) {printf("\t\tdraaaaaaaaw shape\n");};    
 
     virtual void collision_with_a_wall(const int screen_width, const int screen_height) {printf("!!!\n");};  
 

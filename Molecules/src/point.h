@@ -11,23 +11,28 @@ class Point {
   	double y;
   	Colour color;
 
-  	Point(const Point& par_point, const Colour par_color) :
-  		x ( par_point.x ),
-  		y ( par_point.y ),
-  		color ( par_color )
-  	{}
+  	Point() {
+  		x = y = 0;
+  		color = BLACK;
+  	}
 
-  	Point(const double par_x, const double par_y, const Colour par_color) :
-  		x ( par_x ),
-  		y ( par_y ),
-  		color ( par_color )
-  	{}
+  	Point(const Point& par_point, const Colour par_color) {
+  		x = par_point.x;
+  		y = par_point.y;
+  		color = par_color;
+  	}
 
-  	Point(const double par_x, const double par_y) :
-  		x ( par_x ),
-  		y ( par_y ),
-  		color ( BLACK )
-  	{}  	
+  	Point(const double par_x, const double par_y, const Colour par_color) {
+  		x = par_x ;
+  		y = par_y ;
+  		color = par_color;
+  	}
+
+  	Point(const double par_x, const double par_y) {
+  		x = par_x ;
+  		y = par_y ;
+  		color = BLACK;
+  	}  	
 
 	inline void draw_point(SDL_Renderer* render) {
 		SDL_SetRenderDrawColor(render, color.red, color.blue, color.green, color.alpha);

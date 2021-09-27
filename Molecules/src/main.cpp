@@ -32,7 +32,7 @@ enum SDL_STATUSES {
   	}
 
 SDL_STATUSES initialize(SDL_Window* &window, SDL_Renderer* &render) {
-	if(SDL_Init(SDL_INIT_EVERYTHING) == -1) {
+	if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     	printf("Could not initialize SDL: %s.\n", SDL_GetError());
     	return BAD_SDL_INIT;
   	}
@@ -57,7 +57,6 @@ void quit(SDL_Window* &window, SDL_Renderer* &render) {
   	render = NULL;
 
   	SDL_Quit();
-	IMG_Quit();
 }
 
 int main() {
@@ -74,10 +73,10 @@ int main() {
 	Shape_manager shape_manager = {};
 
 	Molecule m1( Point(50, 50), 50, 50, rand() % 10, rand() % 10, Colour(255, 0, 0, 255), CIRCLE, true );
-	//shape_manager.add_object(&m1);
+	shape_manager.add_object(&m1);
 
 	Molecule m2( Point(70, 370), 60, 70, rand() % 50, -(rand() % 50), Colour(0, 255, 0, 255), CIRCLE, true );
-	//shape_manager.add_object(&m2);	
+	shape_manager.add_object(&m2);	
 
 	Rectangle r1( Point(170, 170), 100, rand() % 10 + 5, rand() % 10 + 5, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
 	shape_manager.add_object(&r1);
@@ -95,23 +94,37 @@ int main() {
 			}
 		}
 
+		//printf("begin update\n");
 		shape_manager.update_molecule();
+		//printf("\tbegin detect\n");
 		shape_manager.collision_detection(SCREEN_WIDTH, SCREEN_HEIGHT);
+		/*printf("-------- types ---------------\n");
+		for(size_t i = 0; i < shape_manager.count_objects; ++i) {
+			printf("%d ", shape_manager.shapes[i]->get_type());
+		}		
+		printf("\n----------------------------\n\n");*/
+
     	SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     	SDL_RenderClear(render);
 
+    	//printf("\tbegin draw\n");
 		for(size_t i = 0; i < shape_manager.count_objects; ++i) {
-			if(shape_manager.shapes[i]->get_is_active())
+			//printf("\t\ti = %ld (from %ld), %p, type %d\n", i, shape_manager.count_objects, shape_manager.shapes[i], shape_manager.shapes[i]->get_type());
+			//if(shape_manager.shapes[i]->get_is_active())
 				shape_manager.shapes[i]->draw_molecule(render);
 		}
+		//printf("\tend draw\n");
 
 		SDL_RenderPresent(render);
 	}	
 
-
+	printf("end of cycle\n");
 
 	SDL_RenderPresent(render);
+	printf("before quit\n");
 	quit(window, render);
+
+	printf("end main\n");
 
 	return sdl_status;
 }
