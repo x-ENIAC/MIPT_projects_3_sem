@@ -11,36 +11,40 @@ enum Button_status {
 	IS_NOT_PUSH = 2,
 };
 
-class Button : public Rectangle {
+class Button {
   public:
+	Rectangle* shape_rect;
 	Button_status status;
 
-	Button(const Point par_point, const Colour par_color, const double par_width, const double par_height, const Type_object par_type) {
+	Button() {}
 
-		set_center ( par_point );
-		set_mass   (    0.0    );
+	Button(const Point par_point, const Colour par_color, const double par_width, const double par_height) {
 
-		set_x_speed(    0.0    );
-		set_x_speed(    0.0    );
+		shape_rect = new Rectangle;
 
-		set_colour ( par_color );
+	  	shape_rect->set_center ( par_point );
+	  	shape_rect->set_mass   (  0.0  );
 
-		set_width ( par_width );
-		set_height (  par_height );
+	  	shape_rect->set_x_speed(  0.0  );
+	  	shape_rect->set_y_speed(  0.0  );
 
-		set_type   (  par_type );
+	  	shape_rect->set_colour ( par_color );
 
-		set_is_active ( false );
+	  	shape_rect->set_width  ( par_width );
+	  	shape_rect->set_height ( par_height );
 
-		status = IS_NOT_PUSH;
+	  	shape_rect->set_type   ( BUTTON );
+
+	  	shape_rect->set_is_active ( false );
+
+	  	status = IS_NOT_PUSH;
 	}
 
 	void draw_button(SDL_Renderer* render) {
-		//printf("gigigi\n");
-		draw_molecule(render);
+		shape_rect->draw_molecule(render);
 	}
 
-	virtual void add_new_object(Shape_manager* shape_manager) = 0;
+	virtual void add_new_object(Shape_manager* shape_manager) {};
 };
 
 #endif

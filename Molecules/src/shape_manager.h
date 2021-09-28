@@ -186,7 +186,7 @@ class Shape_manager {
 	  	 		double new_y = collision_point.y + sign_y * (rand() % 30);	  	 				
 
 	  	 		Molecule* new_molecule = new Molecule;
-	  	 		set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), 10.0, 1.0, 
+	  	 		set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), rand() % 7 + 8, 1.0, 
 	  	 																	10 * sign_x, 10 * sign_y, 
 	  	 															  		Colour(255, 0, 0, 255), CIRCLE, true);
 
@@ -278,12 +278,9 @@ class Shape_manager {
   	}
 
 	void add_object(Shape* new_object) {
-		//shapes[count_objects] = new Shape;
   	 	shapes[count_objects] = new_object;
   	 	++count_objects;
   	 	printf("count %ld\n", count_objects);
-        //printf("(%lg %lg %lg)\n", new_object->color.red, new_object->color.green, new_object->color.blue);
-
 
   	 	//if(MAX_COUNT_OF_OBJECTS * 2 <= count_objects * 3)
   	 	//	remove_inactive_items();

@@ -8,7 +8,9 @@
 #include "molecule.h"
 #include "rectangle.h"
 
+#include "button_manager.h"
 #include "rectangle_button.h"
+#include "circle_button.h"
 
 const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720; 
@@ -65,7 +67,7 @@ void draw_line(SDL_Renderer* &render, const Point begin, const int y) {
 	double x_begin = begin.x, x_end = begin.y;
 
 	for(size_t x = x_begin; x <= x_end; ++x) {
-		Point now_point ( x, y, Colour(0, 0, 0, 0) );
+		Point now_point ( x, y, BLACK );
 		now_point.draw_point(render);
 	}
 }
@@ -74,7 +76,7 @@ void draw_line(SDL_Renderer* &render, const int x, const Point end) {
 	double y_begin = end.x, y_end = end.y;
 
 	for(size_t y = y_begin; y <= y_end; ++y) {
-		Point now_point ( x, y, Colour(0, 0, 0, 0) );
+		Point now_point ( x, y, BLACK );
 		now_point.draw_point(render);
 	}
 }
@@ -92,7 +94,8 @@ int main() {
 
     Rectangle screen_rect( Point(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0, 0, 0, Colour(0, 0, 0, 0), SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100.0, RECTANGLE, true );
 
-	Shape_manager shape_manager = {};
+	Shape_manager  shape_manager  = {};
+	Button_manager button_manager = {};
 
 	Molecule m2( Point(70, 370), 20, 1, 7, -5, Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );
 	shape_manager.add_object(&m2);
@@ -114,7 +117,11 @@ int main() {
 
     Rectangle r( Point(500, 10), 1, 1, 0, Colour(90, 123, 12, 255), 30.0, 30.0, RECTANGLE, true );	
 
-    Rectangle_button rect_b1( Point(820, 50), Colour(200, 34, 54, 255), 180, 80);
+    Rectangle_button rect_b1  ( Point(820, 50), Colour(200, 192, 54, 255), 180, 80);
+    Circle_button    circle_b1( Point(820, 150), Colour(172, 32, 5, 255), 180, 80);
+
+    button_manager.add_button(&rect_b1);
+    button_manager.add_button(&circle_b1);
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -124,30 +131,30 @@ int main() {
 				is_run = false;
 			}
 
-			else if(event.type ==SDL_KEYDOWN) {
+			else if(event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
-                    case SDLK_LEFT: {        
-                    	printf("try add\n");
+                    case SDLK_LEFT:       
                     	rect_b1.add_new_object(&shape_manager);
-						printf("add\n");
                     	break;
-                    }
-                    case SDLK_RIGHT: {
-						Molecule m( Point(500, 50), 20, 1, -1, 0, Colour(6, 34, 234, 255), CIRCLE, true );
-						shape_manager.add_object(&m);                    
-                    	break;
-                    }
+                    
+                    case SDLK_RIGHT:
+						circle_b1.add_new_object(&shape_manager);
+                    	break;                    
                 }
             }
 
             else if(event.type == SDL_MOUSEBUTTONUP) {
             	double x_mouse = event.button.x, y_mouse = event.button.y;
-            	//printf("button (%lg, %lg), width %lg, height %lg\n", rect_b1.get_x_center(), rect_b1.get_y_center(), rect_b1.get_width(), rect_b1.get_height());
+        		if((event.button.button == SDL_BUTTON_LEFT) ) {
+            		if(rect_b1.shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
+            			button_manager.buttons[0]->add_new_object(&shape_manager);        		
+        		}
 
-        		if(event.button.button == SDL_BUTTON_LEFT) 
-            		if(rect_b1.is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
-            			rect_b1.add_new_object(&shape_manager);
-            		            	
+            	else
+        		if(event.button.button == SDL_BUTTON_RIGHT) {
+            		if(circle_b1.shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) )) 
+            			button_manager.buttons[1]->add_new_object(&shape_manager);            		            		        		            		            
+        		}
             }
 		}
 
@@ -160,12 +167,13 @@ int main() {
    		draw_line(render, Point(0, SCREEN_WIDTH - 200.0), SCREEN_HEIGHT - 150.0);
    		draw_line(render, SCREEN_WIDTH - 200.0, Point(0, SCREEN_HEIGHT - 150.0));
 
-   		rect_b1.draw_button(render);
-
 		for(size_t i = 0; i < shape_manager.count_objects; ++i) {
 			shape_manager.shapes[i]->draw_molecule(render);
 		}
 
+		for(size_t i = 0; i < button_manager.count_buttons; ++i) {
+			button_manager.buttons[i]->draw_button(render);
+		}		
 
 		SDL_RenderPresent(render);
 	}	
