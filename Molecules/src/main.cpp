@@ -4,9 +4,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "molecule.h"
 #include "shape_manager.h"
+#include "molecule.h"
 #include "rectangle.h"
+
+#include "rectangle_button.h"
 
 const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720; 
@@ -59,6 +61,24 @@ void quit(SDL_Window* &window, SDL_Renderer* &render) {
   	SDL_Quit();
 }
 
+void draw_line(SDL_Renderer* &render, const Point begin, const int y) {
+	double x_begin = begin.x, x_end = begin.y;
+
+	for(size_t x = x_begin; x <= x_end; ++x) {
+		Point now_point ( x, y, Colour(0, 0, 0, 0) );
+		now_point.draw_point(render);
+	}
+}
+
+void draw_line(SDL_Renderer* &render, const int x, const Point end) {
+	double y_begin = end.x, y_end = end.y;
+
+	for(size_t y = y_begin; y <= y_end; ++y) {
+		Point now_point ( x, y, Colour(0, 0, 0, 0) );
+		now_point.draw_point(render);
+	}
+}
+
 int main() {
 	srand(time(NULL));
     SDL_Window*   window = NULL;
@@ -70,30 +90,31 @@ int main() {
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderClear(render);
 
+    Rectangle screen_rect( Point(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0, 0, 0, Colour(0, 0, 0, 0), SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100.0, RECTANGLE, true );
+
 	Shape_manager shape_manager = {};
 
-	Molecule m1( Point(50, 50), 50, 6, rand() % 10, rand() % 10, Colour(255, 0, 0, 255), CIRCLE, true );
-	//Molecule m1( Point(50, 50), 50, 6, 8, 3, Colour(255, 0, 0, 255), CIRCLE, true );
-	shape_manager.add_object(&m1);
-
-	Molecule m2( Point(70, 370), 60, 6, rand() % 50, -(rand() % 50), Colour(0, 255, 0, 255), CIRCLE, true );
-	//Molecule m2( Point(70, 370), 60, 6, 21, -2, Colour(0, 255, 0, 255), CIRCLE, true );
+	Molecule m2( Point(70, 370), 20, 1, 7, -5, Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );
 	shape_manager.add_object(&m2);
 
-	Molecule m3( Point(570, 70), 60, 6, rand() % 50, -(rand() % 50), Colour(0, 255, 0, 255), CIRCLE, true );
-	//Molecule m3( Point(570, 70), 60, 16, 42, -36, Colour(0, 255, 0, 255), CIRCLE, true );
-	//shape_manager.add_object(&m3);
+	Molecule m3( Point(570, 70), 20, 1, -10, 5, Colour(0, 255, 0, 255), CIRCLE, true );
+	shape_manager.add_object(&m3);
 
-	Rectangle r1( Point(170, 170), 3, rand() % 10 + 5, rand() % 10 + 5, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
-	//Rectangle r1( Point(170, 170), 3,  5, 10, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
+	Rectangle r1( Point(170, 170), 1, 0, 0, Colour(0, 0, 255, 255), 30.0, 30.0, RECTANGLE, true );
 	shape_manager.add_object(&r1);
 
-	Rectangle r2( Point(570, 470), 3, rand() % 10 + 5, rand() % 10 + 5, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
-	//Rectangle r2( Point(570, 470), 3, 6, 13, Colour(0, 0, 255, 255), 40.0, 100.0, RECTANGLE, true );
+	Rectangle r2( Point(570, 470), 1, -5, -12, Colour(0, 255, 0, 255), 30.0, 30.0, RECTANGLE, true );
 	shape_manager.add_object(&r2);
 
-	size_t old_count_objects = shape_manager.count_objects;
-	size_t old_count_non_active_objects = shape_manager.count_non_active_objects;
+	Rectangle r3( Point(0, 400), 1, -1, -1, Colour(121, 255, 0, 255), 30.0, 30.0, RECTANGLE, true );
+	shape_manager.add_object(&r3);
+
+	Rectangle r4( Point(600, 300), 1, -3, 8, Colour(90, 123, 12, 255), 30.0, 30.0, RECTANGLE, true );
+	shape_manager.add_object(&r4);	
+
+    Rectangle r( Point(500, 10), 1, 1, 0, Colour(90, 123, 12, 255), 30.0, 30.0, RECTANGLE, true );	
+
+    Rectangle_button rect_b1( Point(820, 50), Colour(200, 34, 54, 255), 180, 80);
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -102,55 +123,56 @@ int main() {
 			if(event.type == SDL_QUIT) {
 				is_run = false;
 			}
+
+			else if(event.type ==SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_LEFT: {        
+                    	printf("try add\n");
+                    	rect_b1.add_new_object(&shape_manager);
+						printf("add\n");
+                    	break;
+                    }
+                    case SDLK_RIGHT: {
+						Molecule m( Point(500, 50), 20, 1, -1, 0, Colour(6, 34, 234, 255), CIRCLE, true );
+						shape_manager.add_object(&m);                    
+                    	break;
+                    }
+                }
+            }
+
+            else if(event.type == SDL_MOUSEBUTTONUP) {
+            	double x_mouse = event.button.x, y_mouse = event.button.y;
+            	//printf("button (%lg, %lg), width %lg, height %lg\n", rect_b1.get_x_center(), rect_b1.get_y_center(), rect_b1.get_width(), rect_b1.get_height());
+
+        		if(event.button.button == SDL_BUTTON_LEFT) 
+            		if(rect_b1.is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
+            			rect_b1.add_new_object(&shape_manager);
+            		            	
+            }
 		}
 
 		shape_manager.update_molecule();
-		shape_manager.collision_detection(SCREEN_WIDTH, SCREEN_HEIGHT);
+		shape_manager.collision_detection(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 150);
 
     	SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     	SDL_RenderClear(render);
 
-    	//printf("\tbegin draw\n");
+   		draw_line(render, Point(0, SCREEN_WIDTH - 200.0), SCREEN_HEIGHT - 150.0);
+   		draw_line(render, SCREEN_WIDTH - 200.0, Point(0, SCREEN_HEIGHT - 150.0));
+
+   		rect_b1.draw_button(render);
+
 		for(size_t i = 0; i < shape_manager.count_objects; ++i) {
-			//printf("\t\ti = %ld (from %ld), %p, type %d\n", i, shape_manager.count_objects, shape_manager.shapes[i], shape_manager.shapes[i]->get_type());
-			//if(shape_manager.shapes[i]->get_is_active())
-				shape_manager.shapes[i]->draw_molecule(render);
+			shape_manager.shapes[i]->draw_molecule(render);
 		}
-		//printf("\tend draw\n");
+
 
 		SDL_RenderPresent(render);
-
-		/*if(!(old_count_objects == shape_manager.count_objects && old_count_non_active_objects == shape_manager.count_non_active_objects)) {
-				log_file = fopen("logs.txt", "a");
-				fprintf(log_file, "count_objects %ld, non exist %ld\n", shape_manager.count_objects, shape_manager.count_non_active_objects);
-				fprintf(log_file, "-------- types -------------\n");
-				for(size_t i = 0; i < shape_manager.count_objects; ++i) {
-					//if(shape_manager)
-					fprintf(log_file, "%d ", shape_manager.shapes[i]->get_type());
-				}		
-				fprintf(log_file, "\n----------------------------\n");
-				
-				fprintf(log_file, "------ is active -----------\n");
-				for(size_t i = 0; i < shape_manager.count_objects; ++i) {
-					//if(shape_manager)
-					fprintf(log_file, "%d ", shape_manager.shapes[i]->get_is_active());
-				}		
-				fprintf(log_file, "\n----------------------------\n\n");
-				fclose(log_file);
-		}*/
-
-		old_count_objects = shape_manager.count_objects;
-		old_count_non_active_objects = shape_manager.count_non_active_objects;
 	}	
 
-	printf("end of cycle\n");
 
 	SDL_RenderPresent(render);
-	printf("before quit\n");
 	quit(window, render);
-
-	printf("end main\n");
-	//fclose(log_file);
 
 	return sdl_status;
 }

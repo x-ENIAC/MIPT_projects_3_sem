@@ -34,7 +34,7 @@ class Colour {
 };
 	
 const Colour BLACK = Colour(0,     0,   0,   0);
-const Colour WHITE = Colour(255, 255, 255, 255);
+const Colour WHITE = Colour(0, 0, 0, 255);
 const Colour RED   = Colour(255,   0,   0, 255);
 const Colour GREEN = Colour(0,   255,   0, 255);
 const Colour BLUE  = Colour(0,     0, 255, 255);

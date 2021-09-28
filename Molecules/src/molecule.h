@@ -16,14 +16,9 @@ class Molecule : public Shape {
 
   	Molecule(const Point par_point, const double par_radius,  const double par_mass, 
              const double par_x_speed, const double par_y_speed, const Colour par_color, const Type_object par_type, const bool par_is_active) :
-        Shape (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+      Shape (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+        
         radius = par_radius;
-    }
-
-    void collision_detection() {
-     
-
-        //printf("collision_detection molecule\n");
     }
 
     bool is_touch_each_other(const Molecule* other_shape) const {
@@ -41,6 +36,7 @@ class Molecule : public Shape {
     }    
 
   	virtual void draw_molecule(SDL_Renderer* render) {
+        //printf("Rad %lg, x = %lg, y = %lg\n", get_radius(), get_x_center(), get_y_center());
   		for(int x_coord = get_x_center() - get_radius(); x_coord <= get_x_center() + get_radius(); ++x_coord) {
   			for(int y_coord = get_y_center() - get_radius(); y_coord <= get_y_center() + get_radius(); ++y_coord) {
 

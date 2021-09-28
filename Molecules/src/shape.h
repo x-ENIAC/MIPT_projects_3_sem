@@ -9,6 +9,7 @@ enum Type_object {
     WALL      = 0,
     CIRCLE    = 1,
     RECTANGLE = 2,
+    BUTTON    = 3,
     AAAAAAAAA = 66,
 };
 
@@ -66,6 +67,10 @@ class Shape {
         set_x_center( get_x_center() + get_x_speed() * time);
         set_y_center( get_y_center() + get_y_speed() * time);
     }    
+
+    inline double get_kinetic_enegry() {
+        return mass * (x_speed + y_speed);
+    }
 
 	inline Point get_center() const {
         return center;
