@@ -65,6 +65,16 @@ class Rectangle : public Shape {
         //printf("\t\t end draaaaaaaaw rect\n");
   	}   
 
+    virtual void make_inactive() {
+        set_is_active( false );
+        set_colour ( WHITE );
+        set_center  ( Point(0.0, 0.0) );
+        set_height ( 0.0 );
+        set_width  ( 0.0 );
+        set_mass   ( 0.0 );
+        set_type ( WALL );
+    }    
+
     inline double get_width() const {
         return width;
     } 

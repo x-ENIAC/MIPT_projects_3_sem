@@ -60,6 +60,8 @@ class Shape {
 
     virtual void collision_with_a_wall(const int screen_width, const int screen_height) {printf("!!!\n");};  
 
+    virtual void make_inactive() {};      
+
     void move_molecule(const double time) {
         set_x_center( get_x_center() + get_x_speed() * time);
         set_y_center( get_y_center() + get_y_speed() * time);

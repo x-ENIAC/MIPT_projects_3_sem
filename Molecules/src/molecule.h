@@ -66,6 +66,14 @@ class Molecule : public Shape {
             set_y_speed( fabs(get_y_speed()) );
     }     
 
+    virtual void make_inactive() {
+        set_is_active( false );
+        set_colour ( WHITE );
+        set_center  ( Point(0.0, 0.0) );
+        set_radius ( 0.0 );
+        set_type ( WALL );
+    }
+
     Molecule& operator=(const Molecule& new_molecule) {
         center  = new_molecule.get_center();
         radius  = new_molecule.get_radius();

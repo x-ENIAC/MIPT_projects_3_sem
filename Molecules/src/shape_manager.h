@@ -12,6 +12,7 @@ extern Collision_detection_table collision_detected_table;
 extern Collision_response_table collision_responsed_table;
 
 const double DELTA_TIME = 0.05;
+const size_t MAX_COUNT_OF_OBJECTS = 3000;
 
 class Shape_manager {
   public:
@@ -20,7 +21,7 @@ class Shape_manager {
   	size_t count_non_active_objects;
 
   	Shape_manager() {
-  	 	shapes = new Shape*;
+  	 	shapes = new Shape*[MAX_COUNT_OF_OBJECTS];
   	 	count_objects = 0;
   	 	count_non_active_objects = 0;
   	}
@@ -52,48 +53,74 @@ class Shape_manager {
 	  	}
 
 	  	for(size_t first = 0; first < now_count_object; ++first) {
+	  		int first_type  = shapes[first]->get_type();
+	  		if(!shapes[first]->get_is_active() || first_type == WALL)
+	  			continue;
+
 	  	 	for(size_t second = 0; second < now_count_object; ++second) {
-	  	 		if(first == second || !shapes[first]->get_is_active() || !shapes[second]->get_is_active() || shapes[first]->get_type() == WALL || shapes[second]->get_type() == WALL)
+	  	 		int second_type = shapes[second]->get_type();
+
+	  	 		if(first == second || !shapes[second]->get_is_active() || second_type == WALL)
 	  	 			continue;
 
-	  	 		int first_type  = shapes[first]->get_type();
-	  	 		int second_type = shapes[second]->get_type();
+	  	 		if(!shapes[first]->get_is_active() || first_type == WALL)
+	  	 			break;	  	 		
 
 
 	  	 		bool is_collision = collision_detected_table.collide_table[first_type][second_type](shapes[first], shapes[second]);
 
 	  	 		if(is_collision && first_type == CIRCLE && second_type == CIRCLE) {
 
+	  	 			//printf("\tbegin collision circle circle, first = %ld (type %d), second = %ld (type %d)\n", first, first_type, second, second_type);
+	  	 			//printf("\t%lg + %lg = ?\n", shapes[first]->get_mass(), shapes[second]->get_mass());
+
 					Rectangle* new_rect = new Rectangle;
 					get_new_rectangle_after_circles_collide(new_rect, (Molecule*)shapes[first], (Molecule*)shapes[second]);
 
 					add_object(new_rect);
-					//shapes[first]->move_molecule(DELTA_TIME);
-	  	 			//shapes[second]->move_molecule(DELTA_TIME);
+
 	  	 			shapes[count_objects - 1]->move_molecule(DELTA_TIME);
 	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
-					count_non_active_objects += 2;	  	 			
+					count_non_active_objects += 2;	  	
+	  	 			//printf("\t\t\t%lg!\n", shapes[count_objects - 1]->get_mass());					
+					//printf("\tend collision circle circle\n");
 	  	 		}
 
 	  	 		else
 				if(is_collision && (first_type == CIRCLE && second_type == RECTANGLE || first_type == RECTANGLE && second_type == CIRCLE)) {
 
+					//printf("\tbegin collision circle rect / rect circle, first = %ld (type %d), second = %ld (type %d)\n", first, first_type, second, second_type);
+					collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+	  	 			
+	  	 			if(first_type == RECTANGLE) {
+	  	 				shapes[first]->move_molecule(DELTA_TIME);
+	  	 				if(((Rectangle*)shapes[first])->get_width() >= screen_width)
+	  	 					((Rectangle*)shapes[first])->set_width(screen_width / 2.0);
+	  	 				if(((Rectangle*)shapes[first])->get_height() >= screen_height)
+	  	 					((Rectangle*)shapes[first])->set_height(screen_height / 2.0);
+	  	 			}
+	  	 			else {
+	  	 				((Rectangle*)shapes[second])->move_molecule(DELTA_TIME);
+	  	 				if(((Rectangle*)shapes[second])->get_width() >= screen_width)
+	  	 					((Rectangle*)shapes[second])->set_width(screen_width / 2.0);
+	  	 				if(((Rectangle*)shapes[second])->get_height() >= screen_height)
+	  	 					((Rectangle*)shapes[second])->set_height(screen_height / 2.0);	 
+	  	 				 	 				
+	  	 			}
 
-	  	 			shapes[first]->move_molecule(DELTA_TIME);
-	  	 			shapes[second]->move_molecule(DELTA_TIME);
 
-	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
 	  	 			++count_non_active_objects;	  	 			
 	  	 		}
 
 	  	 		else
 	  	 		if(is_collision && first_type == RECTANGLE && second_type == RECTANGLE) {
 
-
+	  	 			//printf("\tbegin collision rect rect, first = %ld (type %d), second = %ld (type %d)\n", first, first_type, second, second_type);
 	  	 			Point collision_point = get_rectangles_collision_point((Rectangle*)shapes[first], (Rectangle*)shapes[second]);
-	  	 			double small_masses = (shapes[first]->get_mass() + shapes[second]->get_mass()) / 5.0;
+	  	 			double small_masses = (shapes[first]->get_mass() + shapes[second]->get_mass());
+	  	 			//printf("\tcount new objects %lg = %lg + %lg\n", small_masses, shapes[first]->get_mass(), shapes[second]->get_mass());
 
-	  	 			for(int i = 0; i < 7; ++i) {
+	  	 			for(int i = 0; i < small_masses; ++i) {
 	  	 				int sign_x = 1, sign_y = 1;
 	  	 				if(rand() % 2)
 	  	 					sign_x = -1;
@@ -104,17 +131,18 @@ class Shape_manager {
 	  	 				double new_y = collision_point.y + sign_y * (rand() % 10);	  	 				
 
 	  	 				Molecule* new_molecule = new Molecule;
-	  	 				set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), 15.0, small_masses, rand() % 15 * sign_x, rand() % 15 * sign_y, 
+	  	 				set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), 15.0, 1.0, rand() % 15 * sign_x, rand() % 15 * sign_y, 
 	  	 															  Colour(255, 0, 0, 255), CIRCLE, true);
 
 
 	  	 				new_molecule->move_molecule(100 * DELTA_TIME);
 
 	  	 				add_object(new_molecule);
-	  	 				collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
 	  	 			}  	
 
-	  	 			count_non_active_objects += 2;	  	 			
+	  	 			count_non_active_objects += 2;
+	  	 			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);	
+	  	 			//printf("\tend collision rect rect\n");
 	  	 		}
 	  		}
 	  	}
@@ -129,9 +157,9 @@ class Shape_manager {
 		for(size_t i = 0; i < count_objects; ++i) {
 			printf("%d ", shapes[i]->get_is_active());
 		}		
-		printf("\n----------------------------\n\n");			  	
+		printf("\n----------------------------\n\n");	*/		  	
 
-	  	printf("end collision_detection\n");*/
+	  	//printf("end collision_detection\n");
   	}
 
   	void get_new_rectangle_after_circles_collide(Rectangle* &new_rect, Molecule* first, Molecule* second) {
@@ -219,9 +247,11 @@ class Shape_manager {
   	}
 
 	void add_object(Shape* new_object) {
+  	 	printf("add type %d, is_active %d, mass %lg\n", new_object->get_type(), new_object->get_is_active(), new_object->get_mass());		
 		shapes[count_objects] = new Shape;
   	 	shapes[count_objects] = new_object;
   	 	++count_objects;
+  	 	printf("new size %ld\n\n", count_objects);
   	}
 };
 

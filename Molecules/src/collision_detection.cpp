@@ -44,6 +44,8 @@ bool collision_detection_molecule_with_rectangle(Molecule* first, Rectangle* sec
 
 	   x_center <= x_left_up && y_left_up <= y_center && y_center <= y_right_down && get_square_distance_between_points(first->get_center(), Point(x_left_up, y_center)) <= radius * radius 		||
 
+	   is_point_belongs_to_rectangle(second, first->get_center())																																	||
+
 	   x_right_down <= x_center && y_left_up <= y_center && y_center <= y_right_down && get_square_distance_between_points(first->get_center(), Point(x_right_down, y_center)) <= radius * radius 	||
 
 	   x_center <= x_left_up && y_right_down <= y_center && get_square_distance_between_points(first->get_center(), Point(x_left_up, y_right_down)) <= radius * radius 								||
