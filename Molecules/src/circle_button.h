@@ -31,6 +31,7 @@ class Circle_button : public Button {
 		new_circle->set_colour ( Colour(rand() % 256, rand() % 256, rand() % 256, 255) );
 
 		new_circle->set_is_active ( true );
+	  	new_circle->set_owner     ( SHAPE_OWNER_SHAPE_CLASS );		
 
 		shape_manager->add_object(new_circle);
 	}

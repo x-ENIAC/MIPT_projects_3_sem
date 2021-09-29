@@ -10,8 +10,6 @@ const size_t MAX_COUNT_OF_BUTTONS = 10;
 
 class Button_manager {
   public:
-	//Rectangle* shape_rect;
-	//Button_status status;
 
   	Button** buttons;
   	size_t count_buttons;
@@ -26,9 +24,10 @@ class Button_manager {
 
   	~Button_manager() {
   		printf("Destruct, %ld\n", count_buttons);
-  		//for(size_t i = 0; i < MAX_COUNT_OF_BUTTONS; ++i) {
-  		//	delete[] buttons[i];
-  		//}
+  		/*for(size_t i = 0; i < MAX_COUNT_OF_BUTTONS; ++i) {
+  			if(buttons[i]->get_owner() == BUTTON_OWNER_BUTTON_CLASS)
+  				delete[] buttons[i];
+  		}*/
   	 	//delete[] buttons;
 
 
@@ -38,8 +37,31 @@ class Button_manager {
 	void add_button(Button* new_button) {
   	 	buttons[count_buttons] = new_button;
   	 	++count_buttons;
-  	 	printf("count %ld\n", count_buttons);
+  	 	//printf("count %ld\n", count_buttons);
   	}
+
+	void check_events(SDL_Event* event, Shape_manager* shape_manager) {
+		double x_mouse = event->button.x, y_mouse = event->button.y;
+
+        if((event->button.button == SDL_BUTTON_LEFT) ) {
+            if(buttons[0]->shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
+            	buttons[0]->add_new_object(shape_manager); 
+
+            else
+            if(buttons[1]->shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) )) 
+            	buttons[1]->add_new_object(shape_manager);       		
+        }	
+
+        switch (event->key.keysym.sym) {
+            case SDLK_LEFT:       
+                buttons[0]->add_new_object(shape_manager);
+                break;
+                    
+            case SDLK_RIGHT:
+				buttons[1]->add_new_object(shape_manager);
+                break;                    
+        }        	
+	}  	
 
 };
 

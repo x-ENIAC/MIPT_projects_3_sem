@@ -12,10 +12,10 @@ class Rectangle : public Shape {
 
     Rectangle() : 
         Shape() {
-        width  = 0;
-        height = 0;
-        type   = RECTANGLE;
-        is_active = true;
+        set_width  ( 0 );
+        set_height ( 0 );
+        set_type ( RECTANGLE );
+        set_is_active ( true );
     }    
 
 
@@ -27,8 +27,8 @@ class Rectangle : public Shape {
     }
 
     ~Rectangle() {
-    	//~Shape();
-    	width = height = 0;
+    	set_width  (0 );
+        set_height ( 0 );
     }
 
     void collision_detection() {
@@ -49,23 +49,19 @@ class Rectangle : public Shape {
 
         if(get_y_center() - half_height <= 0)
             set_y_speed( fabs(get_y_speed()) );
-        //printf("\t\tAAAAAAAAAAAAAAAAAAAAAAA end rect\n");
     }      
 
   	virtual void draw_molecule(SDL_Renderer* render) {
-        //printf("\t\tdraaaaaaaaw rect\n");
-        //printf("\t\t%p\n", this);
   		double x_center = get_x_center(), y_center = get_y_center();
   		double half_width = width / 2.0, half_height = height / 2.0;
-        //printf("(%lg, %lg), %lg, %lg\n", x_center, y_center, half_width, half_height);
+        Colour now_color = get_colour();
 
   		for(int x_coord = x_center - half_width; x_coord <= x_center + half_width; ++x_coord) {
   			for(int y_coord = y_center - half_height; y_coord <= y_center + half_height; ++y_coord) {
-                Point now_point( (double)x_coord, (double)y_coord, color );
+                Point now_point( (double)x_coord, (double)y_coord, now_color);
   				now_point.draw_point(render);              
   			}
   		}
-        //printf("\t\t end draaaaaaaaw rect\n");
   	}   
 
     virtual void make_inactive() {
@@ -80,19 +76,19 @@ class Rectangle : public Shape {
 
     Rectangle& operator=(const Rectangle& new_shape) {
 
-        center  = new_shape.get_center();
+        set_center( new_shape.get_center() );
         set_mass ( new_shape.get_mass() );
 
         set_x_speed ( new_shape.get_x_speed() );
         set_y_speed ( new_shape.get_y_speed() );
 
-        width = new_shape.get_width();
-        height = new_shape.get_height();
+        set_width ( new_shape.get_width() );
+        set_height( new_shape.get_height() );
         
-        color   = new_shape.get_colour();
-        type    = new_shape.get_type();
+        set_colour (  new_shape.get_colour() );
+        set_type  (  new_shape.get_type() );
 
-        is_active = new_shape.get_is_active();
+        set_is_active ( new_shape.get_is_active() );
 
         return *this;
     }    
@@ -108,7 +104,11 @@ class Rectangle : public Shape {
 
         return (x_left_up <= x_point && x_point <= x_right_down) &&
                (y_left_up <= y_point && y_point <= y_right_down);
-    }    
+    }   
+
+    //void update_size(const size_t screen_width, const size_t screen_height) {
+    //    if()
+    //} 
 
 
     inline double get_width() const {

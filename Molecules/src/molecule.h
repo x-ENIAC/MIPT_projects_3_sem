@@ -27,7 +27,7 @@ class Molecule : public Shape {
                    (get_radius() +   other_shape->get_radius()) * (get_radius()   + other_shape->get_radius()) );
     }  
 
-    inline bool is_point_belongs_to_sphere(const Point& point) const {
+    inline bool is_point_belongs_to_sphere(const Point point) const {
         return (point.x - get_x_center()) * (point.x - get_x_center()) + (point.y - get_y_center()) * (point.y - get_y_center()) <= radius * radius;
     }
 
@@ -36,12 +36,11 @@ class Molecule : public Shape {
     }    
 
   	virtual void draw_molecule(SDL_Renderer* render) {
-        //printf("Rad %lg, x = %lg, y = %lg\n", get_radius(), get_x_center(), get_y_center());
   		for(int x_coord = get_x_center() - get_radius(); x_coord <= get_x_center() + get_radius(); ++x_coord) {
   			for(int y_coord = get_y_center() - get_radius(); y_coord <= get_y_center() + get_radius(); ++y_coord) {
 
                 if(is_point_belongs_to_sphere( (double)x_coord, (double)y_coord ) ) {
-  				  Point now_point( (double)x_coord, (double)y_coord, color );
+  				  Point now_point( (double)x_coord, (double)y_coord, get_colour() );
   				  now_point.draw_point(render);
                 }
   			}
@@ -71,14 +70,14 @@ class Molecule : public Shape {
     }
 
     Molecule& operator=(const Molecule& new_molecule) {
-        center  = new_molecule.get_center();
-        radius  = new_molecule.get_radius();
-        mass    = new_molecule.get_mass();
+        set_center( new_molecule.get_center() );
+        set_radius( new_molecule.get_radius() );
+        set_mass  ( new_molecule.get_mass() );
 
         set_x_speed ( new_molecule.get_x_speed() );
         set_y_speed ( new_molecule.get_y_speed() );
         
-        color   = new_molecule.get_colour();
+        set_colour   ( new_molecule.get_colour() );
 
         set_is_active ( new_molecule.get_is_active() );
 

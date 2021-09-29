@@ -21,7 +21,7 @@ class Rectangle_button : public Button {
 		Rectangle* new_rect = new Rectangle;
 
 		new_rect->set_center ( Point(rand() % 500, rand() % 500) );
-		new_rect->set_mass   ( 1 );
+		new_rect->set_mass   ( rand() % 9 + 1 );
 
 		new_rect->set_x_speed( rand() % 10 + 1 );
 		new_rect->set_y_speed( rand() % 10 * -1 + 1 );
@@ -33,6 +33,7 @@ class Rectangle_button : public Button {
 		new_rect->set_colour ( Colour(rand() % 256, rand() % 256, rand() % 256, 255) );
 
 		new_rect->set_is_active ( true );
+		new_rect->set_owner     ( SHAPE_OWNER_OTHER_CLASS );
 
 		shape_manager->add_object(new_rect);
 	}

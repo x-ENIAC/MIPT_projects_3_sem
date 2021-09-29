@@ -12,7 +12,7 @@ extern Collision_detection_table collision_detected_table;
 extern Collision_response_table collision_responsed_table;
 
 const double DELTA_TIME = 0.05;
-const size_t MAX_COUNT_OF_OBJECTS = 3000;
+const size_t MAX_COUNT_OF_OBJECTS = 5000;
 
 class Shape_manager {
   public:
@@ -31,10 +31,12 @@ class Shape_manager {
 
   	~Shape_manager() {
   		printf("Destruct, %ld\n", count_objects);
-  		//for(size_t i = 0; i < MAX_COUNT_OF_OBJECTS; ++i) {
-  		//	delete[] shapes[i];
-  		//}
-  	 	//delete[] shapes;
+  		for(size_t i = 0; i < MAX_COUNT_OF_OBJECTS; ++i) {
+  			if(shapes[i]->get_owner() == SHAPE_OWNER_SHAPE_CLASS) {
+  				delete[] shapes[i];
+  			}
+  		}
+  	 	delete[] shapes;
 
 
   	 	count_objects = 0;
@@ -65,7 +67,8 @@ class Shape_manager {
 	  	 		if(!shapes[first]->get_is_active() || shapes[first]->get_type() == WALL)
 	  	 			break;
 
-	  	 		//if(shapes[first]->get_kinetic_enegry() < 20 && shapes[second]->get_kinetic_enegry() < 20)
+	  	 		//printf("%lg, %g\n", shapes[first]->get_kinetic_enegry(), shapes[second]->get_kinetic_enegry());
+	  	 		//if(shapes[first]->get_kinetic_enegry() < 200 && shapes[second]->get_kinetic_enegry() < 200)
 	  	 		//	physical_reaction_handler(first, second);
 	  	 		//else
 	  	 			chemical_reaction_handler(first, second);	  	 		
@@ -150,6 +153,9 @@ class Shape_manager {
 
 			Rectangle* new_rect = new Rectangle;
 			get_new_rectangle_after_circles_collide(new_rect, (Molecule*)shapes[first], (Molecule*)shapes[second]);
+			/*printf("(%lg, %lg), speed %lg, %lg, widht %lg, hegith %lg\n", new_rect->get_x_center(), new_rect->get_y_center(), 
+																		  new_rect->get_x_speed(), new_rect->get_y_speed(),
+																		  new_rect->get_width(), new_rect->get_height());*/
 
 			add_object(new_rect);
 
@@ -188,9 +194,9 @@ class Shape_manager {
 	  	 		Molecule* new_molecule = new Molecule;
 	  	 		set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), rand() % 7 + 8, 1.0, 
 	  	 																	10 * sign_x, 10 * sign_y, 
-	  	 															  		Colour(255, 0, 0, 255), CIRCLE, true);
+	  	 															  		Colour(255, 0, 0, 255), CIRCLE, true, SHAPE_OWNER_SHAPE_CLASS);
 
-	  	 		new_molecule->move_molecule(100 * DELTA_TIME);
+	  	 		new_molecule->move_molecule(10 * DELTA_TIME);
 	  	 		add_object(new_molecule);
 		  	}  	
 
@@ -199,7 +205,7 @@ class Shape_manager {
 	  	}  		
   	}
 
-  	void get_new_rectangle_after_circles_collide(Rectangle* &new_rect, Molecule* first, Molecule* second) {
+  	void get_new_rectangle_after_circles_collide(Rectangle* new_rect, Molecule* first, Molecule* second) {
   		Point first_center   = first->get_center(),  second_center  = second->get_center();
 
 	  	double first_mass    = first->get_mass(),    second_mass    = second->get_mass();  	 	
@@ -228,18 +234,9 @@ class Shape_manager {
   		vector_to_collision_point.set_point_end ( vector_to_collision_point.get_point_end() + first_center );
   		vector_to_collision_point.set_point_begin ( first_center );
 
-  		new_rect->set_center ( vector_to_collision_point.get_point_end() );
-
-  		new_rect->set_mass   ( first->get_mass() + second->get_mass() );
-  		new_rect->set_x_speed( res_impulse.get_x_end() );
-  		new_rect->set_y_speed( res_impulse.get_y_end() );
-  		new_rect->set_colour ( Colour(0, 0, 255, 255) );
-  		new_rect->set_width  ( 30.0 );
-  		new_rect->set_height ( 30.0 );
-  		new_rect->set_type   ( RECTANGLE );
-  		new_rect->set_is_active(true);
-
-  		//return new_rect;
+  		set_values_to_rectangle_after_circles_collide(new_rect, vector_to_collision_point.get_point_end(), first->get_mass() + second->get_mass(),
+  													  res_impulse.get_x_end(), res_impulse.get_y_end(), Colour(0, 0, 255, 255), 
+  													  30.0, 30.0, RECTANGLE, true, SHAPE_OWNER_SHAPE_CLASS );
   	}
 
   	Point get_rectangles_collision_point(Rectangle* first, Rectangle* second) {
@@ -264,9 +261,25 @@ class Shape_manager {
 		return Point(0, 0);
   	}
 
+  	void set_values_to_rectangle_after_circles_collide(Rectangle* rectangle, const Point par_point, const double par_mass, 
+             										   const double par_x_speed, const double par_y_speed, const Colour par_color, 
+             										   const double par_width, const double par_height,
+             										   const Type_object par_type, const bool par_is_active, const Shape_owner par_owner) {
+  		rectangle->set_center (par_point);
+  		rectangle->set_mass   (par_mass);
+  		rectangle->set_x_speed(par_x_speed);
+  		rectangle->set_y_speed(par_y_speed);
+  		rectangle->set_width  (par_width);
+  		rectangle->set_height (par_height );  		
+  		rectangle->set_colour (par_color);
+  		rectangle->set_type   (par_type);
+  		rectangle->set_is_active(par_is_active);
+  		rectangle->set_owner(par_owner);
+  	}  	
+
   	void set_values_to_circle_after_rectangles_collide(Molecule* molecule, const Point par_point, const double par_radius,  const double par_mass, 
              										   const double par_x_speed, const double par_y_speed, const Colour par_color, 
-             										   const Type_object par_type, const bool par_is_active) {
+             										   const Type_object par_type, const bool par_is_active, const Shape_owner par_owner) {
   		molecule->set_center (par_point);
   		molecule->set_radius (par_radius);
   		molecule->set_mass   (par_mass);
@@ -275,6 +288,7 @@ class Shape_manager {
   		molecule->set_colour (par_color);
   		molecule->set_type   (par_type);
   		molecule->set_is_active(par_is_active);
+  		molecule->set_owner(par_owner);  		
   	}
 
 	void add_object(Shape* new_object) {

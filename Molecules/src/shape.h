@@ -13,6 +13,12 @@ enum Type_object {
     AAAAAAAAA = 66,
 };
 
+enum Shape_owner {
+    SHAPE_OWNER_SHAPE_CLASS = 0,
+    SHAPE_OWNER_USER        = 1,
+    SHAPE_OWNER_OTHER_CLASS = 2,
+};
+
 class Shape {
   public:
     Shape():
@@ -22,20 +28,34 @@ class Shape {
         y_speed ( 0 ),
         color ( BLACK ),
         type ( WALL ),
-        is_active ( false )
+        is_active ( false ),
+        owner ( SHAPE_OWNER_SHAPE_CLASS )
 
     {}
 
   	Shape(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
-                                                                                  const Type_object par_type, const bool par_is_active):
+                                                        const Type_object par_type, const bool par_is_active):
   		center   (par_point),
         mass     (par_mass),
   		x_speed  (par_x_speed),
   		y_speed  (par_y_speed),
   		color    (par_color),
         type     (par_type),
-        is_active(par_is_active)
+        is_active(par_is_active),
+        owner    (SHAPE_OWNER_USER)
   	{}
+
+    Shape(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
+                                                        const Type_object par_type, const bool par_is_active, const Shape_owner par_owner):
+        center   (par_point),
+        mass     (par_mass),
+        x_speed  (par_x_speed),
+        y_speed  (par_y_speed),
+        color    (par_color),
+        type     (par_type),
+        is_active(par_is_active),
+        owner    (par_owner)
+    {}    
 
     Shape& operator=(const Shape& new_shape) {
 
@@ -57,7 +77,7 @@ class Shape {
         printf("collision_detection shape\n");
     } 
 
-    virtual void draw_molecule(SDL_Renderer* render) {printf("\t\tdraaaaaaaaw shape\n");};    
+    virtual void draw_molecule(SDL_Renderer* render) {};    
 
     virtual void collision_with_a_wall(const int screen_width, const int screen_height) {printf("!!!\n");};  
 
@@ -68,9 +88,11 @@ class Shape {
         set_y_center( get_y_center() + get_y_speed() * time);
     }    
 
-    inline double get_kinetic_enegry() {
-        return mass * (x_speed + y_speed);
+    inline double get_kinetic_enegry() const {
+        return mass * (x_speed * x_speed + y_speed * y_speed) / 2.0;
     }
+
+    //---------------- getters ---------------------------\\    
 
 	inline Point get_center() const {
         return center;
@@ -108,6 +130,12 @@ class Shape {
         return is_active;
     }      
 
+    inline Shape_owner get_owner() const {
+        return owner;
+    }      
+
+    //---------------- setters ---------------------------\\
+
     inline void set_center(const Point par_center) {
         center = par_center;
     }
@@ -144,6 +172,11 @@ class Shape {
         is_active = new_is_active;
     }
 
+    inline void set_owner(const Shape_owner new_owner) {
+        owner = new_owner;
+    }    
+
+ private:
   	Point center;
     double mass;
 
@@ -152,6 +185,7 @@ class Shape {
 
     Type_object type;
     bool is_active;
+    Shape_owner owner;
 };
 
 #endif
