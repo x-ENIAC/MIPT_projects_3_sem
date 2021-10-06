@@ -54,7 +54,9 @@ class Button_manager {
 
         switch (event->key.keysym.sym) {
             case SDLK_LEFT:       
+                printf("!\n");
                 buttons[0]->add_new_object(object_manager);
+                printf("?\n");
                 break;
                     
             case SDLK_RIGHT:

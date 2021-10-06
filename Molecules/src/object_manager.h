@@ -50,7 +50,9 @@ class Object_manager {
   	void collision_detection(const int screen_width, const int screen_height) {
   		int now_count_object = count_objects;
 
+  		//printf("count %d\n", now_count_object);
 	  	for(size_t first = 0; first < now_count_object; ++first) {
+	  		//printf("\ttype %d, #%d\n", objects[first]->get_type(), first);
 	  		if(objects[first]->get_type() != WALL && objects[first]->get_is_active())
 	  			objects[first]->collision_with_a_wall(screen_width, screen_height);
 	  	}

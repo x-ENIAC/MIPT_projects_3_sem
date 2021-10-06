@@ -3,17 +3,21 @@
 #include "colour.h"
 #include "rectangle.h"
 #include "button.h"
+#include "text.h"
 
-#ifndef RECTANGLE_BUTTON_H
-#define RECTANGLE_BUTTON_H
+#ifndef BUTTON_WITH_TEXT_H
+#define BUTTON_WITH_TEXT_H
 
-class Rectangle_button : public Button {
+class Button_with_text : public Button {
   public:
+  	Text text;
 
-	Rectangle_button(const Point par_point, const Colour par_color, const double par_width, const double par_height) :
-	  Button(par_point, par_color, par_width, par_height) {}
+	Button_with_text(const Point par_point, const Colour par_color, const double par_width, const double par_height) :
+	  Button(par_point, par_color, par_width, par_height) {
+	  	text = {};
+	  }
 
-	void draw_button(SDL_Renderer* render) {
+	/*void draw_button(SDL_Renderer* render) {
 		object_rect->draw_molecule(render);
 	}
 
@@ -36,7 +40,7 @@ class Rectangle_button : public Button {
 		new_rect->set_owner     ( OBJECT_OWNER_OTHER_CLASS );
 
 		object_manager->add_object(new_rect);
-	}
+	}*/
 };
 
 #endif

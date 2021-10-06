@@ -10,9 +10,8 @@
 #include "rectangle.h"
 
 #include "button_manager.h"
-#include "rectangle_button.h"
-#include "circle_button.h"
-#include "text_button.h"
+#include "adding_object_button.h"
+#include "button_with_text.h"
 
 #include "text.h"
 #include "chart.h"
@@ -126,12 +125,12 @@ int main() {
 
 	//Circle m2( Point(70, 370), 20, 1, 7, -5, Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );
 	Circle m2( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20, 1, rand() % 10, rand() % 10, 
-																	 Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );	
+																	 Colour(0, rand() % 255, rand() % 255, 255), true, OBJECT_OWNER_USER );	
 	object_manager.add_object(&m2);
 
 	//Circle m3( Point(570, 70), 20, 1, -10, 5, Colour(0, 255, 0, 255), CIRCLE, true );
 	Circle m3( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20, 1, rand() % 10, rand() % 10, 
-																	 Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );
+																	 Colour(0, rand() % 255, rand() % 255, 255), true, OBJECT_OWNER_USER );
 	object_manager.add_object(&m3);
 
 	//Rectangle r1( Point(170, 170), 1, 0, 0, Colour(0, 0, 255, 255), 30.0, 30.0, RECTANGLE, true );
@@ -159,8 +158,9 @@ int main() {
 	object_manager.add_object(&r4);	
 
 
-    Rectangle_button rect_b1  ( Point(820,  50), Colour(200, 192, 54, 255), 180, 80);
-    Circle_button    circle_b1( Point(820, 150), Colour(172,  32,  5, 255), 180, 80);
+    //Rectangle_button rect_b1  ( Point(820,  50), Colour(200, 192, 54, 255), 180, 80);
+    Adding_object_button    circle_b1( Point(820, 50), Colour(172,  32,  5, 255), 180, 80, CIRCLE);
+    Adding_object_button      rect_b1( Point(820, 150), Colour(172,  32,  5, 255), 180, 80, RECTANGLE);
     //Text_button        text_b1( &rect_b1, "text" );
 
 
@@ -193,7 +193,6 @@ int main() {
 
 		object_manager.update_circle();
 		object_manager.collision_detection(FIELD_WIDTH, FIELD_HEIGHT);
-
     	SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     	SDL_RenderClear(render);
 

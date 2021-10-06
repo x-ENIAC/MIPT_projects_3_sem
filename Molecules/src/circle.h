@@ -15,8 +15,8 @@ class Circle : public Object {
     }
 
   	Circle(const Point par_point, const double par_radius,  const double par_mass, 
-             const double par_x_speed, const double par_y_speed, const Colour par_color, const Type_object par_type, const bool par_is_active) :
-      Object (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+             const double par_x_speed, const double par_y_speed, const Colour par_color, const bool par_is_active, const Object_owner par_owner) :
+      Object (par_point, par_mass, par_x_speed, par_y_speed, par_color, CIRCLE, par_is_active, par_owner) {
         
         radius = par_radius;
     }
