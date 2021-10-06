@@ -13,27 +13,30 @@ LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 .PHONY : all run debug clean
 
-all: colour.o my_vector.o shape_manager.o molecule.o shape.o collision_detection.o collision_response.o
+all: colour.o point.o my_vector.o object_manager.o circle.o object.o collision_detection.o collision_response.o
 	$(CPP) $(CFLAGS) -c ./src/main.cpp -o main.o
-	$(LD) colour.o main.o my_vector.o shape_manager.o molecule.o shape.o collision_detection.o collision_response.o -o $(CUR_PROG) $(LDFLAGS)
+	$(LD) colour.o point.o main.o my_vector.o object_manager.o circle.o object.o collision_detection.o collision_response.o -o $(CUR_PROG) $(LDFLAGS)
 	
 
 	
 colour.o: ./src/colour.cpp ./src/colour.h
 	$(CPP) $(CFLAGS) -c ./src/colour.cpp -o colour.o
+	
+point.o: ./src/point.cpp ./src/point.h
+	$(CPP) $(CFLAGS) -c ./src/point.cpp -o point.o	
 
 my_vector.o: ./src/my_vector.cpp ./src/my_vector.h
 	$(CPP) $(CFLAGS) -c ./src/my_vector.cpp -o my_vector.o
 
 		
-shape_manager.o: ./src/shape_manager.cpp ./src/shape_manager.h
-	$(CPP) $(CFLAGS) -c ./src/shape_manager.cpp -o shape_manager.o
+object_manager.o: ./src/object_manager.cpp ./src/object_manager.h
+	$(CPP) $(CFLAGS) -c ./src/object_manager.cpp -o object_manager.o
 	
-molecule.o: ./src/molecule.cpp ./src/molecule.h
-	$(CPP) $(CFLAGS) -c ./src/molecule.cpp -o molecule.o	
+circle.o: ./src/circle.cpp ./src/circle.h
+	$(CPP) $(CFLAGS) -c ./src/circle.cpp -o circle.o	
 	
-shape.o: ./src/shape.cpp ./src/shape.h
-	$(CPP) $(CFLAGS) -c ./src/shape.cpp -o shape.o
+object.o: ./src/object.cpp ./src/object.h
+	$(CPP) $(CFLAGS) -c ./src/object.cpp -o object.o
 	
 collision_detection.o: ./src/collision_detection.cpp ./src/collision_detection.h
 	$(CPP) $(CFLAGS) -c ./src/collision_detection.cpp -o collision_detection.o	

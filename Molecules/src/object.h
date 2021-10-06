@@ -1,8 +1,8 @@
 #include "colour.h"
 #include "point.h"
 
-#ifndef SHAPE_H
-#define SHAPE_H
+#ifndef OBJECT_H
+#define OBJECT_H
 
 
 enum Type_object {
@@ -13,15 +13,15 @@ enum Type_object {
     AAAAAAAAA = 66,
 };
 
-enum Shape_owner {
-    SHAPE_OWNER_SHAPE_CLASS = 0,
-    SHAPE_OWNER_USER        = 1,
-    SHAPE_OWNER_OTHER_CLASS = 2,
+enum Object_owner {
+    OBJECT_OWNER_OBJECT_CLASS = 0,
+    OBJECT_OWNER_USER        = 1,
+    OBJECT_OWNER_OTHER_CLASS = 2,
 };
 
-class Shape {
+class Object {
   public:
-    Shape():
+    Object():
         center ( Point(0., 0., BLACK) ),
         mass   ( 0 ),
         x_speed ( 0 ),
@@ -29,11 +29,11 @@ class Shape {
         color ( BLACK ),
         type ( WALL ),
         is_active ( false ),
-        owner ( SHAPE_OWNER_SHAPE_CLASS )
+        owner ( OBJECT_OWNER_OBJECT_CLASS )
 
     {}
 
-  	Shape(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
+  	Object(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
                                                         const Type_object par_type, const bool par_is_active):
   		center   (par_point),
         mass     (par_mass),
@@ -42,11 +42,11 @@ class Shape {
   		color    (par_color),
         type     (par_type),
         is_active(par_is_active),
-        owner    (SHAPE_OWNER_USER)
+        owner    (OBJECT_OWNER_USER)
   	{}
 
-    Shape(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
-                                                        const Type_object par_type, const bool par_is_active, const Shape_owner par_owner):
+    Object(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
+                                                        const Type_object par_type, const bool par_is_active, const Object_owner par_owner):
         center   (par_point),
         mass     (par_mass),
         x_speed  (par_x_speed),
@@ -57,24 +57,24 @@ class Shape {
         owner    (par_owner)
     {}    
 
-    Shape& operator=(const Shape& new_shape) {
+    Object& operator=(const Object& new_object) {
 
-        center  = new_shape.get_center();
-        mass    = new_shape.get_mass();
+        center  = new_object.get_center();
+        mass    = new_object.get_mass();
 
-        set_x_speed ( new_shape.get_x_speed() );
-        set_y_speed ( new_shape.get_y_speed() );
+        set_x_speed ( new_object.get_x_speed() );
+        set_y_speed ( new_object.get_y_speed() );
         
-        color   = new_shape.get_colour();
-        type    = new_shape.get_type();
+        color   = new_object.get_colour();
+        type    = new_object.get_type();
 
-        is_active = new_shape.get_is_active();
+        is_active = new_object.get_is_active();
 
         return *this;
     }    
 
     void collision_detection() {
-        printf("collision_detection shape\n");
+        printf("collision_detection Object\n");
     } 
 
     virtual void draw_molecule(SDL_Renderer* render) {};    
@@ -83,7 +83,7 @@ class Shape {
 
     virtual void make_inactive() {};      
 
-    void move_molecule(const double time) {
+    void move_circle(const double time) {
         set_x_center( get_x_center() + get_x_speed() * time);
         set_y_center( get_y_center() + get_y_speed() * time);
     }    
@@ -130,7 +130,7 @@ class Shape {
         return is_active;
     }      
 
-    inline Shape_owner get_owner() const {
+    inline Object_owner get_owner() const {
         return owner;
     }      
 
@@ -172,7 +172,7 @@ class Shape {
         is_active = new_is_active;
     }
 
-    inline void set_owner(const Shape_owner new_owner) {
+    inline void set_owner(const Object_owner new_owner) {
         owner = new_owner;
     }    
 
@@ -185,7 +185,7 @@ class Shape {
 
     Type_object type;
     bool is_active;
-    Shape_owner owner;
+    Object_owner owner;
 };
 
 #endif

@@ -18,7 +18,7 @@ const double ONE_HUNDRER_EIGHTY  = 180.0;
 const double TWO_HUNDRED_SEVENTY = 270.0;
 const double THREE_HUNDRED_SIXTY = 360.0;
 
-const double DOUBLE_SUBTRACTION_DELTA          = 0.000001;
+const double DOUBLE_SUBTRACTION_DELTA = 0.000001;
 
 class Vector {
   public:
@@ -125,5 +125,16 @@ class Vector {
   	Point point_begin;
   	Point point_end;
 };
+
+
+bool intersection_of_segments(Point first_begin, Point first_end, Point second_begin, Point second_end);
+
+bool segment_into_segment(Point first_begin, Point first_end, Point second_begin, Point second_end);
+
+double distance_from_point_to_segment(Point point, Point segment_begin, Point segment_end);
+
+inline double get_distance_from_points(Point first, Point second);
+
+double get_length_perpendicular(Point point, Point segment_begin, Point segment_end);
 
 #endif

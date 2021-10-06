@@ -1,30 +1,30 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "shape.h"
+#include "object.h"
 #include "point.h"
 #include "colour.h"
 
-#ifndef Molecule_H
-#define Molecule_H
+#ifndef CIRCLE_H
+#define CIRCLE_H
 
-class Shape;
-class Molecule : public Shape {
+class Object;
+class Circle : public Object {
   public:
-    Molecule() : Shape() {
+    Circle() : Object() {
         radius = 0;
     }
 
-  	Molecule(const Point par_point, const double par_radius,  const double par_mass, 
+  	Circle(const Point par_point, const double par_radius,  const double par_mass, 
              const double par_x_speed, const double par_y_speed, const Colour par_color, const Type_object par_type, const bool par_is_active) :
-      Shape (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+      Object (par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
         
         radius = par_radius;
     }
 
-    bool is_touch_each_other(const Molecule* other_shape) const {
-        return ( (get_x_center() - other_shape->get_x_center()) * (get_x_center() - other_shape->get_x_center()) + 
-                 (get_y_center() - other_shape->get_y_center()) * (get_y_center() - other_shape->get_y_center()) <= 
-                   (get_radius() +   other_shape->get_radius()) * (get_radius()   + other_shape->get_radius()) );
+    bool is_touch_each_other(const Circle* other_object) const {
+        return ( (get_x_center() - other_object->get_x_center()) * (get_x_center() - other_object->get_x_center()) + 
+                 (get_y_center() - other_object->get_y_center()) * (get_y_center() - other_object->get_y_center()) <= 
+                   (get_radius() +   other_object->get_radius()) * (get_radius()   + other_object->get_radius()) );
     }  
 
     inline bool is_point_belongs_to_sphere(const Point point) const {
@@ -69,17 +69,17 @@ class Molecule : public Shape {
         set_type ( WALL );
     }
 
-    Molecule& operator=(const Molecule& new_molecule) {
-        set_center( new_molecule.get_center() );
-        set_radius( new_molecule.get_radius() );
-        set_mass  ( new_molecule.get_mass() );
+    Circle& operator=(const Circle& dnew_circle) {
+        set_center( dnew_circle.get_center() );
+        set_radius( dnew_circle.get_radius() );
+        set_mass  ( dnew_circle.get_mass() );
 
-        set_x_speed ( new_molecule.get_x_speed() );
-        set_y_speed ( new_molecule.get_y_speed() );
+        set_x_speed ( dnew_circle.get_x_speed() );
+        set_y_speed ( dnew_circle.get_y_speed() );
         
-        set_colour   ( new_molecule.get_colour() );
+        set_colour   ( dnew_circle.get_colour() );
 
-        set_is_active ( new_molecule.get_is_active() );
+        set_is_active ( dnew_circle.get_is_active() );
 
         return *this;
     }

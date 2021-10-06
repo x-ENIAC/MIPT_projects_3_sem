@@ -19,7 +19,7 @@ enum Button_owner {
 
 class Button {
   public:
-	Rectangle* shape_rect;
+	Rectangle* object_rect;
 	Button_status status;
 	Button_owner owner;
 
@@ -27,23 +27,23 @@ class Button {
 
 	Button(const Point par_point, const Colour par_color, const double par_width, const double par_height) {
 
-		shape_rect = new Rectangle;
+		object_rect = new Rectangle;
 
-	  	shape_rect->set_center ( par_point );
-	  	shape_rect->set_mass   (  0.0  );
+	  	object_rect->set_center ( par_point );
+	  	object_rect->set_mass   (  0.0  );
 
-	  	shape_rect->set_x_speed(  0.0  );
-	  	shape_rect->set_y_speed(  0.0  );
+	  	object_rect->set_x_speed(  0.0  );
+	  	object_rect->set_y_speed(  0.0  );
 
-	  	shape_rect->set_colour ( par_color );
+	  	object_rect->set_colour ( par_color );
 
-	  	shape_rect->set_width  ( par_width );
-	  	shape_rect->set_height ( par_height );
+	  	object_rect->set_width  ( par_width );
+	  	object_rect->set_height ( par_height );
 
-	  	shape_rect->set_type   ( BUTTON );
+	  	object_rect->set_type   ( BUTTON );
 
-	  	shape_rect->set_is_active ( false );
-	  	shape_rect->set_owner     ( SHAPE_OWNER_OTHER_CLASS );
+	  	object_rect->set_is_active ( false );
+	  	object_rect->set_owner     ( OBJECT_OWNER_OTHER_CLASS );
 
 	  	status = IS_NOT_PUSH;
 	  	owner  = BUTTON_OWNER_USER;
@@ -51,23 +51,23 @@ class Button {
 
 	Button(const Point par_point, const Colour par_color, const double par_width, const double par_height, const Button_owner par_owner) {
 
-		shape_rect = new Rectangle;
+		object_rect = new Rectangle;
 
-	  	shape_rect->set_center ( par_point );
-	  	shape_rect->set_mass   (  0.0  );
+	  	object_rect->set_center ( par_point );
+	  	object_rect->set_mass   (  0.0  );
 
-	  	shape_rect->set_x_speed(  0.0  );
-	  	shape_rect->set_y_speed(  0.0  );
+	  	object_rect->set_x_speed(  0.0  );
+	  	object_rect->set_y_speed(  0.0  );
 
-	  	shape_rect->set_colour ( par_color );
+	  	object_rect->set_colour ( par_color );
 
-	  	shape_rect->set_width  ( par_width );
-	  	shape_rect->set_height ( par_height );
+	  	object_rect->set_width  ( par_width );
+	  	object_rect->set_height ( par_height );
 
-	  	shape_rect->set_type   ( BUTTON );
+	  	object_rect->set_type   ( BUTTON );
 
-	  	shape_rect->set_is_active ( false );
-	  	shape_rect->set_owner     ( SHAPE_OWNER_OTHER_CLASS );
+	  	object_rect->set_is_active ( false );
+	  	object_rect->set_owner     ( OBJECT_OWNER_OTHER_CLASS );
 
 
 	  	status = IS_NOT_PUSH;
@@ -75,10 +75,10 @@ class Button {
 	}	
 
 	void draw_button(SDL_Renderer* render) {
-		shape_rect->draw_molecule(render);
+		object_rect->draw_molecule(render);
 	}
 
-	virtual void add_new_object(Shape_manager* shape_manager) {};
+	virtual void add_new_object(Object_manager* object_manager) {};
 
 	inline Button_owner get_owner() const {
 		return owner;

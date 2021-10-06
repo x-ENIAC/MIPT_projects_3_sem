@@ -40,25 +40,25 @@ class Button_manager {
   	 	//printf("count %ld\n", count_buttons);
   	}
 
-	void check_events(SDL_Event* event, Shape_manager* shape_manager) {
+	void check_events(SDL_Event* event, Object_manager* object_manager) {
 		double x_mouse = event->button.x, y_mouse = event->button.y;
 
         if((event->button.button == SDL_BUTTON_LEFT) ) {
-            if(buttons[0]->shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
-            	buttons[0]->add_new_object(shape_manager); 
+            if(buttons[0]->object_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) ))
+            	buttons[0]->add_new_object(object_manager); 
 
             else
-            if(buttons[1]->shape_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) )) 
-            	buttons[1]->add_new_object(shape_manager);       		
+            if(buttons[1]->object_rect->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) )) 
+            	buttons[1]->add_new_object(object_manager);       		
         }	
 
         switch (event->key.keysym.sym) {
             case SDLK_LEFT:       
-                buttons[0]->add_new_object(shape_manager);
+                buttons[0]->add_new_object(object_manager);
                 break;
                     
             case SDLK_RIGHT:
-				buttons[1]->add_new_object(shape_manager);
+				buttons[1]->add_new_object(object_manager);
                 break;                    
         }        	
 	}  	

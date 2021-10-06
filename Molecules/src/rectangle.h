@@ -1,17 +1,16 @@
 #include <SDL2/SDL.h>
-#include "shape.h"
-#include "molecule.h"
+#include "object.h"
 
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-class Rectangle : public Shape {
+class Rectangle : public Object {
   public:
   	double width;
   	double height;
 
     Rectangle() : 
-        Shape() {
+        Object() {
         set_width  ( 0 );
         set_height ( 0 );
         set_type ( RECTANGLE );
@@ -21,7 +20,7 @@ class Rectangle : public Shape {
 
   	Rectangle(const Point par_point, const double par_mass,  const double par_x_speed, const double par_y_speed, 
   			  const Colour par_color, const double par_width,   const double par_height, const Type_object par_type, const bool par_is_active) : 
-        Shape  ( par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
+        Object  ( par_point, par_mass, par_x_speed, par_y_speed, par_color, par_type, par_is_active) {
   		width  = par_width ;
   		height = par_height;
     }
@@ -74,21 +73,21 @@ class Rectangle : public Shape {
         set_type ( WALL );
     }    
 
-    Rectangle& operator=(const Rectangle& new_shape) {
+    Rectangle& operator=(const Rectangle& new_object) {
 
-        set_center( new_shape.get_center() );
-        set_mass ( new_shape.get_mass() );
+        set_center( new_object.get_center() );
+        set_mass ( new_object.get_mass() );
 
-        set_x_speed ( new_shape.get_x_speed() );
-        set_y_speed ( new_shape.get_y_speed() );
+        set_x_speed ( new_object.get_x_speed() );
+        set_y_speed ( new_object.get_y_speed() );
 
-        set_width ( new_shape.get_width() );
-        set_height( new_shape.get_height() );
+        set_width ( new_object.get_width() );
+        set_height( new_object.get_height() );
         
-        set_colour (  new_shape.get_colour() );
-        set_type  (  new_shape.get_type() );
+        set_colour (  new_object.get_colour() );
+        set_type  (  new_object.get_type() );
 
-        set_is_active ( new_shape.get_is_active() );
+        set_is_active ( new_object.get_is_active() );
 
         return *this;
     }    

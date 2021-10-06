@@ -1,12 +1,12 @@
-#include "molecule.h"
+#include "circle.h"
 #include "rectangle.h"
 #include "point.h"
 #include "my_vector.h"
 #include "collision_detection.h"
 #include "collision_response.h"
 
-#ifndef SHAPE_MANAGER_H
-#define SHAPE_MANAGER_H
+#ifndef OBJECT_MANAGER_H
+#define OBJECT_MANAGER_H
 
 extern Collision_detection_table collision_detected_table;
 extern Collision_response_table collision_responsed_table;
@@ -14,81 +14,80 @@ extern Collision_response_table collision_responsed_table;
 const double DELTA_TIME = 0.05;
 const size_t MAX_COUNT_OF_OBJECTS = 5000;
 
-class Shape_manager {
+class Object_manager {
   public:
-  	Shape** shapes;
+  	Object** objects;
   	size_t count_objects;
   	size_t count_non_active_objects;
 
-  	Shape_manager() {
-  	 	shapes = new Shape*[MAX_COUNT_OF_OBJECTS];
+  	Object_manager() {
+  	 	objects = new Object*[MAX_COUNT_OF_OBJECTS];
   	 	for(size_t i = 0; i < MAX_COUNT_OF_OBJECTS; ++i)
-  	 		shapes[i] = new Shape;
+  	 		objects[i] = new Object;
 
   	 	count_objects = 0;
   	 	count_non_active_objects = 0;
   	}
 
-  	~Shape_manager() {
+  	~Object_manager() {
   		printf("Destruct, %ld\n", count_objects);
   		for(size_t i = 0; i < MAX_COUNT_OF_OBJECTS; ++i) {
-  			if(shapes[i]->get_owner() == SHAPE_OWNER_SHAPE_CLASS) {
-  				delete[] shapes[i];
+  			if(objects[i]->get_owner() == OBJECT_OWNER_OBJECT_CLASS) {
+  				delete[] objects[i];
   			}
   		}
-  	 	delete[] shapes;
+  	 	delete[] objects;
 
 
   	 	count_objects = 0;
   	}
 
-  	void update_molecule() {
+  	void update_circle() {
   	 	for(int i = 0; i < count_objects; ++i)
-  	 		shapes[i]->move_molecule(DELTA_TIME);
+  	 		objects[i]->move_circle(DELTA_TIME);
   	}
 
   	void collision_detection(const int screen_width, const int screen_height) {
   		int now_count_object = count_objects;
 
 	  	for(size_t first = 0; first < now_count_object; ++first) {
-	  		if(shapes[first]->get_type() != WALL && shapes[first]->get_is_active())
-	  			shapes[first]->collision_with_a_wall(screen_width, screen_height);
+	  		if(objects[first]->get_type() != WALL && objects[first]->get_is_active())
+	  			objects[first]->collision_with_a_wall(screen_width, screen_height);
 	  	}
 
 	  	for(size_t first = 0; first < now_count_object; ++first) {
-	  		if(!shapes[first]->get_is_active() || shapes[first]->get_type() == WALL)
+	  		if(!objects[first]->get_is_active() || objects[first]->get_type() == WALL)
 	  			continue;
 
 	  	 	for(size_t second = 0; second < now_count_object; ++second) {
 
-	  	 		if(first == second || !shapes[second]->get_is_active() || shapes[second]->get_type() == WALL)
+	  	 		if(first == second || !objects[second]->get_is_active() || objects[second]->get_type() == WALL)
 	  	 			continue;
 
-	  	 		if(!shapes[first]->get_is_active() || shapes[first]->get_type() == WALL)
+	  	 		if(!objects[first]->get_is_active() || objects[first]->get_type() == WALL)
 	  	 			break;
 
-	  	 		//printf("%lg, %g\n", shapes[first]->get_kinetic_enegry(), shapes[second]->get_kinetic_enegry());
-	  	 		//if(shapes[first]->get_kinetic_enegry() < 200 && shapes[second]->get_kinetic_enegry() < 200)
-	  	 		//	physical_reaction_handler(first, second);
-	  	 		//else
+	  	 		if(objects[first]->get_kinetic_enegry() < 100 && objects[second]->get_kinetic_enegry() < 100)
+	  	 			physical_reaction_handler(first, second);
+	  	 		else
 	  	 			chemical_reaction_handler(first, second);	  	 		
 	  		}
 	  	}
   	}
 
   	void physical_reaction_handler(const size_t first, const size_t second) {
-  		bool is_collision = collision_detected_table.collide_table[shapes[first]->get_type()][shapes[second]->get_type()](shapes[first], shapes[second]);
+  		bool is_collision = collision_detected_table.collide_table[objects[first]->get_type()][objects[second]->get_type()](objects[first], objects[second]);
   		if(!is_collision)
   			return;
 
-		Point first_center  = shapes[first]->get_center();
-  	 	Point second_center = shapes[second]->get_center();
+		Point first_center  = objects[first]->get_center();
+  	 	Point second_center = objects[second]->get_center();
 
-  	 	double first_mass  = shapes[first]->get_mass();
-  	 	double second_mass = shapes[second]->get_mass();  	 	
+  	 	double first_mass  = objects[first]->get_mass();
+  	 	double second_mass = objects[second]->get_mass();  	 	
 
-  	 	double first_x_speed  = shapes[first]->get_x_speed (),  first_y_speed = shapes[first]->get_y_speed ();
-  	 	double second_x_speed = shapes[second]->get_x_speed(), second_y_speed = shapes[second]->get_y_speed();
+  	 	double first_x_speed  = objects[first]->get_x_speed (),  first_y_speed = objects[first]->get_y_speed ();
+  	 	double second_x_speed = objects[second]->get_x_speed(), second_y_speed = objects[second]->get_y_speed();
 
 		Vector first_speed  ( Point(0., 0.), Point(first_x_speed,   first_y_speed) );
 		Vector second_speed ( Point(0., 0.), Point(second_x_speed, second_y_speed) );
@@ -131,49 +130,46 @@ class Shape_manager {
 
   	 	res_first_speed.set_point_end   ( res_first_speed.get_point_end() - res_first_speed.get_point_begin() );
   	 	res_first_speed.set_point_begin ( Point(0, 0) );
-  	 	shapes[first]->set_x_speed ( res_first_speed.get_x_end() );
-  	 	shapes[first]->set_y_speed ( res_first_speed.get_y_end() );  	
+  	 	objects[first]->set_x_speed ( res_first_speed.get_x_end() );
+  	 	objects[first]->set_y_speed ( res_first_speed.get_y_end() );  	
 
   	 	res_second_speed.set_point_end   ( res_second_speed.get_point_end() - res_second_speed.get_point_begin() );
   	 	res_second_speed.set_point_begin ( Point(0, 0) );
-  	 	shapes[second]->set_x_speed ( res_second_speed.get_x_end() );
-  	 	shapes[second]->set_y_speed ( res_second_speed.get_y_end() );	
+  	 	objects[second]->set_x_speed ( res_second_speed.get_x_end() );
+  	 	objects[second]->set_y_speed ( res_second_speed.get_y_end() );	
 
-  	 	shapes[first]->move_molecule(10 * DELTA_TIME);
-  	 	shapes[second]->move_molecule(10 * DELTA_TIME);  	 	  		
+  	 	objects[first]->move_circle(1 * DELTA_TIME);
+  	 	objects[second]->move_circle(1 * DELTA_TIME);  	 	  		
   	}
 
   	void chemical_reaction_handler(const size_t first, const size_t second) {
-	  	int first_type  = shapes[first]->get_type();
-	  	int second_type = shapes[second]->get_type();
+	  	int first_type  = objects[first]->get_type();
+	  	int second_type = objects[second]->get_type();
 
-		bool is_collision = collision_detected_table.collide_table[first_type][second_type](shapes[first], shapes[second]);
+		bool is_collision = collision_detected_table.collide_table[first_type][second_type](objects[first], objects[second]);
 
 	  	if(is_collision && first_type == CIRCLE && second_type == CIRCLE) {
 
 			Rectangle* new_rect = new Rectangle;
-			get_new_rectangle_after_circles_collide(new_rect, (Molecule*)shapes[first], (Molecule*)shapes[second]);
-			/*printf("(%lg, %lg), speed %lg, %lg, widht %lg, hegith %lg\n", new_rect->get_x_center(), new_rect->get_y_center(), 
-																		  new_rect->get_x_speed(), new_rect->get_y_speed(),
-																		  new_rect->get_width(), new_rect->get_height());*/
+			get_new_rectangle_after_circles_collide(new_rect, (Circle*)objects[first], (Circle*)objects[second]);
 
 			add_object(new_rect);
 
-	  	 	shapes[count_objects - 1]->move_molecule(DELTA_TIME);
-	  	 	collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+	  	 	objects[count_objects - 1]->move_circle(DELTA_TIME);
+	  	 	collision_responsed_table.collire_table[first_type][second_type](objects[first], objects[second]);
 			count_non_active_objects += 2;	  	
 	  	}
 
 	  	else
 		if(is_collision && (first_type == CIRCLE && second_type == RECTANGLE || first_type == RECTANGLE && second_type == CIRCLE)) {
 
-			collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);
+			collision_responsed_table.collire_table[first_type][second_type](objects[first], objects[second]);
 	  	 			
 	  	 	if(first_type == RECTANGLE) {
-	  	 		shapes[first]->move_molecule(DELTA_TIME); // fix shapes !!!
+	  	 		objects[first]->move_circle(DELTA_TIME); // fix objects !!!
 	  	 	}
 	  	 	else {
-	  	 		shapes[second]->move_molecule(DELTA_TIME);	  	 				 	 			
+	  	 		objects[second]->move_circle(DELTA_TIME);	  	 				 	 			
 	  	 	}
 
 	  	 	++count_non_active_objects;	  	 			
@@ -182,30 +178,40 @@ class Shape_manager {
 	  	else
 	  	if(is_collision && first_type == RECTANGLE && second_type == RECTANGLE) {
 
-	  	 	Point collision_point = get_rectangles_collision_point((Rectangle*)shapes[first], (Rectangle*)shapes[second]);
-	  	 	double small_masses = (shapes[first]->get_mass() + shapes[second]->get_mass());
+	  	 	Point collision_point = get_rectangles_collision_point((Rectangle*)objects[first], (Rectangle*)objects[second]);
+	  	 	double small_masses = (objects[first]->get_mass() + objects[second]->get_mass());
+	  	 	double delta_angle = 360.0 / small_masses, angle = 0;
+
+	  	 	Vector vector_to_new_circle(collision_point, Point(collision_point.x + 20.0, collision_point.y));
+	  	 	double length_vector_to_new_circle = vector_to_new_circle.get_length_vector();
+	  	 	//vector_to_new_circle.rotate_clockwize_vector(delta_angle);
 
 	  	 	for(int i = 0; i < small_masses; ++i) {
-	  	 		int sign_x = (rand() % 2 ? -1 : 1), sign_y = (rand() % 2 ? -1 : 1); 	 
+	  	 		Circle* new_circle = new Circle;
 
-	  	 		double new_x = collision_point.x + sign_x * (rand() % 30);
-	  	 		double new_y = collision_point.y + sign_y * (rand() % 30);	  	 				
+	  	 		/*printf("angle %lg, speed_x %lg, speed_y %lg; (%lg, %lg) -> (%lg, %lg), length %lg\n", 
+	  	 				angle, 2.0 * cos(angle * M_PI / 180.0), 2.0 * sin(angle * M_PI / 180.0), collision_point.x, collision_point.y,
+	  	 				vector_to_new_circle.get_x_end(), vector_to_new_circle.get_y_end(), vector_to_new_circle.get_length_vector());*/
 
-	  	 		Molecule* new_molecule = new Molecule;
-	  	 		set_values_to_circle_after_rectangles_collide(new_molecule, Point(new_x, new_y), rand() % 7 + 8, 1.0, 
-	  	 																	10 * sign_x, 10 * sign_y, 
-	  	 															  		Colour(255, 0, 0, 255), CIRCLE, true, SHAPE_OWNER_SHAPE_CLASS);
+	  	 		set_values_to_circle_after_rectangles_collide(new_circle, vector_to_new_circle.get_point_end(), 4.0, 1.0, 
+	  	 																	5 * cos(angle * M_PI / 180.0), 5 * sin(angle * M_PI / 180.0), 
+	  	 															  		Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
+	  	 															  		CIRCLE, true, OBJECT_OWNER_OBJECT_CLASS);
 
-	  	 		new_molecule->move_molecule(10 * DELTA_TIME);
-	  	 		add_object(new_molecule);
+	  	 		//if(i < small_masses)
+	  	 		//	new_circle->move_circle(1000.0 * DELTA_TIME);
+	  	 		add_object(new_circle);
+
+	  	 		vector_to_new_circle.rotate_clockwize_vector(delta_angle);
+	  	 		angle += delta_angle;
 		  	}  	
 
-	  	 	collision_responsed_table.collire_table[first_type][second_type](shapes[first], shapes[second]);	
+	  	 	collision_responsed_table.collire_table[first_type][second_type](objects[first], objects[second]);	
 	  	 	count_non_active_objects += 2;	  	 			
 	  	}  		
   	}
 
-  	void get_new_rectangle_after_circles_collide(Rectangle* new_rect, Molecule* first, Molecule* second) {
+  	void get_new_rectangle_after_circles_collide(Rectangle* new_rect, Circle* first, Circle* second) {
   		Point first_center   = first->get_center(),  second_center  = second->get_center();
 
 	  	double first_mass    = first->get_mass(),    second_mass    = second->get_mass();  	 	
@@ -235,8 +241,9 @@ class Shape_manager {
   		vector_to_collision_point.set_point_begin ( first_center );
 
   		set_values_to_rectangle_after_circles_collide(new_rect, vector_to_collision_point.get_point_end(), first->get_mass() + second->get_mass(),
-  													  res_impulse.get_x_end(), res_impulse.get_y_end(), Colour(0, 0, 255, 255), 
-  													  30.0, 30.0, RECTANGLE, true, SHAPE_OWNER_SHAPE_CLASS );
+  													  res_impulse.get_x_end(), res_impulse.get_y_end(), 
+  													  Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
+  													  20.0, 20.0, RECTANGLE, true, OBJECT_OWNER_OBJECT_CLASS );
   	}
 
   	Point get_rectangles_collision_point(Rectangle* first, Rectangle* second) {
@@ -245,6 +252,12 @@ class Shape_manager {
 
 		double first_x_right_down = first->get_x_center() + first->width  / 2.0;
 		double first_y_right_down = first->get_y_center() + first->height / 2.0;	
+
+  		double second_x_left_up = second->get_x_center() - second->width  / 2.0;
+		double second_y_left_up = second->get_y_center() - second->height / 2.0;
+
+		double second_x_right_down = second->get_x_center() + second->width  / 2.0;
+		double second_y_right_down = second->get_y_center() + second->height / 2.0;			
 
 		if(is_point_belongs_to_rectangle(second, Point( first_x_left_up, first_y_left_up )))
 			return Point( first_x_left_up, first_y_left_up );
@@ -264,7 +277,7 @@ class Shape_manager {
   	void set_values_to_rectangle_after_circles_collide(Rectangle* rectangle, const Point par_point, const double par_mass, 
              										   const double par_x_speed, const double par_y_speed, const Colour par_color, 
              										   const double par_width, const double par_height,
-             										   const Type_object par_type, const bool par_is_active, const Shape_owner par_owner) {
+             										   const Type_object par_type, const bool par_is_active, const Object_owner par_owner) {
   		rectangle->set_center (par_point);
   		rectangle->set_mass   (par_mass);
   		rectangle->set_x_speed(par_x_speed);
@@ -277,24 +290,34 @@ class Shape_manager {
   		rectangle->set_owner(par_owner);
   	}  	
 
-  	void set_values_to_circle_after_rectangles_collide(Molecule* molecule, const Point par_point, const double par_radius,  const double par_mass, 
+  	void set_values_to_circle_after_rectangles_collide(Circle* circle, const Point par_point, const double par_radius,  const double par_mass, 
              										   const double par_x_speed, const double par_y_speed, const Colour par_color, 
-             										   const Type_object par_type, const bool par_is_active, const Shape_owner par_owner) {
-  		molecule->set_center (par_point);
-  		molecule->set_radius (par_radius);
-  		molecule->set_mass   (par_mass);
-  		molecule->set_x_speed(par_x_speed);
-  		molecule->set_y_speed(par_y_speed);
-  		molecule->set_colour (par_color);
-  		molecule->set_type   (par_type);
-  		molecule->set_is_active(par_is_active);
-  		molecule->set_owner(par_owner);  		
+             										   const Type_object par_type, const bool par_is_active, const Object_owner par_owner) {
+  		circle->set_center (par_point);
+  		circle->set_radius (par_radius);
+  		circle->set_mass   (par_mass);
+  		circle->set_x_speed(par_x_speed);
+  		circle->set_y_speed(par_y_speed);
+  		circle->set_colour (par_color);
+  		circle->set_type   (par_type);
+  		circle->set_is_active(par_is_active);
+  		circle->set_owner(par_owner);  		
   	}
 
-	void add_object(Shape* new_object) {
-  	 	shapes[count_objects] = new_object;
+  	size_t get_count_of_objects(const Type_object type_object) {
+  		size_t count = 0;
+
+  		for(int i = 0; i < count_objects; ++i)
+  			if(type_object == objects[i]->get_type() && objects[i]->get_is_active())
+  				++count;
+
+  		return count;
+  	}
+
+	void add_object(Object* new_object) {
+  	 	objects[count_objects] = new_object;
   	 	++count_objects;
-  	 	printf("count %ld\n", count_objects);
+  	 	//printf("count %ld\n", count_objects);
 
   	 	//if(MAX_COUNT_OF_OBJECTS * 2 <= count_objects * 3)
   	 	//	remove_inactive_items();
@@ -305,13 +328,13 @@ class Shape_manager {
 
   		size_t real_count_objects = 0;
   		for(size_t i = 0; i < count_objects; ++i)
-  			if(shapes[i]->get_type())
+  			if(objects[i]->get_type())
   				++real_count_objects;
 
   		printf("open file\n");
   		FILE* log_file = fopen("logs.txt", "w");
   		for(size_t i = 0; i < count_objects; ++i) {
-  			fprintf(log_file, "%d ", shapes[i]->get_type());
+  			fprintf(log_file, "%d ", objects[i]->get_type());
   		}
   		printf("\n");
   		fclose(log_file);
@@ -326,13 +349,13 @@ class Shape_manager {
   		size_t now_pos = 0;
 
   		while(now_pos < count_objects) {
-  			size_t now_is_active = shapes[now_pos]->get_type();
+  			size_t now_is_active = objects[now_pos]->get_type();
 
   			if(now_is_active == 0 && first_free_pos == -1) { 
   					first_free_pos = now_pos;
 
   			} else if(now_is_active > 0) {
-                shapes[first_free_pos] = shapes[now_pos];
+                objects[first_free_pos] = objects[now_pos];
                 ++first_free_pos;
   			}
 
@@ -341,13 +364,13 @@ class Shape_manager {
 
   		fprintf(log_file, "\n");
   		for(size_t i = 0; i < real_count_objects; ++i)
-  			fprintf(log_file, "%d ", shapes[i]->get_type());
+  			fprintf(log_file, "%d ", objects[i]->get_type());
   		fprintf(log_file, "\n------------------------------------------------------\n");  		
   		fclose(log_file);
   		printf("close file\n");
 
   		//for(size_t i = real_count_objects; i < MAX_COUNT_OF_OBJECTS; ++i)
-  		//	delete[] shapes[i];
+  		//	delete[] objects[i];
 
   		count_objects = real_count_objects;
   		count_non_active_objects = 0;

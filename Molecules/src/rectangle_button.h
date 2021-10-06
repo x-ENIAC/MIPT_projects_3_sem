@@ -14,10 +14,10 @@ class Rectangle_button : public Button {
 	  Button(par_point, par_color, par_width, par_height) {}
 
 	void draw_button(SDL_Renderer* render) {
-		shape_rect->draw_molecule(render);
+		object_rect->draw_molecule(render);
 	}
 
-	virtual void add_new_object(Shape_manager* shape_manager) {
+	virtual void add_new_object(Object_manager* object_manager) {
 		Rectangle* new_rect = new Rectangle;
 
 		new_rect->set_center ( Point(rand() % 500, rand() % 500) );
@@ -33,9 +33,9 @@ class Rectangle_button : public Button {
 		new_rect->set_colour ( Colour(rand() % 256, rand() % 256, rand() % 256, 255) );
 
 		new_rect->set_is_active ( true );
-		new_rect->set_owner     ( SHAPE_OWNER_OTHER_CLASS );
+		new_rect->set_owner     ( OBJECT_OWNER_OTHER_CLASS );
 
-		shape_manager->add_object(new_rect);
+		object_manager->add_object(new_rect);
 	}
 };
 
