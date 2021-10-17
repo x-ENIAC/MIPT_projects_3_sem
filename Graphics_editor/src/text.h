@@ -16,8 +16,8 @@ class Text : public View_object {
 
 	Text() : View_object() {
 
-		font_size = 24;
-		font_name = "00057_1000HURT.ttf";
+		font_size = 20;
+		font_name = "courier.ttf";
 		font 	  = TTF_OpenFont(font_name, font_size);
 		text 	  = "hello, world";
 		color 	  = {0, 0, 0, 0};
@@ -33,8 +33,8 @@ class Text : public View_object {
 		//printf("\t\t\t%lg, %lg\n", par_point.x, par_point.y);
 		//printf("\t\t\t%lg, %lg\n", center.x, center.y);
 
-		font_size = 24;
-		font_name = "00057_1000HURT.ttf";
+		font_size = 20;
+		font_name = "courier.ttf";
 		font 	  = TTF_OpenFont(font_name, font_size);
 		text      = par_text;
 		color     = par_color;

@@ -19,7 +19,7 @@ class Close_delegate : public Button_delegate {
 										Colour(rand() % 256, rand() % 256, rand() % 256, 255), true, OBJECT_OWNER_OBJECT_CLASS);			
 		
 		object_manager->add_object(new_circle);*/
-		printf("Close_delegate\n");
+		//printf("Close_delegate\n");
 	}
 };
 
@@ -33,7 +33,7 @@ class Roll_up_delegate : public Button_delegate {
   	}
 
   	void click_reaction() override {
-  		printf("Roll_up_delegate\n");
+  		//printf("Roll_up_delegate\n");
 	}
 };
 
@@ -47,23 +47,24 @@ class Title_delegate : public Button_delegate {
   	}
 
   	void click_reaction() override {
-  		printf("Title_delegate\n");
+  		//printf("Title_delegate\n");
 	}
 };
 
-class Field_delegate : public Button_delegate {
+class Open_panel_delegate : public Button_delegate {
   public:
 
   	//Object_manager* object_manager;
 
-  	Field_delegate(/*Object_manager* par_object_manager*/) {
+  	Open_panel_delegate(/*Object_manager* par_object_manager*/) {
   		/*object_manager = par_object_manager;*/
   	}
 
   	void click_reaction() override {
-  		printf("Field_delegate\n");
+  		//printf("Title_delegate\n");
 	}
 };
+
 
 class Change_colour_delegate : public Button_delegate {
   public:
@@ -77,13 +78,13 @@ class Change_colour_delegate : public Button_delegate {
   	}
 
   	void click_reaction() override {
-  		printf("Change_colour_delegate\n");
+  		//printf("Change_colour_delegate\n");
 
-  		pencil->get_color().print();
-  		printf(" - > ");
+  		//pencil->get_color().print();
+  		//printf(" - > ");
   		pencil->set_color(yourself_color); 
-  		pencil->get_color().print();
-  		printf("\n");
+  		//pencil->get_color().print();
+  		//printf("\n");
 	}
 };
 

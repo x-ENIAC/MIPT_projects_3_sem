@@ -86,10 +86,9 @@ class Canvas_manager : public View_object {
 
 
     virtual bool check_click(const double mouse_x, const double mouse_y) {
-        if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {         
+        if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
             for(int i = count_of_views - 1; i >= 0; --i) {
                 if(view_objects[i]->check_click(mouse_x, mouse_y)) {
-
   					
                     return true;
                 }

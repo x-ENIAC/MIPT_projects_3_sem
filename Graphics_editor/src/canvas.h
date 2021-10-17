@@ -10,8 +10,8 @@
 #define CANVAS_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-const double WIDTH_CLOSE_BUTTON  = 20;
-const double HEIGHT_CLOSE_BUTTON = 20;
+extern const double WIDTH_CLOSE_BUTTON  = 20;
+extern const double HEIGHT_CLOSE_BUTTON = 20;
 
 class Canvas : public View_object {
   public:
@@ -40,15 +40,15 @@ class Canvas : public View_object {
         pencil = par_pencil;
     }
 
-    bool check_click(const double mouse_x, const double mouse_y) { 
+    bool check_click(const double mouse_x, const double mouse_y) {
         if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
             Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
             cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)] = pencil->get_color();
-            return true;            
+            return true;
         }
 
         return false;
-    }   
+    }
 
     virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
         rect->draw(*render);
@@ -58,12 +58,13 @@ class Canvas : public View_object {
         for(size_t i = 0; i <= rect->width; ++i)
             for(size_t j = 0; j <= rect->height; ++j) {
                 Point new_point(i + left_up_corner.x, j + left_up_corner.y, cells_color[i][j]);
-                //printf("%d, %d, ", (int)new_point.x, (int)new_point.y);
-                //new_point.color.print();
-                //printf("\n");
-                new_point.draw_point(*render);
-            }
 
+                if(cells_color[i][j] != color) {
+                    Rectangle new_rect(new_point, pencil->get_thickness() / 2.0, pencil->get_thickness() / 2.0, cells_color[i][j], false);
+                    new_rect.draw(*render);
+                } else
+                    new_point.draw_point(*render);
+            }
     }
 
     /*inline Button_owner get_owner() const {

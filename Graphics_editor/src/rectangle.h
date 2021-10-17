@@ -82,7 +82,11 @@ class Rectangle {
 
         return (x_left_up <= x_point && x_point <= x_right_down) &&
                (y_left_up <= y_point && y_point <= y_right_down);
-    }   
+    }
+
+    Point get_left_up_corner() const {
+        return Point(center.x - width / 2, center.y - height / 2);
+    }
 
     inline Point get_center() const {
         return center;

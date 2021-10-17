@@ -20,6 +20,10 @@ class Pencil {
 		thickness = par_thickness;
 	}
 
+	size_t get_thickness() const {
+		return thickness;
+	}
+
 	Colour get_color() const {
 		return color;
 	}

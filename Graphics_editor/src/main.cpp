@@ -46,7 +46,7 @@ SDL_STATUSES initialize(SDL_Window** window, SDL_Renderer** render, SDL_Texture*
 
   	if(!(*window))
     	return WINDOW_NOT_CREATE;
-	char* name_font = "00057_1000HURT.ttf";
+	char* name_font = "courier.ttf";
 
     TTF_Init();
     
@@ -75,6 +75,10 @@ void test_point(SDL_Renderer* render, Point* point) {
 		}
 }
 
+void add_colour_buttons(View_manager* view_manager) {
+
+}
+
 int main() {
 
 	srand(time(NULL));
@@ -99,13 +103,7 @@ int main() {
   	Canvas_manager c2(Point(700, 550), 100, 100, WHITE, &(view_manager.pencil), false);
   	view_manager.add_view_object(&c2);
 
-    Change_colour_delegate* change_colour_delegate = new Change_colour_delegate(&(view_manager.pencil), YELLOW);
 
-    Button set_black(change_colour_delegate, Point(600, 600), YELLOW, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON);
-    view_manager.add_view_object(&set_black);
-
-  	//Point p1(450, 200);
-  	//Point p2(700, 550);
 
 	SDL_Event event = {};
 	bool is_run = true;

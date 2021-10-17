@@ -2,11 +2,16 @@
 #include "button.h"
 #include "canvas_manager.h"
 #include "pencil.h"
+#include "palette.h"
 
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS = 10000;
+extern const size_t MAX_COUNT_OF_VIEW_OBJECTS = 100;
+extern const double WIDTH_CLOSE_BUTTON;
+extern const double HEIGHT_CLOSE_BUTTON;
+
+const double WIDTH_FILE_PANEL_BUTTON = 60;
 
 enum Mouse_click_state {
 	MOUSE_UP   = 1,
@@ -33,21 +38,22 @@ class View_manager : public View_object {
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
   	 		view_objects[i] = new View_object;
 
-  	 	/*Close_delegate*  close_delegate = new Close_delegate;
+  	 	Open_panel_delegate* open_panel_delegate = new Open_panel_delegate;
 
-        Point center_button = Point(par_width - WIDTH_CLOSE_BUTTON / 2.0 + par_point.x - par_width / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0 + par_point.y - par_height / 2.0);
+        Point center_button = Point(par_point.x - par_width / 2.0 + WIDTH_FILE_PANEL_BUTTON / 2.0, par_point.y - par_height / 2.0 + HEIGHT_CLOSE_BUTTON / 2.0);
 
-        Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", WHITE);
-        view_objects[count_of_view_objects++] = close_button;*/
+        Button* file_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON, "File", WHITE);
+        view_objects[count_of_view_objects++] = file_panel_button;
 
-  	 	//Canvas_manager* canvas_manager = new Canvas_manager(/*NULL,*/ par_point, par_width, par_height, par_color, par_is_active);
-  	 	//add_view_object(canvas_manager);
 
   	 	who_is_active = -1;
 
   	 	pencil = {};
 
   	 	mouse_click_state = MOUSE_UP;
+
+  	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 2, &pencil);
+  	 	add_view_object(palette);
   	}
 
   	~View_manager() {
@@ -101,21 +107,6 @@ class View_manager : public View_object {
 		}
   	}
 
-  	/*bool check_click(const double mouse_x, const double mouse_y) {
-  		for(int i = count_of_view_objects - 1; i >= 0; --i) {
-  			if(view_objects[i]->check_click(mouse_x, mouse_y)) {
-  				set_new_active_object(i);
-
-  				//Point new_point(mouse_x, mouse_y, pencil.get_color());
-  				//new_point.draw_point(render);
-
-  				return true;
-  			}
-  		}
-
-  		return false;
-  	}*/
-
   	bool check_click(const double mouse_x, const double mouse_y) {
   		for(int i = count_of_view_objects - 1; i >= 0; --i) {
   			if(view_objects[i]->check_click(mouse_x, mouse_y)) {
@@ -135,15 +126,25 @@ class View_manager : public View_object {
         switch (event->key.keysym.sym) {                    
             case SDLK_b:					// black
             	pencil.set_color(BLACK);
+            	printf("black\n");
                 return true;
 
             case SDLK_r:					// RED
             	pencil.set_color(RED);
+            	printf("red\n");
                 return true;
 
             case SDLK_g:					// GREEN
             	pencil.set_color(GREEN);
                 return true;
+
+            case SDLK_y:					// YELLOW
+            	pencil.set_color(YELLOW);
+                return true;
+
+            case SDLK_l:					// BLUE (l)
+            	pencil.set_color(BLUE);
+                return true;                
         } 			
 
         return false;	  		
@@ -151,7 +152,7 @@ class View_manager : public View_object {
 
   	void set_new_active_object(const int new_active) {
   		who_is_active = new_active;
-  		printf("new active %d\n", who_is_active);
+  		//printf("new active %d\n", who_is_active);
   	}
 };
 

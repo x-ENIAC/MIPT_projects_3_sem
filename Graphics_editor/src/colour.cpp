@@ -4,6 +4,10 @@ bool Colour::operator<=(const Colour& color) const {
 	return (red <= color.red && blue <= color.blue && green <= color.green && alpha <= color.alpha);
 }
 
+bool Colour::operator!=(const Colour& color) const {
+	return !(red == color.red && blue == color.blue && green == color.green && alpha == color.alpha);
+}
+
 Colour& Colour::operator*=(const Colour& color) {
 	red   *= color.red;
 	green *= color.green;
