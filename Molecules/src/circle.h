@@ -61,6 +61,12 @@ class Circle : public Object {
             set_y_speed( fabs(get_y_speed()) );
     }     
 
+    virtual bool is_point_belongs_to_object(Point point) {
+        return ( (get_x_center() - point.x) * (get_x_center() - point.x) +
+                 (get_y_center() - point.y) * (get_y_center() - point.y) <=
+                  radius * radius );
+    }    
+
     virtual void make_inactive() {
         set_is_active( false );
         set_colour ( WHITE );

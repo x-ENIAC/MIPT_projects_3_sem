@@ -5,13 +5,20 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "view_manager.h"
+
 #include "object_manager.h"
 #include "circle.h"
 #include "rectangle.h"
 
-#include "button_manager.h"
-#include "adding_object_button.h"
-#include "button_with_text.h"
+#include "button.h"
+//#include "button_manager.h"
+//#include "adding_object_button.h"
+//#include "button_with_text.h"
+
+#include "objects_delegates.h"
+#include "button_delegate.h"
+#include "scale_delegates.h"
 
 #include "text.h"
 #include "chart.h"
@@ -119,63 +126,71 @@ int main() {
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderClear(render);
 
+    View_manager view_manager = {};
 
 	Object_manager object_manager = {};
-	Button_manager button_manager = {};
+	//view_manager.add_view_object(&object_manager);
+	
 
 	//Circle m2( Point(70, 370), 20, 1, 7, -5, Colour(0, rand() % 255, rand() % 255, 255), CIRCLE, true );
-	Circle m2( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20, 1, rand() % 10, rand() % 10, 
-																	 Colour(0, rand() % 255, rand() % 255, 255), true, OBJECT_OWNER_USER );	
+	Circle m2( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20 + 10, 1, rand() % 10, rand() % 10,
+																	 Colour(0, rand() % 255, rand() % 255, 255), true, OBJECT_OWNER_USER );
 	object_manager.add_object(&m2);
 
 	//Circle m3( Point(570, 70), 20, 1, -10, 5, Colour(0, 255, 0, 255), CIRCLE, true );
-	Circle m3( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20, 1, rand() % 10, rand() % 10, 
+	Circle m3( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), rand() % 20 + 10, 1, rand() % 10, rand() % 10,
 																	 Colour(0, rand() % 255, rand() % 255, 255), true, OBJECT_OWNER_USER );
 	object_manager.add_object(&m3);
 
 	//Rectangle r1( Point(170, 170), 1, 0, 0, Colour(0, 0, 255, 255), 30.0, 30.0, RECTANGLE, true );
 	Rectangle r1( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), 1, rand() % 30,      rand() % 30,
-																			     Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
-																		 rand() % 20 + 10, rand() % 20 + 10, RECTANGLE, true );	
+																			     Colour(rand() % 255, rand() % 255, rand() % 255, 255),
+																		 rand() % 20 + 20, rand() % 20 + 20, RECTANGLE, true );
 	object_manager.add_object(&r1);
 
 	//Rectangle r2( Point(300, 500), 4, 5*3, -5*3, Colour(0, 255, 0, 255), 30.0, 30.0, RECTANGLE, true );
 	Rectangle r2( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), 4, rand() % 30,      rand() % 30,
-																	     Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
-																		 rand() % 20 + 10, rand() % 20 + 10, RECTANGLE, true );	
+																	     Colour(rand() % 255, rand() % 255, rand() % 255, 255),
+																		 rand() % 20 + 20, rand() % 20 + 20, RECTANGLE, true );
 	object_manager.add_object(&r2);
 
 	//Rectangle r3( Point(500, 300), 4, -4*3, 4*3, Colour(121, 255, 0, 255), 30.0, 30.0, RECTANGLE, true );
 	Rectangle r3( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), 8, rand() % 30,      rand() % 30,
-																	     Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
-																		 rand() % 20 + 10, rand() % 20 + 10, RECTANGLE, true );	
+																	     Colour(rand() % 255, rand() % 255, rand() % 255, 255),
+																		 rand() % 20 + 10, rand() % 20 + 10, RECTANGLE, true );
 	object_manager.add_object(&r3);
 
 	//Rectangle r4( Point(600, 300), 1, -3*3, 8*3, Colour(90, 123, 12, 255), 30.0, 30.0, RECTANGLE, true );
-	Rectangle r4( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), 5, rand() % 30,      rand() % 30, 
-																		 Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
-																		 rand() % 20 + 10, rand() % 20 + 10, RECTANGLE, true );	
-	object_manager.add_object(&r4);	
+	Rectangle r4( Point(rand() % FIELD_WIDTH, rand() % FIELD_HEIGHT), 5, rand() % 30,      rand() % 30,
+																		 Colour(rand() % 255, rand() % 255, rand() % 255, 255),
+																		 rand() % 20 + 20, rand() % 20 + 20, RECTANGLE, true );
+	object_manager.add_object(&r4);
 
+ 	Add_circle_delegate*  circle_delegate = new Add_circle_delegate(&object_manager);
+ 	Add_rectangle_delegate* rect_delegate = new Add_rectangle_delegate(&object_manager);
+ 	//Scale_x_delegate* scale_x_delegate = new Scale_x_delegate(&view_manager);
+ 	Scale_y_delegate* scale_y_delegate = new Scale_y_delegate(&view_manager);
 
-    //Rectangle_button rect_b1  ( Point(820,  50), Colour(200, 192, 54, 255), 180, 80);
-    Adding_object_button    circle_b1( Point(820, 50), Colour(172,  32,  5, 255), 180, 80, CIRCLE);
-    Adding_object_button      rect_b1( Point(820, 150), Colour(172,  32,  5, 255), 180, 80, RECTANGLE);
-    //Text_button        text_b1( &rect_b1, "text" );
+    Button  circle_b1( circle_delegate, Point(820,  50), Colour(172,  32,  5, 255), 180, 80, BUTTON_OWNER_USER, "Add circle");
+    Button  rect_b1  ( rect_delegate,   Point(820, 150), Colour(172,  32,  5, 255), 180, 80, BUTTON_OWNER_USER, "Add rectangle");
+    //Button  scale_b1( scale_x_delegate, Point(820,  550), Colour(172,  32,  5, 255), 180, 80, BUTTON_OWNER_USER, "Scale x"); 
+    Button  scale_b2( scale_y_delegate, Point(820,  650), Colour(172,  32,  5, 255), 180, 80, BUTTON_OWNER_USER, "Scale y"); 
 
-
-    button_manager.add_button(&rect_b1);
-    button_manager.add_button(&circle_b1);
+	view_manager.add_view_object(&rect_b1);
+	view_manager.add_view_object(&circle_b1);
+	//view_manager.add_view_object(&scale_b1);
+	view_manager.add_view_object(&scale_b2);
 
     Amount_chart amount_chart_for_circle   ( Point(360, 645), Colour(200.0, 162.0, 200.0, 255.0), 720.0, 120.0);
     Amount_chart amount_chart_for_rectangle( Point(360, 645), Colour(200.0, 162.0, 200.0, 255.0), 720.0, 120.0);
+
+    view_manager.add_view_object(&amount_chart_for_circle);
+    view_manager.add_view_object(&amount_chart_for_rectangle);
 
     size_t count_circles = 0, count_rectangles = 0;
     amount_chart_for_circle.add_point( Point(0, count_circles) );
 
     double timer = 0;
-
-    Text text;
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -184,8 +199,10 @@ int main() {
 			if(event.type == SDL_QUIT)
 				is_run = false;			
 
-			else if(event.type == SDL_KEYDOWN || event.type == SDL_MOUSEBUTTONUP)
-				button_manager.check_events(&event, &object_manager);        
+			else if(event.type == SDL_MOUSEBUTTONUP) {
+				double x_mouse = event.button.x, y_mouse = event.button.y;
+				view_manager.check_click(x_mouse, y_mouse);
+			}
 		}
 
 		count_circles    = object_manager.get_count_of_objects(CIRCLE);
@@ -199,19 +216,14 @@ int main() {
     	amount_chart_for_circle.add_point   ( Point(timer, object_manager.get_count_of_objects(CIRCLE), Colour(255.0, 0.0, 0.0, 255.0)) );
     	amount_chart_for_rectangle.add_point( Point(timer, object_manager.get_count_of_objects(RECTANGLE), Colour(0.0, 255.0, 0.0, 255.0)) );
 
-    	amount_chart_for_circle.draw_chart   (render, true);
-    	amount_chart_for_rectangle.draw_chart(render, false);
-
    		draw_line(&render, Point(0, FIELD_WIDTH), FIELD_HEIGHT);
    		draw_line(&render, FIELD_WIDTH, Point(0, FIELD_HEIGHT));
 
 		for(size_t i = 0; i < object_manager.count_objects; ++i)
 			object_manager.objects[i]->draw_molecule(render);
 
-		for(size_t i = 0; i < button_manager.count_buttons; ++i)
-			button_manager.buttons[i]->draw_button(render);
+		view_manager.draw(&render, &texture);
 
-		text.draw_text(Point(820, 50), &render, &texture);
 		SDL_RenderPresent(render);
 
 		timer += DELTA;
@@ -220,7 +232,7 @@ int main() {
 			amount_chart_for_circle.update_point_array();
 			amount_chart_for_rectangle.update_point_array();
 		}
-	}	
+	}
 
 
 	SDL_RenderPresent(render);

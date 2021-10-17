@@ -88,7 +88,7 @@ class Point {
   		result -= second;
 
   		return result;
-  	}		
+  	}
 };
 
 

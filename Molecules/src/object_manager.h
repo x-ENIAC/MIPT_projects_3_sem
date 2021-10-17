@@ -1,3 +1,4 @@
+#include "view.h"
 #include "circle.h"
 #include "rectangle.h"
 #include "point.h"
@@ -14,19 +15,21 @@ extern Collision_response_table collision_responsed_table;
 const double DELTA_TIME = 0.05;
 const size_t MAX_COUNT_OF_OBJECTS = 5000;
 
-class Object_manager {
+class Object_manager : public View_object {
   public:
   	Object** objects;
   	size_t count_objects;
   	size_t count_non_active_objects;
 
   	Object_manager() {
+  	 	count_objects = 0;
+  	 	count_non_active_objects = 0;  	 	
+
+  	 	View_object();
+
   	 	objects = new Object*[MAX_COUNT_OF_OBJECTS];
   	 	for(size_t i = 0; i < MAX_COUNT_OF_OBJECTS; ++i)
   	 		objects[i] = new Object;
-
-  	 	count_objects = 0;
-  	 	count_non_active_objects = 0;
   	}
 
   	~Object_manager() {
@@ -42,6 +45,30 @@ class Object_manager {
   	 	count_objects = 0;
   	}
 
+/*  	virtual bool check_click(const double mouse_x, const double mouse_y) {
+  		for(size_t i = 0; i < count_objects; ++i) {
+  			if(objects[i]->is_point_belongs_to_object( Point(mouse_x, mouse_y) )) {
+  				delegate->click_reaction();
+  				return true;
+  			}
+  		}
+
+  		return false;
+  	}	  	
+*/
+  	/*bool check_click(const double mouse_x, const double mouse_y) {
+  		for(size_t i = 0; i < count_objects; ++i) {
+  			if(objects[i]->is_point_belongs_to_rectangle( Point(x_mouse, y_mouse) )) {
+	  			return true;
+	  		}
+  		}
+  	}*/
+
+	void draw(SDL_Renderer** render, SDL_Texture** texture) {
+		for(size_t i = 0; i < count_objects; ++i)
+			objects[i]->draw_molecule(*render);
+	}  	
+
   	void update_circle() {
   	 	for(int i = 0; i < count_objects; ++i)
   	 		objects[i]->move_circle(DELTA_TIME);
@@ -50,9 +77,7 @@ class Object_manager {
   	void collision_detection(const int screen_width, const int screen_height) {
   		int now_count_object = count_objects;
 
-  		//printf("count %d\n", now_count_object);
 	  	for(size_t first = 0; first < now_count_object; ++first) {
-	  		//printf("\ttype %d, #%d\n", objects[first]->get_type(), first);
 	  		if(objects[first]->get_type() != WALL && objects[first]->get_is_active())
 	  			objects[first]->collision_with_a_wall(screen_width, screen_height);
 	  	}
@@ -186,22 +211,15 @@ class Object_manager {
 
 	  	 	Vector vector_to_new_circle(collision_point, Point(collision_point.x + 20.0, collision_point.y));
 	  	 	double length_vector_to_new_circle = vector_to_new_circle.get_length_vector();
-	  	 	//vector_to_new_circle.rotate_clockwize_vector(delta_angle);
 
 	  	 	for(int i = 0; i < small_masses; ++i) {
 	  	 		Circle* new_circle = new Circle;
-
-	  	 		/*printf("angle %lg, speed_x %lg, speed_y %lg; (%lg, %lg) -> (%lg, %lg), length %lg\n", 
-	  	 				angle, 2.0 * cos(angle * M_PI / 180.0), 2.0 * sin(angle * M_PI / 180.0), collision_point.x, collision_point.y,
-	  	 				vector_to_new_circle.get_x_end(), vector_to_new_circle.get_y_end(), vector_to_new_circle.get_length_vector());*/
 
 	  	 		set_values_to_circle_after_rectangles_collide(new_circle, vector_to_new_circle.get_point_end(), 4.0, 1.0, 
 	  	 																	5 * cos(angle * M_PI / 180.0), 5 * sin(angle * M_PI / 180.0), 
 	  	 															  		Colour(rand() % 255, rand() % 255, rand() % 255, 255), 
 	  	 															  		CIRCLE, true, OBJECT_OWNER_OBJECT_CLASS);
 
-	  	 		//if(i < small_masses)
-	  	 		//	new_circle->move_circle(1000.0 * DELTA_TIME);
 	  	 		add_object(new_circle);
 
 	  	 		vector_to_new_circle.rotate_clockwize_vector(delta_angle);

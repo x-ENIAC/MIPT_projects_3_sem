@@ -63,6 +63,11 @@ class Rectangle : public Object {
   		}
   	}   
 
+    virtual bool is_point_belongs_to_object(Point point) {
+        return ((get_x_center() - width  / 2.0 <= point.x && point.x <= get_x_center() + width  / 2.0) &&
+                (get_y_center() - height / 2.0 <= point.y && point.y <= get_y_center() + height / 2.0));
+    }
+
     virtual void make_inactive() {
         set_is_active( false );
         set_colour ( WHITE );

@@ -1,5 +1,6 @@
 #include "colour.h"
 #include "point.h"
+#include "view.h"
 
 #ifndef OBJECT_H
 #define OBJECT_H
@@ -19,7 +20,7 @@ enum Object_owner {
     OBJECT_OWNER_OTHER_CLASS = 2,
 };
 
-class Object {
+class Object : public View_object {
   public:
     Object():
         center ( Point(0., 0., BLACK) ),
@@ -30,8 +31,9 @@ class Object {
         type ( WALL ),
         is_active ( false ),
         owner ( OBJECT_OWNER_OBJECT_CLASS )
-
-    {}
+    {
+        view = NULL;
+    }
 
   	Object(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
                                                         const Type_object par_type, const bool par_is_active):
@@ -42,7 +44,8 @@ class Object {
   		color    (par_color),
         type     (par_type),
         is_active(par_is_active),
-        owner    (OBJECT_OWNER_USER)
+        owner    (OBJECT_OWNER_USER),
+        view     ( NULL )
   	{}
 
     Object(const Point par_point, const double par_mass, const double par_x_speed, const double par_y_speed, const Colour par_color, 
@@ -54,7 +57,8 @@ class Object {
         color    (par_color),
         type     (par_type),
         is_active(par_is_active),
-        owner    (par_owner)
+        owner    (par_owner),
+        view     (NULL)
     {}    
 
     Object& operator=(const Object& new_object) {
@@ -82,6 +86,8 @@ class Object {
     virtual void collision_with_a_wall(const int screen_width, const int screen_height) {printf("!!!\n");};  
 
     virtual void make_inactive() {};      
+
+    virtual bool is_point_belongs_to_object(Point point) {printf("@@@@@@@@@@@@@@\n");};
 
     void move_circle(const double time) {
         set_x_center( get_x_center() + get_x_speed() * time);
@@ -186,6 +192,8 @@ class Object {
     Type_object type;
     bool is_active;
     Object_owner owner;
+
+    View_object** view;
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "view.h"
 #include "point.h"
 #include "colour.h"
 #include "button.h"
@@ -8,22 +9,25 @@
 
 const size_t MAX_COUNT_OF_BUTTONS = 10;
 
-class Button_manager {
+class Button_manager: public View_object {
   public:
 
   	Button** buttons;
   	size_t count_buttons;
 
   	Button_manager() {
+        count_buttons = 0;
+        printf("Construct Button_manager, %ld\n", count_buttons);
+        View_object();
+
   	 	buttons = new Button*[MAX_COUNT_OF_BUTTONS];
   	 	for(size_t i = 0; i < MAX_COUNT_OF_BUTTONS; ++i)
   	 		buttons[i] = new Button;
 
-  	 	count_buttons = 0;
   	}
 
   	~Button_manager() {
-  		printf("Destruct, %ld\n", count_buttons);
+  		printf("Destruct Button_manager, %ld\n", count_buttons);
   		/*for(size_t i = 0; i < MAX_COUNT_OF_BUTTONS; ++i) {
   			if(buttons[i]->get_owner() == BUTTON_OWNER_BUTTON_CLASS)
   				delete[] buttons[i];
@@ -54,9 +58,9 @@ class Button_manager {
 
         switch (event->key.keysym.sym) {
             case SDLK_LEFT:       
-                printf("!\n");
+                //printf("!\n");
                 buttons[0]->add_new_object(object_manager);
-                printf("?\n");
+                //printf("?\n");
                 break;
                     
             case SDLK_RIGHT:
