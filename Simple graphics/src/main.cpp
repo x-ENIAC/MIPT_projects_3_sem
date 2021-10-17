@@ -91,7 +91,7 @@ int main() {
 	vector += vector2;
 	vector.draw_vector(render, BLUE, BLUE, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);*/
 
-	vector_.get_perpendicular();
+	//vector_.get_perpendicular();
 
 	vector_.draw_vector(render, BLUE, BLUE, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 	SDL_RenderPresent(render);
@@ -123,7 +123,8 @@ int main() {
 	    vector2.draw_vector(render, GREEN, GREEN, ANGLE_OF_ARROW_WINGS, -ANGLE_OF_ARROW_WINGS);
 	}
 
-    SDL_RenderPresent(render);  
+    SDL_RenderPresent(render); 
+    //SDL_Delay(5000); 
 
     quit(window, render);
 
