@@ -8,6 +8,7 @@
 #define VIEW_MANAGER_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS = 100;
+extern const double DELTA_BETWEEN_BUTTONS;
 extern const double WIDTH_CLOSE_BUTTON;
 extern const double HEIGHT_CLOSE_BUTTON;
 
@@ -38,13 +39,13 @@ class View_manager : public View_object {
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
   	 		view_objects[i] = new View_object;
 
-  	 	Open_panel_delegate* open_panel_delegate = new Open_panel_delegate;
+        Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
+        center_of_button_manager += left_up_corner;
 
-        Point center_button = Point(par_point.x - par_width / 2.0 + WIDTH_FILE_PANEL_BUTTON / 2.0, par_point.y - par_height / 2.0 + HEIGHT_CLOSE_BUTTON / 2.0);
+        Button_manager* button_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
+        add_view_object(button_manager);
 
-        Button* file_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON, "File", WHITE);
-        view_objects[count_of_view_objects++] = file_panel_button;
-
+        fill_button_manager(button_manager, left_up_corner, par_width, par_height);
 
   	 	who_is_active = -1;
 
@@ -55,6 +56,24 @@ class View_manager : public View_object {
   	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 2, &pencil);
   	 	add_view_object(palette);
   	}
+
+    void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height) {
+        Point center_button(WIDTH_FILE_PANEL_BUTTON / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
+        center_button += left_up_corner;
+
+  	 	Open_panel_delegate* open_panel_delegate = new Open_panel_delegate;
+
+        Button* file_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON, "File", BLACK);
+        button_manager->add_view_object(file_panel_button);
+
+        center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
+        Button* edit_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON, "Edit", BLACK);
+        button_manager->add_view_object(edit_panel_button);
+
+        center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
+        Button* help_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON, "Help", BLACK);
+        button_manager->add_view_object(help_panel_button);
+    }
 
   	~View_manager() {
   		printf("Destruct View_manager, %ld\n", count_of_view_objects);
@@ -67,7 +86,6 @@ class View_manager : public View_object {
 		//printf("new object!\n");
   	 	view_objects[count_of_view_objects] = new_view;
   	 	++count_of_view_objects;
-  	 	printf("%ld\n", count_of_view_objects);
   	}  	
 
   	void draw(SDL_Renderer** render, SDL_Texture** texture) {
@@ -126,12 +144,10 @@ class View_manager : public View_object {
         switch (event->key.keysym.sym) {                    
             case SDLK_b:					// black
             	pencil.set_color(BLACK);
-            	printf("black\n");
                 return true;
 
             case SDLK_r:					// RED
             	pencil.set_color(RED);
-            	printf("red\n");
                 return true;
 
             case SDLK_g:					// GREEN

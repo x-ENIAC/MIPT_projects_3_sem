@@ -19,7 +19,7 @@ class Close_delegate : public Button_delegate {
 										Colour(rand() % 256, rand() % 256, rand() % 256, 255), true, OBJECT_OWNER_OBJECT_CLASS);			
 		
 		object_manager->add_object(new_circle);*/
-		//printf("Close_delegate\n");
+		printf("Close_delegate\n");
 	}
 };
 
@@ -47,7 +47,7 @@ class Title_delegate : public Button_delegate {
   	}
 
   	void click_reaction() override {
-  		//printf("Title_delegate\n");
+  		printf("Title_delegate\n");
 	}
 };
 
@@ -61,7 +61,7 @@ class Open_panel_delegate : public Button_delegate {
   	}
 
   	void click_reaction() override {
-  		//printf("Title_delegate\n");
+  		printf("Open_panel_delegate\n");
 	}
 };
 

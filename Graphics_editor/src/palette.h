@@ -6,7 +6,7 @@
 #define PALETTE_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-const double DELTA_BETWEEN_BUTTONS = 5;
+extern const double DELTA_BETWEEN_BUTTONS = 5;
 extern const double WIDTH_CLOSE_BUTTON;
 extern const double HEIGHT_CLOSE_BUTTON;
 

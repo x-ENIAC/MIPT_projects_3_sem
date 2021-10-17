@@ -6,6 +6,7 @@
 #include "button_delegates.h"
 #include "canvas.h"
 #include "pencil.h"
+#include "button_manager.h"
 
 #ifndef CANVAS_MANAGER_H
 #define CANVAS_MANAGER_H
@@ -46,14 +47,28 @@ class Canvas_manager : public View_object {
         Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, par_color, par_pencil);
         view_objects[count_of_views++] = canvas;
 
+
+        Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
+        center_of_button_manager += left_up_corner;
+
+        Button_manager* button_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
+        add_view_object(button_manager);
+
+        fill_button_manager(button_manager, left_up_corner, par_width, par_height);
+
+		who_is_active = -1;
+    }
+
+    void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height) {
+
         //--------------- add close button ---------------------------
         Close_delegate*  close_delegate = new Close_delegate;
 
-        center_button = Point(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
+        Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
         center_button += left_up_corner;
 
         Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", WHITE);
-        view_objects[count_of_views++] = close_button; 
+        button_manager->add_view_object(close_button);
 
         //--------------- add title button ---------------------------
         Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate;
@@ -63,7 +78,7 @@ class Canvas_manager : public View_object {
 
 
         Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "-", WHITE);
-        view_objects[count_of_views++] = roll_up_button;
+        button_manager->add_view_object(roll_up_button);
 
         //--------------- add roll up button ---------------------------
         Title_delegate*  title_delegate = new Title_delegate;
@@ -73,15 +88,12 @@ class Canvas_manager : public View_object {
 
 
         Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "Title");
-        view_objects[count_of_views++] = title_button;
-
-		who_is_active = -1;        
+        button_manager->add_view_object(title_button);
     }
 
 	void add_view_object(View_object* new_view) {
   	 	view_objects[count_of_views] = new_view;
   	 	++count_of_views;
-  	 	printf("%ld\n", count_of_views);
   	}  	
 
 

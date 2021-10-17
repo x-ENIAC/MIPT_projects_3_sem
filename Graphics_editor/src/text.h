@@ -30,8 +30,6 @@ class Text : public View_object {
 
 	Text(const Point par_point, char* par_text, const double par_width, const double par_height, const Colour par_color) : 
 	  View_object(par_point, par_width, par_height, par_color, TEXT_VIEW_TYPE) {
-		//printf("\t\t\t%lg, %lg\n", par_point.x, par_point.y);
-		//printf("\t\t\t%lg, %lg\n", center.x, center.y);
 
 		font_size = 20;
 		font_name = "courier.ttf";

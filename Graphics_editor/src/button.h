@@ -34,7 +34,6 @@ class Button : public View_object {
 	size_t count_of_views;
 
 	Button() : View_object() {
-		//printf("center %lg, %lg\n", center.x, center.y);
 
   	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
 
