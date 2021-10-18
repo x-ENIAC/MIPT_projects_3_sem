@@ -7,6 +7,7 @@
 #include "canvas.h"
 #include "pencil.h"
 #include "button_manager.h"
+//#include "widget_types.h"
 
 #ifndef CANVAS_MANAGER_H
 #define CANVAS_MANAGER_H
@@ -14,6 +15,8 @@
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
 //const double WIDTH_CLOSE_BUTTON  = 20;
 //const double HEIGHT_CLOSE_BUTTON = 20;
+extern const double WIDTH_TABS_BUTTON;
+extern const double HEIGHT_TABS_BUTTON;
 
 class Canvas_manager : public View_object {
   public:
@@ -21,13 +24,12 @@ class Canvas_manager : public View_object {
     View_object** view_objects;
     size_t count_of_views;
 
-	//Rectangle* area;
 	//Pencil* pencil;
-	int who_is_active;    
+	int who_is_active;
 
     Canvas_manager(const Point par_point, const double par_width, const double par_height, 
     									  const Colour par_color, Pencil* par_pencil, const bool par_is_active) :
-      View_object (par_point, par_width, par_height, par_color) {
+      View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER) {
 
       	//pencil = par_pencil;
 
@@ -57,6 +59,8 @@ class Canvas_manager : public View_object {
         fill_button_manager(button_manager, left_up_corner, par_width, par_height);
 
 		who_is_active = -1;
+
+        //tab = new Button_manager();
     }
 
     void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height) {
@@ -94,6 +98,8 @@ class Canvas_manager : public View_object {
 	void add_view_object(View_object* new_view) {
   	 	view_objects[count_of_views] = new_view;
   	 	++count_of_views;
+
+        ++widget_types[new_view->get_yourself_type()];
   	}  	
 
 

@@ -5,13 +5,16 @@
 #include "view.h"
 #include "pencil.h"
 #include "button_delegates.h"
+//#include "widget_types.h"
 
 #ifndef CANVAS_H
 #define CANVAS_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-extern const double WIDTH_CLOSE_BUTTON  = 20;
-extern const double HEIGHT_CLOSE_BUTTON = 20;
+const double WIDTH_CLOSE_BUTTON  = 20;
+const double HEIGHT_CLOSE_BUTTON = 20;
+const double WIDTH_TABS_BUTTON = 150;
+const double HEIGHT_TABS_BUTTON = 20;
 
 class Canvas : public View_object {
   public:
@@ -25,9 +28,8 @@ class Canvas : public View_object {
 
     Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color, Pencil* par_pencil
                                 /*const Button_owner par_owner, */) :
-        View_object(par_point, par_width, par_height, par_button_color)
+        View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS)
     {
-        //delegate = par_delegate;
         cells_color = (Colour**)calloc(par_width + 1, sizeof(Colour*));
 
         for(size_t i = 0; i <= par_width; ++i)

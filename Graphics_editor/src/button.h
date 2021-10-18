@@ -5,11 +5,13 @@
 #include "text.h"
 #include "button_delegate.h"
 #include "view.h"
+//#include "widget_types.h"
 
 #ifndef BUTTON_H
 #define BUTTON_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+
 
 enum Button_status {
 	IS_PUSH 	= 1,
@@ -26,32 +28,28 @@ class Button : public View_object {
   public:
 	Button_delegate* delegate;
 
-	//Rectangle* object_rect;
-	Button_status status;
+	//Button_status status;
 	//Button_owner owner;
 
 	View_object** view_objects;
 	size_t count_of_views;
 
-	Button() : View_object() {
+	Button() : View_object(Widget_types::BUTTON) {
 
   	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
 
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
   	 		view_objects[i] = new View_object;
   	 	count_of_views = 0;
-
-  	 	//object_rect = new Rectangle();
 	}	
 
 	Button(Button_delegate* par_delegate, const Point par_point, const Colour par_button_color, const double par_width, const double par_height, 
 								/*const Button_owner par_owner, */char* text_on_button = " ", const Colour par_text_color = BLACK) :
-	  View_object (par_point, par_width, par_height, par_button_color, BUTTON_VIEW_TYPE) {
+	  View_object (par_point, par_width, par_height, par_button_color, Widget_types::BUTTON) {
 
 	  	delegate = par_delegate;
-		//object_rect = new Rectangle(par_point, par_width, par_height, par_button_color, false);
 
-	  	status = IS_NOT_PUSH;
+	  	//status = IS_NOT_PUSH;
 
   	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)

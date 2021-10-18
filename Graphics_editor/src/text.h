@@ -2,6 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "view.h"
+//#include "widget_types.h"
 
 #ifndef TEXT_H
 #define TEXT_H
@@ -14,7 +15,7 @@ class Text : public View_object {
 	char* text;
 	Colour color;
 
-	Text() : View_object() {
+	Text() : View_object(Widget_types::TEXT) {
 
 		font_size = 20;
 		font_name = "courier.ttf";
@@ -25,11 +26,11 @@ class Text : public View_object {
 	    if(font == NULL) {
 	        printf("error: font not found, %s\n", TTF_GetError());
 	        exit(EXIT_FAILURE);
-	    }			
+	    }
 	}
 
 	Text(const Point par_point, char* par_text, const double par_width, const double par_height, const Colour par_color) : 
-	  View_object(par_point, par_width, par_height, par_color, TEXT_VIEW_TYPE) {
+	  View_object(par_point, par_width, par_height, par_color, Widget_types::TEXT) {
 
 		font_size = 20;
 		font_name = "courier.ttf";
@@ -46,7 +47,7 @@ class Text : public View_object {
 
 	Text(const Point par_point, char* par_font_name, const size_t par_font_size, char* par_text, 
 								const double par_width, const double par_height, const Colour par_color) : 
-	  View_object(par_point, par_width, par_height, par_color, TEXT_VIEW_TYPE) {
+	  View_object(par_point, par_width, par_height, par_color, Widget_types::TEXT) {
 
 		font_size = par_font_size;
 		font_name = par_font_name;

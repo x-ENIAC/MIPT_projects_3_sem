@@ -10,12 +10,10 @@
 #include "button.h"
 
 #include "button_delegate.h"
-
 #include "text.h"
 
 const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720; 
-
 const double DELTA = 0.5;
 
 enum SDL_STATUSES {
@@ -97,12 +95,12 @@ int main() {
 
     View_manager view_manager(Point(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0), SCREEN_WIDTH, SCREEN_HEIGHT, screen_color, false);
 
-  	Canvas_manager c1(Point(450, 200), 200, 300, WHITE, &(view_manager.pencil), false);
-  	view_manager.add_view_object(&c1);
+	view_manager.add_new_canvas_manager(Point(450, 350), 200, 300);
+  	view_manager.add_new_canvas_manager(Point(700, 550), 100, 100);
 
-  	Canvas_manager c2(Point(700, 550), 100, 100, WHITE, &(view_manager.pencil), false);
-  	view_manager.add_view_object(&c2);
-
+  	for(size_t i = 0; i < COUNT_OF_TYPES; ++i)
+  		printf("%d ", view_manager.widget_types[i]);
+  	printf("\n");
 
 
 	SDL_Event event = {};

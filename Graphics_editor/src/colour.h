@@ -50,6 +50,8 @@ const Colour YELLOW = Colour(255, 0, 255, 255);
 const Colour PURPLE = Colour(161, 161, 98, 256);
 const Colour LIGHT_GREEN = Colour(153, 153, 255, 256);
 const Colour PINK = Colour(255, 203, 192, 256);
+
+const Colour MIDDLE_GREY = Colour(230, 230, 230, 256);
 const Colour LIGHT_GREY = Colour(170, 170, 170, 256);
 const Colour DARK_GREY = Colour(128, 128, 128, 256);
 
