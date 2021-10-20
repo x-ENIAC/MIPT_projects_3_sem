@@ -58,16 +58,28 @@ class Palette : public View_object {
   	 	rect->width += WIDTH_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS;	    
 	}
 
-  	virtual bool check_click(const double mouse_x, const double mouse_y) {
-
-  		return button_manager->check_click(mouse_x, mouse_y);
+  	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+  		if(is_active)
+  			return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
+  		return false;
   	}  	
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
-		rect->draw(*render);
+		if(is_visible) {
+			rect->draw(*render);
 
-		button_manager->draw(render, texture);
+			button_manager->draw(render, texture);
+		}
 	}
+
+	bool delete_object() override {
+		//delete_object()
+		printf("Hello, world!\n");
+
+        button_manager->delete_object();
+
+        return false;		
+	}	
 
 };
 

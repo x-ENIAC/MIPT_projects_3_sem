@@ -42,31 +42,37 @@ class Canvas : public View_object {
         pencil = par_pencil;
     }
 
-    bool check_click(const double mouse_x, const double mouse_y) {
-        if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-            Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
-            cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)] = pencil->get_color();
-            return true;
-        }
+    bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+        //printf("click Canvas\n");
+        if(is_active)
+            if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+                //printf("Canvas!\n");
+                Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
+                cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)] = pencil->get_color();
+                //printf("true")
+                return true;
+            }
 
         return false;
     }
 
-    virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
-        rect->draw(*render);
+    void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+        if(is_visible) {
+            rect->draw(*render);
 
-        Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
+            Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
 
-        for(size_t i = 0; i <= rect->width; ++i)
-            for(size_t j = 0; j <= rect->height; ++j) {
-                Point new_point(i + left_up_corner.x, j + left_up_corner.y, cells_color[i][j]);
+            for(size_t i = 0; i <= rect->width; ++i)
+                for(size_t j = 0; j <= rect->height; ++j) {
+                    Point new_point(i + left_up_corner.x, j + left_up_corner.y, cells_color[i][j]);
 
-                if(cells_color[i][j] != color) {
-                    Rectangle new_rect(new_point, pencil->get_thickness() / 2.0, pencil->get_thickness() / 2.0, cells_color[i][j], false);
-                    new_rect.draw(*render);
-                } else
-                    new_point.draw_point(*render);
-            }
+                    if(cells_color[i][j] != color) {
+                        Rectangle new_rect(new_point, pencil->get_thickness() / 2.0, pencil->get_thickness() / 2.0, cells_color[i][j], false);
+                        new_rect.draw(*render);
+                    } else
+                        new_point.draw_point(*render);
+                }
+        }
     }
 
     /*inline Button_owner get_owner() const {

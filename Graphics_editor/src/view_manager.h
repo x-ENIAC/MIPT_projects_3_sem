@@ -19,11 +19,6 @@ extern const double HEIGHT_TABS_BUTTON;
 
 const double WIDTH_FILE_PANEL_BUTTON = 60;
 
-enum Mouse_click_state {
-	MOUSE_UP   = 1,
-	MOUSE_DOWN = 2
-};
-
 class View_manager : public View_object {
   public:
 	View_object** view_objects;
@@ -33,8 +28,8 @@ class View_manager : public View_object {
 	Pencil pencil;
 
 	Button_manager* tool_buttons_manager;
-	Tab** tabs;
-	size_t count_of_tabs;
+	//Tab** tabs;
+	//size_t count_of_tabs;
 	//Button_manager* canvases_manager;
 
 	Mouse_click_state mouse_click_state;
@@ -61,13 +56,13 @@ class View_manager : public View_object {
 
   	 	pencil = {};
 
-  	 	tabs = new Tab*[MAX_COUNT_OF_VIEW_OBJECTS];
+  	 	/*tabs = new Tab*[MAX_COUNT_OF_VIEW_OBJECTS];
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
-  	 		tabs[i] = new Tab;
+  	 		tabs[i] = new Tab;*/
 
-  	 	count_of_tabs = 0;
+  	 	//count_of_tabs = 0;
 
-  	 	mouse_click_state = MOUSE_UP;
+  	 	mouse_click_state = Mouse_click_state::MOUSE_UP;
 
   	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &pencil);
   	 	add_view_object(palette);
@@ -83,19 +78,17 @@ class View_manager : public View_object {
   	}
 
   	void add_new_canvas_manager(const Point center, const double width, const double height) {
-  		Canvas_manager* new_canvas_manager = new Canvas_manager(center, width, height, WHITE, &pencil, false);
-  		add_view_object(new_canvas_manager);
-  		add_new_tab();
-  	}
+        Point center_tab((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON) * widget_types[(int)Widget_types::TABS] + WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0,
+        				 HEIGHT_CLOSE_BUTTON + HEIGHT_TABS_BUTTON / 2.0);
 
-  	void add_new_tab() {
-        Point center_button(WIDTH_TABS_BUTTON * widget_types[(int)Widget_types::TABS] + WIDTH_TABS_BUTTON / 2.0, HEIGHT_CLOSE_BUTTON + HEIGHT_TABS_BUTTON / 2.0);
-        center_button += rect->get_left_up_corner();
+        center_tab += rect->get_left_up_corner();
 
- 		Tab* new_tab = new Tab(center_button, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON, YELLOW, widget_types[(int)Widget_types::TABS]);
+  		Canvas_manager* new_canvas_manager = new Canvas_manager(center, width, height, WHITE, &pencil, false, &mouse_click_state, 
+  																center_tab, widget_types[(int)Widget_types::TABS]);
 
-  		tabs[count_of_tabs++] = new_tab;
   		++widget_types[(int)Widget_types::TABS];
+
+  		add_view_object(new_canvas_manager);
   	}
 
 	void add_view_object(View_object* new_view) {
@@ -105,28 +98,47 @@ class View_manager : public View_object {
   	 	++widget_types[new_view->get_yourself_type()];
   	}  	
 
-  	void draw(SDL_Renderer** render, SDL_Texture** texture) {
-  		rect->draw(*render);
+  	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+  		if(is_visible) {
+	  		rect->draw(*render);
 
-  		for(size_t i = 0; i < count_of_view_objects; ++i) {
-  			view_objects[i]->draw(render, texture);
-  		}
-
-  		for(size_t i = 0; i < count_of_tabs; ++i) {
-  			tabs[i]->draw(render, texture);
-  		}  		
+	  		for(size_t i = 0; i < count_of_view_objects; ++i) {
+	  			view_objects[i]->draw(render, texture);
+	  		}
+	  	}
   	}
+
+	bool try_to_find_corpse() {
+	  	for(size_t i = 0; i < count_of_view_objects; ++i) {
+	  		if(view_objects[i]->is_visible && !view_objects[i]->is_active)
+	  			view_objects[i]->delete_object();
+	  	}		
+	}
+
+	bool delete_object() override {
+		//delete_object()
+		printf("Hello, world!\n");
+
+        for(size_t i = 1; i < count_of_view_objects; ++i) {
+        	printf("type %d\n", view_objects[i]->get_yourself_type());
+            view_objects[i]->delete_object();
+        }
+
+        return false;		
+	}
 
   	void check_events(SDL_Event* event) {
 		if(event->type == SDL_MOUSEBUTTONUP) {
-			mouse_click_state = MOUSE_UP;
+			mouse_click_state = Mouse_click_state::MOUSE_UP;
+			//printf("up\n");
 		}
 
 		if(event->type == SDL_MOUSEBUTTONDOWN) {
-			mouse_click_state = MOUSE_DOWN;
+			mouse_click_state = Mouse_click_state::MOUSE_DOWN;
 			double x_mouse = event->button.x, y_mouse = event->button.y;
+			//printf("down\n");
 
-			bool is_solved = check_click(x_mouse, y_mouse);
+			bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
 			if(!is_solved)
 				printf("!!!WARNING!!!\n");
 		}		
@@ -134,8 +146,12 @@ class View_manager : public View_object {
 		else if(event->type == SDL_MOUSEMOTION) {
 			double x_mouse = event->button.x, y_mouse = event->button.y;
 
-			if(mouse_click_state == MOUSE_DOWN) {
-				check_click(x_mouse, y_mouse);		
+			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN)
+				mouse_click_state = Mouse_click_state::MOUSE_DOWN_AND_MOTION;
+			//printf("motion\n");
+
+			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
+				check_click(x_mouse, y_mouse, &mouse_click_state);		
 			}
 		}
 
@@ -146,14 +162,21 @@ class View_manager : public View_object {
 		}
   	}
 
-  	bool check_click(const double mouse_x, const double mouse_y) {
-  		for(int i = count_of_view_objects - 1; i >= 0; --i) {
-  			if(view_objects[i]->check_click(mouse_x, mouse_y)) {
-  				set_new_active_object(i);
+  	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 
-  				return true;
-  			}
-  		}
+  		if(is_active) {
+
+  			//printf("click View_manager\n");
+	  		for(int i = count_of_view_objects - 1; i >= 0; --i) {
+	  			//printf("type %d\n", get_yourself_type());
+	  			if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
+	  				set_new_active_object(i);
+
+	  				return true;
+	  			}
+	  		}
+
+	  	}
 
   		return false;
   	}
@@ -189,7 +212,6 @@ class View_manager : public View_object {
 
   	void set_new_active_object(const int new_active) {
   		who_is_active = new_active;
-  		//printf("new active %d\n", who_is_active);
   	}
 };
 

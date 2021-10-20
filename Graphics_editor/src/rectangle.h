@@ -43,6 +43,8 @@ class Rectangle {
     }
 
     virtual bool is_point_belongs_to_object(Point point) {
+        printf("\t\t%d\n", ((get_x_center() - width  / 2.0 <= point.x && point.x <= get_x_center() + width  / 2.0) &&
+                (get_y_center() - height / 2.0 <= point.y && point.y <= get_y_center() + height / 2.0)));
         return ((get_x_center() - width  / 2.0 <= point.x && point.x <= get_x_center() + width  / 2.0) &&
                 (get_y_center() - height / 2.0 <= point.y && point.y <= get_y_center() + height / 2.0));
     }
@@ -79,6 +81,8 @@ class Rectangle {
         double y_right_down = get_y_center() + height / 2.0;
 
         double x_point = point.x, y_point = point.y;    
+
+        //printf("well, check. %lg <= %lg <= %lg, %lg <= %lg <= %lg\n", x_left_up, x_point, x_right_down, y_left_up, y_point, y_right_down);
 
         return (x_left_up <= x_point && x_point <= x_right_down) &&
                (y_left_up <= y_point && y_point <= y_right_down);

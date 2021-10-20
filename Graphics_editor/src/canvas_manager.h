@@ -7,6 +7,7 @@
 #include "canvas.h"
 #include "pencil.h"
 #include "button_manager.h"
+#include "tab.h"
 //#include "widget_types.h"
 
 #ifndef CANVAS_MANAGER_H
@@ -26,9 +27,11 @@ class Canvas_manager : public View_object {
 
 	//Pencil* pencil;
 	int who_is_active;
+    Tab* tab;
 
     Canvas_manager(const Point par_point, const double par_width, const double par_height, 
-    									  const Colour par_color, Pencil* par_pencil, const bool par_is_active) :
+    									  const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state,
+                                          const Point par_center_tab, const int number_of_tab) :
       View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER) {
 
       	//pencil = par_pencil;
@@ -56,17 +59,22 @@ class Canvas_manager : public View_object {
         Button_manager* button_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
         add_view_object(button_manager);
 
-        fill_button_manager(button_manager, left_up_corner, par_width, par_height);
+        fill_button_manager(button_manager, left_up_corner, par_width, par_height, par_mouse_click_state);
 
 		who_is_active = -1;
 
-        //tab = new Button_manager();
+        Point center_tab = par_center_tab;
+        center_tab -= Point(WIDTH_CLOSE_BUTTON / 2.0, 0);
+
+        tab = new Tab(center_tab, (WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON), HEIGHT_TABS_BUTTON, YELLOW, 
+                      number_of_tab, par_mouse_click_state, &is_visible, &is_active);
     }
 
-    void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height) {
+    void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height,
+                                                             Mouse_click_state* par_mouse_click_state) {
 
         //--------------- add close button ---------------------------
-        Close_delegate*  close_delegate = new Close_delegate;
+        Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, &is_visible, &is_active);
 
         Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
         center_button += left_up_corner;
@@ -75,7 +83,7 @@ class Canvas_manager : public View_object {
         button_manager->add_view_object(close_button);
 
         //--------------- add title button ---------------------------
-        Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate;
+        Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate(par_mouse_click_state, &is_visible, &is_active);
 
         center_button = Point(WIDTH_CLOSE_BUTTON / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
         center_button += left_up_corner;
@@ -100,15 +108,27 @@ class Canvas_manager : public View_object {
   	 	++count_of_views;
 
         ++widget_types[new_view->get_yourself_type()];
-  	}  	
+  	}
 
+    bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+        //printf("click Canvas_manager\n");    
 
-    virtual bool check_click(const double mouse_x, const double mouse_y) {
-        if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-            for(int i = count_of_views - 1; i >= 0; --i) {
-                if(view_objects[i]->check_click(mouse_x, mouse_y)) {
-  					
-                    return true;
+        if(tab->check_click(mouse_x, mouse_y, par_mouse_status))
+            return true;
+
+        if(is_active) {
+
+            if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+
+                for(int i = count_of_views - 1; i >= 0; --i) {
+
+                    /*printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg)\n", 
+                                    rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
+                                    view_objects[i]->center.x, view_objects[i]->center.y);*/
+
+                    if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -119,9 +139,25 @@ class Canvas_manager : public View_object {
     virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
         //rect->draw(*render);
 
-        for(size_t i = 0; i < count_of_views; ++i)
-            view_objects[i]->draw(render, texture);
+        if(is_visible) {
+            for(size_t i = 0; i < count_of_views; ++i)
+                view_objects[i]->draw(render, texture);
+        }
+        
+        tab->draw(render, texture);
+    }
 
+    bool delete_object() override {
+        if(is_visible && !is_active) {
+            tab->delete_object();
+
+            for(size_t i = 0; i < count_of_views; ++i)
+                view_objects[i]->delete_object();
+
+            return true;
+        }
+
+        return false;
     }
 
     /*inline Button_owner get_owner() const {

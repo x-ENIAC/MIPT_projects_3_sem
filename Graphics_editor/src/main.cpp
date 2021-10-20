@@ -102,7 +102,6 @@ int main() {
   		printf("%d ", view_manager.widget_types[i]);
   	printf("\n");
 
-
 	SDL_Event event = {};
 	bool is_run = true;
 	while(is_run) {

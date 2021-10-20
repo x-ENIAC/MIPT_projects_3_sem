@@ -13,32 +13,51 @@ const double DEFAULT_HEIGHT = 100;
 class Close_delegate : public Button_delegate {
   public:
 
-  	//View_object* view_object;
+  	Mouse_click_state* mouse_click_state;
+  	bool* is_visible;
+  	bool* is_active;
 
-  	Close_delegate(/*View_object* par_view_object*/) {
-  		//view_object = par_view_object;
+  	Close_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active) {
+  		//view_manager = par_view_manager;
+  		mouse_click_state = par_mouse_click_state;
+  		is_visible = par_is_visible;
+  		is_active  = par_is_active;
   	}
 
   	void click_reaction() override {
-		/*Circle* new_circle = new Circle(Point(rand() % 500, rand() % 500), rand() % 10 + 10.0, 1.0, rand() % 10 + 1, rand() % 10 * -1 + 1,
-										Colour(rand() % 256, rand() % 256, rand() % 256, 255), true, OBJECT_OWNER_OBJECT_CLASS);			
-		
-		object_manager->add_object(new_circle);*/
-		//printf("Close_delegate\n");
-	}
+  		printf("Close_delegate\n");
+
+  		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
+  			*is_visible = true;
+  			*is_active  = false;
+  		}
+  	}
 };
+
+//enum class Mouse_click_state;
 
 class Roll_up_delegate : public Button_delegate {
   public:
 
   	//View_manager* view_manager;
+  	Mouse_click_state* mouse_click_state;
+  	bool* is_visible;
+  	bool* is_active;
 
-  	Roll_up_delegate(/*View_manager* par_view_manager*/) {
+  	Roll_up_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active) {
   		//view_manager = par_view_manager;
+  		mouse_click_state = par_mouse_click_state;
+  		is_visible = par_is_visible;
+  		is_active  = par_is_active;
   	}
 
   	void click_reaction() override {
-  		//printf("Roll_up_delegate\n");
+  		printf("Roll_up_delegate\n");
+
+  		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
+  			*is_visible = false;
+  			*is_active  = false;
+  		}
 	}
 };
 
@@ -53,6 +72,32 @@ class Title_delegate : public Button_delegate {
 
   	void click_reaction() override {
   		//printf("Title_delegate\n");
+	}
+};
+
+class Tab_title_delegate : public Button_delegate {
+  public:
+
+  	Mouse_click_state* mouse_click_state;
+  	bool* is_visible;
+  	bool* is_active;
+
+  	Tab_title_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active) {
+
+  		mouse_click_state = par_mouse_click_state;
+  		is_visible = par_is_visible;
+  		is_active  = par_is_active;
+  	}
+
+  	void click_reaction() override {
+  		//printf("!!! %p\n", mouse_click_state);
+
+  		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
+  			*is_visible = true;
+  			*is_active  = true;
+  		}
+
+  		//printf("...\n");
 	}
 };
 
@@ -89,6 +134,7 @@ class Change_colour_delegate : public Button_delegate {
 
 #include "view_manager.h"
 class View_manager;
+//enum class Mouse_click_state;
 
 class Create_new_canvas_delegate : public Button_delegate {
   public:
@@ -101,9 +147,9 @@ class Create_new_canvas_delegate : public Button_delegate {
 
   	void click_reaction() override {
   		//printf("Create_new_canvas_delegate\n");
-  		printf("%d\n", view_manager->widget_types[(int)Widget_types::TABS]);
+  		//printf("%d\n", view_manager->widget_types[(int)Widget_types::TABS]);
   		//view_manager->add_new_canvas_manager(CENTER_OF_SPAWN_CANVASES, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-  		view_manager->add_new_canvas_manager(Point(rand() % 600 + 100, rand() % 500 + 250), rand() % 400, rand() % 300);
+  		view_manager->add_new_canvas_manager(Point(rand() % 600 + 100, rand() % 500 + 250), rand() % 200 + 300, rand() % 200 + 300);
 	}
 };
 

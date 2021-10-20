@@ -35,16 +35,20 @@ class Button_manager : public View_object {
   	 	buttons[count_of_buttons] = new_button;
   	 	++count_of_buttons;
 
+  	 	//printf("new_button->get_yourself_type()")
   	 	++widget_types[new_button->get_yourself_type()];
   	}
 
-  	virtual bool check_click(const double mouse_x, const double mouse_y) {
-  		for(size_t i = 0; i < count_of_buttons; ++i) {
-  			if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-  				buttons[i]->delegate->click_reaction();
-  				return true;
-  			}
-  		}
+  	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+            		
+  		if(is_active) {
+	  		for(size_t i = 0; i < count_of_buttons; ++i) {
+	  			if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+	  				buttons[i]->delegate->click_reaction();
+	  				return true;
+	  			}
+	  		}
+	  	}
 
   		return false;
   	}  	
@@ -54,6 +58,17 @@ class Button_manager : public View_object {
 
 		for(size_t i = 0; i < count_of_buttons; ++i)
 			buttons[i]->draw(render, texture);
+	}
+
+	bool delete_object() override {
+		for(size_t i = 0; i < count_of_buttons; ++i) {
+			buttons[i]->delete_object();
+			delete[] buttons[i];
+		}
+
+		delete[] buttons;
+		count_of_buttons = 0;
+
 	}
 };
 

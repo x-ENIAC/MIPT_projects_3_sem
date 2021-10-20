@@ -62,20 +62,36 @@ class Button : public View_object {
 	  	view_objects[count_of_views++] = text;
 	}
 
-  	virtual bool check_click(const double mouse_x, const double mouse_y) {
-  		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-  			delegate->click_reaction();
-  			return true;
-  		}
+  	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+  		if(is_active)
+  			if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+  				//printf("DELEGATEEE\n");
+  				delegate->click_reaction();
+  				return true;
+  			}
 
   		return false;
   	}
 
-	virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
-		rect->draw(*render);
+	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+		if(is_visible) {
+			rect->draw(*render);
 
-		for(size_t i = 0; i < count_of_views; ++i)
-			view_objects[i]->draw(render, texture);
+			for(size_t i = 0; i < count_of_views; ++i)
+				view_objects[i]->draw(render, texture);
+		}
+	}
+
+	bool delete_object() override {
+		for(size_t i = 0; i < count_of_views; ++i) {
+			view_objects[i]->delete_object();
+			delete[] view_objects[i];
+		}
+
+		delete[] view_objects;
+		count_of_views = 0;
+
+		//delete delegate;
 	}
 
 	/*inline Button_owner get_owner() const {

@@ -9,6 +9,13 @@
 #ifndef VIEW_H
 #define VIEW_H
 
+enum class Mouse_click_state {
+	MOUSE_MOTION   		  = 1,
+	MOUSE_DOWN 			  = 2,
+	MOUSE_DOWN_AND_MOTION = 3,
+	MOUSE_UP 			  = 4,
+};
+
 const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
 
 class View_object {
@@ -19,6 +26,9 @@ class View_object {
 	Rectangle* rect;
 	int* widget_types;
 	Widget_types yourself_type;
+
+	bool is_visible;
+	bool is_active;
 
 	View_object(const Widget_types par_widget_types = Widget_types::VIEW_OBJECT) {
 		center = Point(0, 0);
@@ -32,6 +42,8 @@ class View_object {
 			widget_types[i] = 0;
 
 		yourself_type = par_widget_types;
+
+		is_visible = is_active = true;
 	}
 
 	View_object(const Point par_center, const double par_width, const double par_height,
@@ -48,19 +60,32 @@ class View_object {
 			widget_types[i] = 0;
 
 		yourself_type = par_widget_types;
+
+		is_visible = is_active = true;
 	}
 
 	virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
-		rect->draw(*render);
+		if(is_visible)
+			rect->draw(*render);
 	}
 
-	virtual bool check_click(const double mouse_x, const double mouse_y) {
+	virtual bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) {
 		//printf("check ckick view???\n");
-		return true;
+		if(is_active)
+			return true;
+		return false;
 	}
 
 	size_t get_yourself_type() const {
 		return (size_t)yourself_type;
+	}
+
+	virtual bool delete_object() {
+		printf("!\n");
+		delete rect;
+		delete[] widget_types;
+		is_visible = is_active = true;
+		printf("?\n");
 	}
 };
 
