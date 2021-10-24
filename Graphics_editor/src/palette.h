@@ -72,13 +72,12 @@ class Palette : public View_object {
 		}
 	}
 
-	bool delete_object() override {
+	void delete_all() {
 		//delete_object()
 		printf("Hello, world!\n");
 
-        button_manager->delete_object();
-
-        return false;		
+        button_manager->delete_all();
+        delete[] button_manager;
 	}	
 
 };

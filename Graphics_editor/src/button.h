@@ -5,18 +5,17 @@
 #include "text.h"
 #include "button_delegate.h"
 #include "view.h"
-//#include "widget_types.h"
 
 #ifndef BUTTON_H
 #define BUTTON_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+const size_t MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON = 5;
 
 
-enum Button_status {
+/*enum Button_status {
 	IS_PUSH 	= 1,
 	IS_NOT_PUSH = 2,
-};
+};*/
 
 /*enum Button_owner {
     BUTTON_OWNER_BUTTON_CLASS = 0,
@@ -36,9 +35,9 @@ class Button : public View_object {
 
 	Button() : View_object(Widget_types::BUTTON) {
 
-  	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
+  	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON];
 
-  	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
+  	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON; ++i)
   	 		view_objects[i] = new View_object;
   	 	count_of_views = 0;
 	}	
@@ -51,8 +50,8 @@ class Button : public View_object {
 
 	  	//status = IS_NOT_PUSH;
 
-  	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
-  	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
+  	 	view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON];
+  	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON; ++i)
   	 		view_objects[i] = new View_object;
   	 	count_of_views = 0;
 
@@ -62,13 +61,23 @@ class Button : public View_object {
 	  	view_objects[count_of_views++] = text;
 	}
 
+	~Button() {
+		printf("~Button\n");
+		delete delegate;
+
+		for(size_t i = 0; i < count_of_views; ++i)
+			delete[] view_objects[i];
+
+		delete[] view_objects;
+
+		count_of_views = 0;
+	}
+
   	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-  		if(is_active)
-  			if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-  				//printf("DELEGATEEE\n");
-  				delegate->click_reaction();
-  				return true;
-  			}
+  		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+  			delegate->click_reaction();
+  			return true;
+  		}
 
   		return false;
   	}
@@ -82,16 +91,38 @@ class Button : public View_object {
 		}
 	}
 
-	bool delete_object() override {
+	void update_position(const Point new_center) {
+		Point old_center(rect->get_center());
+
+		rect->set_center(new_center);
+		center = new_center;
+
 		for(size_t i = 0; i < count_of_views; ++i) {
-			view_objects[i]->delete_object();
+			Point new_view_center(view_objects[i]->rect->get_center());
+
+			new_view_center += new_center;
+			new_view_center -= old_center;
+
+			view_objects[i]->rect->set_center(new_view_center);
+			view_objects[i]->center = new_view_center;
+		}
+	}
+
+	void delete_all() {
+		printf("begin button delete_all\n");
+
+		for(size_t i = 0; i < count_of_views; ++i) {
+			//view_objects[i]->delete_all();
 			delete[] view_objects[i];
 		}
 
-		delete[] view_objects;
+		printf("middle button delete_all\n");
+
+		// delete[] view_objects;
 		count_of_views = 0;
 
 		//delete delegate;
+		printf("end button delete_all\n");
 	}
 
 	/*inline Button_owner get_owner() const {

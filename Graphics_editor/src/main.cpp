@@ -88,19 +88,15 @@ int main() {
     SDL_STATUSES sdl_status = initialize(&window, &render, &texture, &font);
     CHECK_SDL_STATUS
 
-    Colour screen_color = WHITE;
+    Colour screen_color = BLACK;
     
     SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);
     SDL_RenderClear(render);
 
     View_manager view_manager(Point(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0), SCREEN_WIDTH, SCREEN_HEIGHT, screen_color, false);
 
-	view_manager.add_new_canvas_manager(Point(450, 350), 200, 300);
-  	view_manager.add_new_canvas_manager(Point(700, 550), 100, 100);
-
-  	for(size_t i = 0; i < COUNT_OF_TYPES; ++i)
-  		printf("%d ", view_manager.widget_types[i]);
-  	printf("\n");
+	//view_manager.add_new_canvas_manager(Point(450, 350), 200, 300);
+  	//view_manager.add_new_canvas_manager(Point(700, 550), 100, 100);
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -109,8 +105,9 @@ int main() {
 			if(event.type == SDL_QUIT)
 				is_run = false;
 
-			else
+			else {
 				view_manager.check_events(&event);
+			}
 		}
 
     	SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);

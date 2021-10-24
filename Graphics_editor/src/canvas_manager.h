@@ -26,20 +26,31 @@ class Canvas_manager : public View_object {
     size_t count_of_views;
 
 	//Pencil* pencil;
-	int who_is_active;
     Tab* tab;
 
-    Canvas_manager(const Point par_point, const double par_width, const double par_height, 
-    									  const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state,
-                                          const Point par_center_tab, const int number_of_tab) :
-      View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER) {
 
-      	//pencil = par_pencil;
+    Canvas_manager() : View_object (Widget_types::CANVAS_MANAGER) {
 
         view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
         for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
             view_objects[i] = new View_object;
         count_of_views = 1;
+
+        tab = new Tab;
+    }    
+
+    Canvas_manager(const Point par_point, const double par_width, const double par_height, 
+    									  const Colour par_color, Pencil* par_pencil, const bool par_is_active, 
+                                          Mouse_click_state* par_mouse_click_state, const size_t number_of_tab) :
+
+      View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER) {
+
+        //printf("construct---------------\n");
+
+        view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
+        for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
+            view_objects[i] = new View_object;
+        count_of_views = 0;
 
         Point left_up_corner(par_point.x - par_width / 2.0, par_point.y - par_height / 2.0);
         Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
@@ -52,29 +63,33 @@ class Canvas_manager : public View_object {
         Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, par_color, par_pencil);
         view_objects[count_of_views++] = canvas;
 
+        ++widget_types[(int)Widget_types::CANVAS];
 
-        Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
-        center_of_button_manager += left_up_corner;
 
-        Button_manager* button_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
-        add_view_object(button_manager);
-
-        fill_button_manager(button_manager, left_up_corner, par_width, par_height, par_mouse_click_state);
-
-		who_is_active = -1;
-
-        Point center_tab = par_center_tab;
-        center_tab -= Point(WIDTH_CLOSE_BUTTON / 2.0, 0);
+        Point center_tab(par_point);
+        center_tab -= Point(par_width / 2.0, par_height / 2.0);
+        center_tab += Point(WIDTH_TABS_BUTTON / 2.0, HEIGHT_TABS_BUTTON / 2.0);
+        center_tab += Point((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON) * number_of_tab, 0);
 
         tab = new Tab(center_tab, (WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON), HEIGHT_TABS_BUTTON, YELLOW, 
-                      number_of_tab, par_mouse_click_state, &is_visible, &is_active);
+                      number_of_tab, par_mouse_click_state, &is_visible, &is_active, &is_alive);
+    }
+
+    ~Canvas_manager() {
+        printf("Destruct Canvas_manager\n");
+/*
+        for(size_t i = 0; i < count_of_views; ++i)
+            delete[] view_objects[i];
+        delete[] view_objects;
+
+        delete tab;*/
     }
 
     void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height,
                                                              Mouse_click_state* par_mouse_click_state) {
 
         //--------------- add close button ---------------------------
-        Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, &is_visible, &is_active);
+        Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, &is_alive);
 
         Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
         center_button += left_up_corner;
@@ -111,53 +126,79 @@ class Canvas_manager : public View_object {
   	}
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-        //printf("click Canvas_manager\n");    
 
+        //printf("check tabs\n");
         if(tab->check_click(mouse_x, mouse_y, par_mouse_status))
             return true;
 
+        //printf("is active %d\n", is_active);
         if(is_active) {
 
             if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
                 for(int i = count_of_views - 1; i >= 0; --i) {
 
-                    /*printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg)\n", 
+                    /*printf("\t\tcheck_click Canvas_manager, type %d\n", (int)view_objects[i]->yourself_type);
+                    printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg), width %lg, height %lg\n", 
                                     rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
-                                    view_objects[i]->center.x, view_objects[i]->center.y);*/
-
+                                    view_objects[i]->center.x, view_objects[i]->center.y, view_objects[i]->rect->get_width(), view_objects[i]->rect->get_height());
+                    */
                     if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
+                        //printf("return from Canvas_manager with true\n");
                         return true;
                     }
                 }
             }
         }
 
+        //printf("return from Canvas_manager with false\n");
         return false;
     }   
 
     virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
         //rect->draw(*render);
 
-        if(is_visible) {
+        //printf("is_visible %d, is_active %d\n", is_visible, is_active);
+        if(is_visible && is_active) {
             for(size_t i = 0; i < count_of_views; ++i)
                 view_objects[i]->draw(render, texture);
         }
         
-        tab->draw(render, texture);
+        if(is_active) {
+
+            size_t count_of_buttons_in_tab = tab->button_manager->count_of_buttons;
+
+            Colour* save_colors = new Colour[count_of_buttons_in_tab];
+
+            for(size_t i = 0; i < count_of_buttons_in_tab; ++i) {
+                save_colors[i] = tab->button_manager->buttons[i]->rect->get_colour();
+                tab->button_manager->buttons[i]->rect->set_colour(LIGHT_GREY_4);
+            }
+
+            tab->draw(render, texture);
+
+            for(size_t i = 0; i < count_of_buttons_in_tab; ++i) {
+                tab->button_manager->buttons[i]->rect->set_colour(save_colors[i]);
+            }
+
+            delete[] save_colors;
+
+            //printf("TAAAAB (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
+            
+
+        } else if(is_alive) {
+            tab->draw(render, texture);
+            //printf("TAAAAB (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
+        }
     }
 
-    bool delete_object() override {
-        if(is_visible && !is_active) {
-            tab->delete_object();
+    void delete_all() {
+        tab->delete_all();
 
-            for(size_t i = 0; i < count_of_views; ++i)
-                view_objects[i]->delete_object();
+        /*for(size_t i = 0; i < count_of_views; ++i)
+            view_objects[i]->delete_all();*/
 
-            return true;
-        }
-
-        return false;
+        count_of_views = 0;
     }
 
     /*inline Button_owner get_owner() const {

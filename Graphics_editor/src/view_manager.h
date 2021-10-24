@@ -1,4 +1,5 @@
 #include "view.h"
+#include "manager_of_canvas_managers.h"
 #include "button.h"
 #include "canvas_manager.h"
 #include "pencil.h"
@@ -19,6 +20,13 @@ extern const double HEIGHT_TABS_BUTTON;
 
 const double WIDTH_FILE_PANEL_BUTTON = 60;
 
+const double WIDTH_TOOLS_WIDGET      = 100;
+const double HEIGHT_TOOLS_WIDGET     = 100;
+
+const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 400);
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 600;
+const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 600;
+
 class View_manager : public View_object {
   public:
 	View_object** view_objects;
@@ -28,6 +36,7 @@ class View_manager : public View_object {
 	Pencil pencil;
 
 	Button_manager* tool_buttons_manager;
+	Manager_of_canvas_managers* manager_of_canvas_managers;
 	//Tab** tabs;
 	//size_t count_of_tabs;
 	//Button_manager* canvases_manager;
@@ -44,51 +53,48 @@ class View_manager : public View_object {
   	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
   	 		view_objects[i] = new View_object;
 
+  	 	who_is_active = -1;
+
+  	 	pencil = {};
+
+  	 	mouse_click_state = Mouse_click_state::MOUSE_UP;
+
+  	 	manager_of_canvas_managers = new Manager_of_canvas_managers(CENTER_MANAGER_OF_CANVAS_MANAGERS,
+  	 																WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
+  	 																HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
+  	 																LIGHT_LIGHT_GREY, &pencil, 
+  	 																false, &mouse_click_state);
+
         Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
         center_of_button_manager += left_up_corner;
 
         tool_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
         add_view_object(tool_buttons_manager);
 
-        fill_tools_button_manager(tool_buttons_manager, left_up_corner, par_width, par_height);
+        fill_tools_button_manager(left_up_corner, par_width, par_height);
 
-  	 	who_is_active = -1;
-
-  	 	pencil = {};
-
-  	 	/*tabs = new Tab*[MAX_COUNT_OF_VIEW_OBJECTS];
-  	 	for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
-  	 		tabs[i] = new Tab;*/
-
-  	 	//count_of_tabs = 0;
-
-  	 	mouse_click_state = Mouse_click_state::MOUSE_UP;
-
-  	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &pencil);
+  	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 2, &pencil);
   	 	add_view_object(palette);
   	}
 
-    void fill_tools_button_manager(Button_manager* tool_buttons_manager, Point left_up_corner, const double par_width, const double par_height);
+    void fill_tools_button_manager(Point left_up_corner, const double par_width, const double par_height);
 
   	~View_manager() {
   		printf("Destruct View_manager, %ld\n", count_of_view_objects);
+
+  		/*for(size_t i = 0; i < count_of_view_objects; ++i)
+  			delete[] view_objects[i];
+  		delete[] view_objects;
+
+  		delete[] tool_buttons_manager;
+  		delete[] manager_of_canvas_managers;*/
 
   	 	count_of_view_objects = 0;
   	 	who_is_active = 0;
   	}
 
-  	void add_new_canvas_manager(const Point center, const double width, const double height) {
-        Point center_tab((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON) * widget_types[(int)Widget_types::TABS] + WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0,
-        				 HEIGHT_CLOSE_BUTTON + HEIGHT_TABS_BUTTON / 2.0);
-
-        center_tab += rect->get_left_up_corner();
-
-  		Canvas_manager* new_canvas_manager = new Canvas_manager(center, width, height, WHITE, &pencil, false, &mouse_click_state, 
-  																center_tab, widget_types[(int)Widget_types::TABS]);
-
-  		++widget_types[(int)Widget_types::TABS];
-
-  		add_view_object(new_canvas_manager);
+  	void add_new_canvas_manager() {
+        manager_of_canvas_managers->add_new_canvas_manager();
   	}
 
 	void add_view_object(View_object* new_view) {
@@ -102,13 +108,15 @@ class View_manager : public View_object {
   		if(is_visible) {
 	  		rect->draw(*render);
 
+	  		manager_of_canvas_managers->draw(render, texture);
+
 	  		for(size_t i = 0; i < count_of_view_objects; ++i) {
 	  			view_objects[i]->draw(render, texture);
 	  		}
 	  	}
   	}
 
-	bool try_to_find_corpse() {
+	/*bool try_to_find_corpse() {
 	  	for(size_t i = 0; i < count_of_view_objects; ++i) {
 	  		if(view_objects[i]->is_visible && !view_objects[i]->is_active)
 	  			view_objects[i]->delete_object();
@@ -125,7 +133,7 @@ class View_manager : public View_object {
         }
 
         return false;		
-	}
+	}*/
 
   	void check_events(SDL_Event* event) {
 		if(event->type == SDL_MOUSEBUTTONUP) {
@@ -163,21 +171,27 @@ class View_manager : public View_object {
   	}
 
   	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+  		printf("\n\nview_manager check_click\n");
 
   		if(is_active) {
+
+  			if(manager_of_canvas_managers->check_click(mouse_x, mouse_y, par_mouse_status)) {
+  				find_not_alive();
+  				return true;
+  			}
 
   			//printf("click View_manager\n");
 	  		for(int i = count_of_view_objects - 1; i >= 0; --i) {
 	  			//printf("type %d\n", get_yourself_type());
 	  			if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 	  				set_new_active_object(i);
-
+	  				find_not_alive();
 	  				return true;
 	  			}
 	  		}
-
 	  	}
 
+	  	find_not_alive();
   		return false;
   	}
 
@@ -211,8 +225,19 @@ class View_manager : public View_object {
   	}
 
   	void set_new_active_object(const int new_active) {
-  		who_is_active = new_active;
-  	}
+        if(who_is_active != -1)
+            view_objects[who_is_active]->is_active = false;
+
+        who_is_active = new_active;
+
+        if(who_is_active != -1)
+            view_objects[who_is_active]->is_active = true;
+    }
+
+    void find_not_alive() {
+    	//for()
+    	manager_of_canvas_managers->find_not_alive();
+    }
 };
 
 #endif

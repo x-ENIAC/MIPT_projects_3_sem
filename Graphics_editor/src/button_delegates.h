@@ -14,22 +14,19 @@ class Close_delegate : public Button_delegate {
   public:
 
   	Mouse_click_state* mouse_click_state;
-  	bool* is_visible;
-  	bool* is_active;
+  	bool* is_alive;
 
-  	Close_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active) {
+  	Close_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_alive) {
   		//view_manager = par_view_manager;
   		mouse_click_state = par_mouse_click_state;
-  		is_visible = par_is_visible;
-  		is_active  = par_is_active;
+  		is_alive = par_is_alive;
   	}
 
   	void click_reaction() override {
   		printf("Close_delegate\n");
 
   		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
-  			*is_visible = true;
-  			*is_active  = false;
+  			*is_alive = false;
   		}
   	}
 };
@@ -91,6 +88,7 @@ class Tab_title_delegate : public Button_delegate {
 
   	void click_reaction() override {
   		//printf("!!! %p\n", mouse_click_state);
+  		printf("Tab_title_delegate\n");
 
   		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
   			*is_visible = true;
@@ -132,24 +130,26 @@ class Change_colour_delegate : public Button_delegate {
 	}
 };
 
-#include "view_manager.h"
-class View_manager;
+#include "manager_of_canvas_managers.h"
+class Manager_of_canvas_managers;
 //enum class Mouse_click_state;
 
 class Create_new_canvas_delegate : public Button_delegate {
   public:
 
-  	View_manager* view_manager;
+  	Manager_of_canvas_managers* manager_of_canvas_managers;
 
-  	Create_new_canvas_delegate(View_manager* par_view_manager) {
-  		view_manager = par_view_manager;
+  	Create_new_canvas_delegate(Manager_of_canvas_managers* par_manager_of_canvas_managers) {
+  		manager_of_canvas_managers = par_manager_of_canvas_managers;
   	}
 
   	void click_reaction() override {
   		//printf("Create_new_canvas_delegate\n");
   		//printf("%d\n", view_manager->widget_types[(int)Widget_types::TABS]);
   		//view_manager->add_new_canvas_manager(CENTER_OF_SPAWN_CANVASES, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-  		view_manager->add_new_canvas_manager(Point(rand() % 600 + 100, rand() % 500 + 250), rand() % 200 + 300, rand() % 200 + 300);
+  		//view_manager->add_new_canvas_manager(Point(rand() % 600 + 100, rand() % 500 + 250), rand() % 200 + 300, rand() % 200 + 300);
+
+  		manager_of_canvas_managers->add_new_canvas_manager();
 	}
 };
 

@@ -75,6 +75,15 @@ class Canvas : public View_object {
         }
     }
 
+    void delete_all() {
+        double width  = rect->get_width();
+        double height = rect->get_height();
+
+        for(size_t i = 0; i < width; ++i)
+            delete[] cells_color[i];
+        delete[] cells_color;
+    }    
+
     /*inline Button_owner get_owner() const {
         return owner;
     }*/

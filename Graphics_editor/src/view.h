@@ -29,6 +29,7 @@ class View_object {
 
 	bool is_visible;
 	bool is_active;
+	bool is_alive;
 
 	View_object(const Widget_types par_widget_types = Widget_types::VIEW_OBJECT) {
 		center = Point(0, 0);
@@ -43,7 +44,7 @@ class View_object {
 
 		yourself_type = par_widget_types;
 
-		is_visible = is_active = true;
+		is_visible = is_active = is_alive = true;
 	}
 
 	View_object(const Point par_center, const double par_width, const double par_height,
@@ -61,7 +62,14 @@ class View_object {
 
 		yourself_type = par_widget_types;
 
-		is_visible = is_active = true;
+		is_visible = is_active = is_alive = true;
+	}
+
+	~View_object() {
+		printf("~View_object\n");
+		
+		// delete rect;
+		// delete[] widget_types;
 	}
 
 	virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
@@ -70,7 +78,6 @@ class View_object {
 	}
 
 	virtual bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) {
-		//printf("check ckick view???\n");
 		if(is_active)
 			return true;
 		return false;
@@ -80,12 +87,16 @@ class View_object {
 		return (size_t)yourself_type;
 	}
 
-	virtual bool delete_object() {
-		printf("!\n");
+	void delete_all() {
+		printf("begin View_object delete_all\n");
+
 		delete rect;
 		delete[] widget_types;
-		is_visible = is_active = true;
-		printf("?\n");
+
+		is_visible = is_active = false;
+		is_alive = false;
+
+		printf("end VIEW_OBJECT delete_all\n");
 	}
 };
 
