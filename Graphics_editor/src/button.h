@@ -77,7 +77,14 @@ class Button : public View_object {
 
   	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
   		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-  			delegate->click_reaction();
+  			//printf("!!! %d\n", *par_mouse_status);
+  			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
+  				delegate->click_reaction(mouse_x, mouse_y);
+
+  			else
+  			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION)
+  				delegate->motion_reaction(mouse_x, mouse_y);
+
   			return true;
   		}
 
@@ -121,7 +128,7 @@ class Button : public View_object {
 		}
 	}
 
-	void update_position(const Point new_center) {
+	void update_center_position(const Point new_center) {
 		Point old_center(rect->get_center());
 
 		rect->set_center(new_center);
@@ -132,6 +139,25 @@ class Button : public View_object {
 
 			new_view_center += new_center;
 			new_view_center -= old_center;
+
+			view_objects[i]->rect->set_center(new_view_center);
+			view_objects[i]->center = new_view_center;
+		}
+	}
+	
+
+	void update_position(const Point delta) {
+		Point old_center(rect->get_center());
+		Point new_center(old_center);
+		new_center -= delta;
+
+		rect->set_center(new_center);
+		center = new_center;
+
+		for(size_t i = 0; i < count_of_views; ++i) {
+			Point new_view_center(view_objects[i]->rect->get_center());
+
+			new_view_center -= delta;
 
 			view_objects[i]->rect->set_center(new_view_center);
 			view_objects[i]->center = new_view_center;

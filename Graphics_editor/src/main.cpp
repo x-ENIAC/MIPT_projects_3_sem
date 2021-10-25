@@ -20,8 +20,6 @@ const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720;
 const double DELTA = 0.5;
 
-//extern char* NON_PATH_TO_PUCTURE;
-
 enum SDL_STATUSES {
 	SDL_OKEY		   = 0,
 	BAD_SDL_INIT       = 1,
@@ -69,18 +67,14 @@ void quit(SDL_Window** window, SDL_Renderer** render, SDL_Texture** texture, SDL
   	SDL_Quit();
 }
 
-void test_point(SDL_Renderer* render, Point* point) {
+/*void test_point(SDL_Renderer* render, Point* point) {
 	for(int i = -5; i <= 5; ++i)
 		for(int j = -5; j <= 5; ++j) {
 			Point now(i, j);
 			now += *point;
 			now.draw_point(render);
 		}
-}
-
-void add_colour_buttons(View_manager* view_manager) {
-
-}
+}*/
 
 int main() {
 
@@ -99,12 +93,7 @@ int main() {
     SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);
     SDL_RenderClear(render);
 
-    //Texture_manager texture_manager(render, screen);
-
     View_manager view_manager(Point(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0), SCREEN_WIDTH, SCREEN_HEIGHT, screen_color/*, &texture_manager*/);
-
-	//view_manager.add_new_canvas_manager(Point(450, 350), 200, 300);
-  	//view_manager.add_new_canvas_manager(Point(700, 550), 100, 100);
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -123,7 +112,6 @@ int main() {
 
 		view_manager.draw(&render, &texture, &screen);
 
-		//SDL_UpdateWindowSurface(window);
 		SDL_RenderPresent(render);
 	}
 

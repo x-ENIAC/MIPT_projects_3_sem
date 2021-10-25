@@ -206,6 +206,22 @@ class Canvas_manager : public View_object {
         count_of_views = 0;
     }
 
+    void update_position(Point delta) {
+        center -= delta;
+        rect->set_center(delta - rect->get_center());
+
+        //printf("tab (%lg, %lg) -> \n", tab->rect->get_center().x, tab->rect->get_center().y);
+        tab->center -= delta;
+        tab->rect->set_center(tab->rect->get_center() - delta);
+
+        tab->button_manager->update_position(delta);
+        //printf("(%lg, %lg)\n", tab->rect->get_center().x, tab->rect->get_center().y);
+
+        for(size_t i = 0; i < count_of_views; ++i) {
+            view_objects[i]->update_position(delta);
+        }
+    }
+
     /*inline Button_owner get_owner() const {
         return owner;
     }*/

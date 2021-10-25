@@ -41,7 +41,6 @@ class Text : public View_object {
 
 		//text = new char[30];
 		strcpy(text, par_text);
-		printf("%s\n", text);
 
 		color     = par_color;
 
@@ -62,7 +61,6 @@ class Text : public View_object {
 
 		//text = new char[30];
 		strcpy(text, par_text);
-		printf("%s\n", text);
 
 		color     = par_color;
 

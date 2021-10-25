@@ -104,14 +104,14 @@ class View_manager : public View_object {
   	 	++widget_types[new_view->get_yourself_type()];
   	}  	
 
-  	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
+  	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
   		if(is_visible) {
 	  		rect->draw(*render);
 
-	  		manager_of_canvas_managers->draw(render, texture, screen/*, texture_manager*/);
+	  		manager_of_canvas_managers->draw(render, texture, screen);
 
 	  		for(size_t i = 0; i < count_of_view_objects; ++i) {
-	  			view_objects[i]->draw(render, texture, screen/*, texture_manager*/);
+	  			view_objects[i]->draw(render, texture, screen);
 	  		}
 	  	}
   	}
@@ -138,28 +138,27 @@ class View_manager : public View_object {
   	void check_events(SDL_Event* event) {
 		if(event->type == SDL_MOUSEBUTTONUP) {
 			mouse_click_state = Mouse_click_state::MOUSE_UP;
-			//printf("up\n");
 		}
 
 		if(event->type == SDL_MOUSEBUTTONDOWN) {
 			mouse_click_state = Mouse_click_state::MOUSE_DOWN;
 			double x_mouse = event->button.x, y_mouse = event->button.y;
-			//printf("down\n");
 
 			bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
-			if(!is_solved)
-				printf("!!!WARNING!!!\n");
+			//if(!is_solved)
+			//	printf("!!!WARNING!!!\n");
 		}		
 
 		else if(event->type == SDL_MOUSEMOTION) {
 			double x_mouse = event->button.x, y_mouse = event->button.y;
 
-			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN)
+			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
 				mouse_click_state = Mouse_click_state::MOUSE_DOWN_AND_MOTION;
-			//printf("motion\n");
+
+			}
 
 			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
-				check_click(x_mouse, y_mouse, &mouse_click_state);		
+				check_click(x_mouse, y_mouse, &mouse_click_state);
 			}
 		}
 
@@ -171,7 +170,7 @@ class View_manager : public View_object {
   	}
 
   	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-  		printf("\n\nview_manager check_click\n");
+  		//printf("\n\nview_manager check_click\n");
 
   		if(is_active) {
 

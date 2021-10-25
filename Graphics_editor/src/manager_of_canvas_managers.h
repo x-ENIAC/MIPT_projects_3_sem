@@ -12,9 +12,10 @@
 #ifndef MANAGER_OF_CANVAS_MANAGERS_H
 #define MANAGER_OF_CANVAS_MANAGERS_H
 
+class Title_delegate;
+class Create_new_canvas_delegate;
+
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-//const double WIDTH_CLOSE_BUTTON  = 20;
-//const double HEIGHT_CLOSE_BUTTON = 20;
 extern const double WIDTH_TABS_BUTTON;
 extern const double HEIGHT_TABS_BUTTON;
 
@@ -35,8 +36,7 @@ class Manager_of_canvas_managers : public View_object {
 	int who_is_active;
 
     Manager_of_canvas_managers(const Point par_point, const double par_width, const double par_height, 
-    						   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state/*,
-                               Texture_manager* texture_manager*/) :
+    						   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
 
       View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER_MANAGER) {
 
@@ -83,76 +83,13 @@ class Manager_of_canvas_managers : public View_object {
         }        
   	} 	
 
-    void fill_button_manager(Point left_up_corner, const double par_width, const double par_height, Mouse_click_state* par_mouse_click_state) {
+    void fill_button_manager(Point left_up_corner, const double par_width, const double par_height, Mouse_click_state* par_mouse_click_state);
 
-        //--------------- add close button ---------------------------
-        Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, &is_alive);
-
-        Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
-        center_button += left_up_corner;
-
-        Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-                                          "x", BLACK);
-        close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
-        button_manager->add_view_object(close_button);
-
-        //--------------- add roll up button ---------------------------
-        Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate(par_mouse_click_state, &is_visible, &is_active);
-
-        center_button = Point(WIDTH_CLOSE_BUTTON / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
-        center_button += left_up_corner;
-
-
-        Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-                                            "-", BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
-        roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
-        button_manager->add_view_object(roll_up_button);
-
-        //--------------- add title button ---------------------------
-        Title_delegate*  title_delegate = new Title_delegate;
-
-        center_button = Point(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
-        center_button += left_up_corner;
-
-
-        Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-                                          "Title", BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-        title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-        button_manager->add_view_object(title_button);
-    }
-
-  	void add_new_canvas_manager() {
-  		//printf("begin add_canvas_manager %d, %p\n", (int)Widget_types::TABS, widget_types);
-  		//printf("count of types %d\n", COUNT_OF_TYPES);
-
-  		//for(int i = 0; i < COUNT_OF_TYPES; ++i)
-  		//	printf("[%d] = %d\n", i, widget_types[i]);
-
-        //Point center_tab((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON) * widget_types[(int)Widget_types::TABS] + WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0,
-        //				 HEIGHT_CLOSE_BUTTON + HEIGHT_TABS_BUTTON / 2.0);
-
-        //printf("!!! canvas size: width %lg, height %lg\n", any_canvas_width, any_canvas_height);
-
-  		Canvas_manager* new_canvas_manager = new Canvas_manager(any_canvas_center, any_canvas_width, any_canvas_height,
-  																WHITE, pencil, false, mouse_click_state, widget_types[(int)Widget_types::TABS]);
-
-
-  		++widget_types[(int)Widget_types::TABS];
-  		set_new_active_object(count_of_canvas_managers);
-
-        add_canvas_manager(new_canvas_manager);
-        /*printf("is_active\n");
-        for(size_t i = 0; i < count_of_canvas_managers; ++i)
-            printf("%d ", canvas_managers[i]->is_active);
-        printf("\n\n");*/
-
-
-  		//printf("end add_canvas_manager\n");
-  	}
+  	void add_new_canvas_manager();
 
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-		printf("view_manager check_click, now active %d\n", who_is_active);
+		//printf("view_manager check_click, now active %d\n", who_is_active);
 
         if(is_active) {
 
@@ -207,16 +144,16 @@ class Manager_of_canvas_managers : public View_object {
         }
   	}
 
-    virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) {
+    virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
         rect->draw(*render);        
         
-        button_manager->draw(render, texture, screen/*, texture_manager*/);
+        button_manager->draw(render, texture, screen);
 
         draw_tabs_area(render, texture, screen);
 
         if(is_visible) {
         	for(size_t i = 0; i < count_of_canvas_managers; ++i)
-        		canvas_managers[i]->draw(render, texture, screen/*, texture_manager*/);
+        		canvas_managers[i]->draw(render, texture, screen);
         }
     }
 
@@ -237,6 +174,7 @@ class Manager_of_canvas_managers : public View_object {
                 --widget_types[(int)Widget_types::TABS];
 
                 canvas_managers[i]->is_visible = false;
+                printf("i = %d\n", i);
 
                 update_tabs_offset(i);
                 array_shift(i);
@@ -252,19 +190,37 @@ class Manager_of_canvas_managers : public View_object {
     }
 
     void update_tabs_offset(const size_t pos) {
-        //size_t count = 1;
-        Point before_point(canvas_managers[pos]->tab->center);
+        //printf("pos %ld, count %ld\n", pos, count_of_canvas_managers);
 
         for(size_t i = pos + 1; i < count_of_canvas_managers; ++i) {
+            Point before_point(canvas_managers[i]->tab->center);
+
             //printf("(%lg, %lg) -> ", before_point.x, before_point.y);
-            before_point = Point(canvas_managers[i]->tab->center);
             before_point -= Point((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON), 0);
-            //before_point = Point(300, 0);
+
             canvas_managers[i]->tab->update_tabs_offset(before_point);
             canvas_managers[i]->tab->update_tabs_number(i - 1);
 
             //printf("before (%lg, %lg);   %lg, %lg\n", before_point.x, before_point.y, canvas_managers[i]->tab->rect->center.x, canvas_managers[i]->tab->rect->center.y);
-            //++count;
+        }
+    }
+
+    void update_position(const double mouse_x, const double mouse_y) {
+        Point mouse(mouse_x, mouse_y);
+        Point delta(button_manager->rect->get_center());
+        delta -= mouse;
+
+        any_canvas_center -= delta;
+
+        center -= delta;
+        rect->set_center(rect->get_center() - delta);
+
+        button_manager->rect->set_center(mouse);
+        button_manager->update_position(delta);
+
+        for(size_t i = 0; i < count_of_canvas_managers; ++i) {
+            canvas_managers[i]->update_position(delta);
+            //canvas_managers[i]->tab->update_position(delta);
         }
     }
 };

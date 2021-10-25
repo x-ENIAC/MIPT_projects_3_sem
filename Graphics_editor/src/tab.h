@@ -68,7 +68,7 @@ class Tab : public View_object {
   	}
 
   	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-  		printf("click Tab\n");
+  		//printf("click Tab\n");
               		
   		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
   	}
@@ -102,7 +102,7 @@ class Tab : public View_object {
 			now_center += new_center;
 			now_center -= old_center;
 
-			button_manager->buttons[i]->update_position(now_center);
+			button_manager->buttons[i]->update_center_position(now_center);
 			//printf("\t... (%lg, %lg)\n", now_center.x, now_center.y);
 		}
 

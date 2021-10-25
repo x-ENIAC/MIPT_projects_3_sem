@@ -36,7 +36,6 @@ class Button_manager : public View_object {
   	 	buttons[count_of_buttons] = new_button;
   	 	++count_of_buttons;
 
-  	 	//printf("new_button->get_yourself_type()")
   	 	++widget_types[new_button->get_yourself_type()];
   	}
 
@@ -52,7 +51,12 @@ class Button_manager : public View_object {
 	  												buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ));*/
 
 	  			if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-	  				buttons[i]->delegate->click_reaction();
+  					if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
+  						buttons[i]->delegate->click_reaction(mouse_x, mouse_y);
+
+	  				else
+  					if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION)
+  						buttons[i]->delegate->motion_reaction(mouse_x, mouse_y);
 	  				return true;
 	  			}
 	  		}
@@ -63,7 +67,7 @@ class Button_manager : public View_object {
   		return false;
   	}  	
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		//if(!strcmp(NON_PATH_TO_PUCTURE, path_to_picture))
 			rect->draw(*render);
 		/*else {
@@ -78,7 +82,7 @@ class Button_manager : public View_object {
 
 
 		for(size_t i = 0; i < count_of_buttons; ++i)
-			buttons[i]->draw(render, texture, screen/*, texture_manager*/);
+			buttons[i]->draw(render, texture, screen);
 	}
 
 	void delete_all() {
@@ -94,6 +98,13 @@ class Button_manager : public View_object {
 
 		printf("end Button_manager delete_all\n");
 	}
+
+    void update_position(Point delta) {
+
+        for(size_t i = 0; i < count_of_buttons; ++i) {
+            buttons[i]->update_position(delta);
+        }
+    }	
 };
 
 #endif

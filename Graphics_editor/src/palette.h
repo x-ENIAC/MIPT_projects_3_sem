@@ -33,18 +33,19 @@ class Palette : public View_object {
 	}
 
 	void fill_button_manager(const double begin_width, const double begin_height) {
-	    add_button(begin_width, begin_height, YELLOW);
-	    add_button(begin_width, begin_height, RED);
-	    add_button(begin_width, begin_height, GREEN);
-	    add_button(begin_width, begin_height, BLUE);
-	    add_button(begin_width, begin_height, PURPLE);
-	    add_button(begin_width, begin_height, LIGHT_GREEN);
-	    add_button(begin_width, begin_height, PINK);
-	    add_button(begin_width, begin_height, WHITE);
-	    add_button(begin_width, begin_height, BLACK);
+
+	    add_colour_button(begin_width, begin_height, YELLOW);
+	    add_colour_button(begin_width, begin_height, RED);
+	    add_colour_button(begin_width, begin_height, GREEN);
+	    add_colour_button(begin_width, begin_height, BLUE);
+	    add_colour_button(begin_width, begin_height, PURPLE);
+	    add_colour_button(begin_width, begin_height, LIGHT_GREEN);
+	    add_colour_button(begin_width, begin_height, PINK);
+	    add_colour_button(begin_width, begin_height, WHITE);
+	    add_colour_button(begin_width, begin_height, BLACK);
 	}
 
-	void add_button(const double begin_width, const double begin_height, Colour color) {
+	void add_colour_button(const double begin_width, const double begin_height, Colour color) {
 		size_t old_count_of_buttons = button_manager->count_of_buttons;
 
 	    Change_colour_delegate* change_colour_to_purple_delegate = new Change_colour_delegate(pencil, color);

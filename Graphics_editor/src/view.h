@@ -118,6 +118,11 @@ class View_object {
 
 		printf("end VIEW_OBJECT delete_all\n");
 	}
+
+    void update_position(Point delta) {
+        center -= delta;
+        rect->set_center(rect->get_center() - delta);     
+    }	
 };
 
 #endif

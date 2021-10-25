@@ -22,13 +22,15 @@ class Close_delegate : public Button_delegate {
   		is_alive = par_is_alive;
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		printf("Close_delegate\n");
 
   		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
   			*is_alive = false;
   		}
   	}
+
+  	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
 
 //enum class Mouse_click_state;
@@ -48,7 +50,7 @@ class Roll_up_delegate : public Button_delegate {
   		is_active  = par_is_active;
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		printf("Roll_up_delegate\n");
 
   		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
@@ -56,20 +58,8 @@ class Roll_up_delegate : public Button_delegate {
   			*is_active  = false;
   		}
 	}
-};
 
-class Title_delegate : public Button_delegate {
-  public:
-
-  	//Object_manager* object_manager;
-
-  	Title_delegate(/*Object_manager* par_object_manager*/) {
-  		/*object_manager = par_object_manager;*/
-  	}
-
-  	void click_reaction() override {
-  		//printf("Title_delegate\n");
-	}
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
 
 class Tab_title_delegate : public Button_delegate {
@@ -86,7 +76,7 @@ class Tab_title_delegate : public Button_delegate {
   		is_active  = par_is_active;
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		//printf("!!! %p\n", mouse_click_state);
   		printf("Tab_title_delegate\n");
 
@@ -94,9 +84,9 @@ class Tab_title_delegate : public Button_delegate {
   			*is_visible = true;
   			*is_active  = true;
   		}
-
-  		//printf("...\n");
 	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
 
 class Open_panel_delegate : public Button_delegate {
@@ -108,9 +98,11 @@ class Open_panel_delegate : public Button_delegate {
   		/*object_manager = par_object_manager;*/
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		//printf("Open_panel_delegate\n");
 	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
 
 class Change_colour_delegate : public Button_delegate {
@@ -124,15 +116,39 @@ class Change_colour_delegate : public Button_delegate {
   		yourself_color = par_yourself_color;
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		//printf("Change_colour_delegate\n");
   		pencil->set_color(yourself_color);
 	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
+
+
 
 #include "manager_of_canvas_managers.h"
 class Manager_of_canvas_managers;
-//enum class Mouse_click_state;
+
+class Title_delegate : public Button_delegate {
+  public:
+
+  	Manager_of_canvas_managers* manager_of_canvas_managers;
+
+  	Title_delegate(Manager_of_canvas_managers* par_manager_of_canvas_managers) {
+  		manager_of_canvas_managers = par_manager_of_canvas_managers;
+  	}
+
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
+  		printf("Title_delegate\n");
+	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {
+		manager_of_canvas_managers->update_position(mouse_x, mouse_y);
+	}
+};
+
+
+
 
 class Create_new_canvas_delegate : public Button_delegate {
   public:
@@ -143,7 +159,7 @@ class Create_new_canvas_delegate : public Button_delegate {
   		manager_of_canvas_managers = par_manager_of_canvas_managers;
   	}
 
-  	void click_reaction() override {
+  	void click_reaction(const double mouse_x, const double mouse_y) override {
   		//printf("Create_new_canvas_delegate\n");
   		//printf("%d\n", view_manager->widget_types[(int)Widget_types::TABS]);
   		//view_manager->add_new_canvas_manager(CENTER_OF_SPAWN_CANVASES, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -151,6 +167,8 @@ class Create_new_canvas_delegate : public Button_delegate {
 
   		manager_of_canvas_managers->add_new_canvas_manager();
 	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 };
 
 

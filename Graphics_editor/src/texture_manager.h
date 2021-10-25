@@ -8,21 +8,21 @@
 const size_t MAX_SIZE_OF_TEXTURES_ARRAY = 30;
 const char NON_PATH_TO_PUCTURE[] = "non_picture";
 
-const char PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON[]   = "colours/black_close.bmp";
-const char PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON[]  = "colours/grey_1_close.bmp";
-const char PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON[]  = "colours/grey_2_close.bmp";
+const char PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON[]   = "textures/black_close.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON[]  = "textures/grey_1_close.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON[]  = "textures/grey_2_close.bmp";
 
-const char PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON[] = "colours/roll_up.bmp";
-const char PATH_TO_PICTURE_WITH_TITLE_BUTTON[]	 = "colours/title.bmp";
+const char PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON[] = "textures/roll_up.bmp";
+const char PATH_TO_PICTURE_WITH_TITLE_BUTTON[]	 = "textures/title.bmp";
 
-const char PATH_TO_PICTURE_WITH_FILE_BUTTON[] 	 = "colours/file.bmp";
-const char PATH_TO_PICTURE_WITH_NEW_BUTTON[]	 = "colours/new.bmp";
-const char PATH_TO_PICTURE_WITH_HELP_BUTTON[]	 = "colours/help.bmp";
+const char PATH_TO_PICTURE_WITH_FILE_BUTTON[] 	 = "textures/file.bmp";
+const char PATH_TO_PICTURE_WITH_NEW_BUTTON[]	 = "textures/new.bmp";
+const char PATH_TO_PICTURE_WITH_HELP_BUTTON[]	 = "textures/help.bmp";
 
-const char PATH_TO_PICTURE_WITH_GREY_1_BUTTON[]	 = "colours/grey_1.bmp";
-const char PATH_TO_PICTURE_WITH_GREY_2_BUTTON[]	 = "colours/grey_2.bmp";
-const char PATH_TO_PICTURE_WITH_GREY_3_BUTTON[]	 = "colours/grey_3.bmp";
-const char PATH_TO_PICTURE_WITH_GREY_4_BUTTON[]	 = "colours/grey_4.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_1_BUTTON[]	 = "textures/grey_1.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_2_BUTTON[]	 = "textures/grey_2.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_3_BUTTON[]	 = "textures/grey_3.bmp";
+const char PATH_TO_PICTURE_WITH_GREY_4_BUTTON[]	 = "textures/grey_4.bmp";
 
 struct Texture {
 	SDL_Texture* texture;
@@ -37,7 +37,6 @@ struct Texture {
 
 	void add_new_texture(const char par_path_to_picture[]) {
 		SDL_Surface *bmp = SDL_LoadBMP(par_path_to_picture);
-		//printf("!!! new !!! %s\n", par_path_to_picture);
 
 		if(!bmp) {
 			printf("add> %s (%s)\n", SDL_GetError(), par_path_to_picture);
@@ -50,9 +49,7 @@ struct Texture {
 	}
 
 	void update_texture(const char par_path_to_picture[]) {
-		//printf("was %s, now ", path_to_picture);
 		add_new_texture(par_path_to_picture);
-		//printf("%s\n\n", path_to_picture);
 	}
 
 	void draw_texture(SDL_Rect* rectangle) {
