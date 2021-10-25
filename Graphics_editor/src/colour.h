@@ -52,12 +52,15 @@ const Colour LIGHT_GREEN = Colour(153, 153, 255, 256);
 const Colour PINK = Colour(255, 203, 192, 256);
 
 
+//const Colour LIGHT_GREY_5 = Colour(245, 245, 245, 256);
 const Colour LIGHT_GREY_4 = Colour(245, 245, 245, 256);
 const Colour LIGHT_LIGHT_GREY = Colour(230, 230, 230, 256);
 const Colour LIGHT_GREY_2 = Colour(200, 200, 200, 256);
 const Colour LIGHT_GREY = Colour(170, 170, 170, 256);
 //const Colour MIDDLE_GREY = Colour(135, 135, 135, 256);
 const Colour DARK_GREY = Colour(128, 128, 128, 256);
+const Colour DARK_GREY_3 = Colour(75, 75, 75, 256);
+const Colour DARK_GREY_2 = Colour(50, 50, 50, 256);
 
 const Colour AMBIENT = Colour(20, 0, 0, 255);
 

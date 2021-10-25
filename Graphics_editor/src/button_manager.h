@@ -22,8 +22,9 @@ class Button_manager : public View_object {
   	 		buttons[i] = new Button;
 	}	
 
-	Button_manager(const Point par_center, const double par_width, const double par_height, const Colour par_color) :
-	  View_object(par_center, par_width, par_height, par_color, Widget_types::BUTTON_MANAGER) {
+	Button_manager(const Point par_center, const double par_width, const double par_height, const Colour par_color,
+																							const char* par_path_to_picture = NON_PATH_TO_PUCTURE) :
+	  View_object(par_center, par_width, par_height, par_color, Widget_types::BUTTON_MANAGER, par_path_to_picture) {
 		count_of_buttons = 0;
 
   	 	buttons = new Button*[MAX_COUNT_OF_VIEW_OBJECTS];
@@ -62,11 +63,22 @@ class Button_manager : public View_object {
   		return false;
   	}  	
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
-		rect->draw(*render);
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
+		//if(!strcmp(NON_PATH_TO_PUCTURE, path_to_picture))
+			rect->draw(*render);
+		/*else {
+	    	SDL_Rect sdl_rect;
+	    	sdl_rect.w = rect->get_width();
+		    sdl_rect.h = rect->get_height();
+    		sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
+	    	sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
+
+    		texture_manager->draw_texture(path_to_picture, &sdl_rect);			
+		}*/
+
 
 		for(size_t i = 0; i < count_of_buttons; ++i)
-			buttons[i]->draw(render, texture);
+			buttons[i]->draw(render, texture, screen/*, texture_manager*/);
 	}
 
 	void delete_all() {

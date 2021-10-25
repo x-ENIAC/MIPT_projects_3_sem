@@ -77,7 +77,7 @@ class Canvas_manager : public View_object {
 
     ~Canvas_manager() {
         printf("Destruct Canvas_manager\n");
-/*
+        /*
         for(size_t i = 0; i < count_of_views; ++i)
             delete[] view_objects[i];
         delete[] view_objects;
@@ -85,7 +85,7 @@ class Canvas_manager : public View_object {
         delete tab;*/
     }
 
-    void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height,
+    /*void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height,
                                                              Mouse_click_state* par_mouse_click_state) {
 
         //--------------- add close button ---------------------------
@@ -95,6 +95,7 @@ class Canvas_manager : public View_object {
         center_button += left_up_corner;
 
         Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", WHITE);
+        close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CLOSE_BUTTON);
         button_manager->add_view_object(close_button);
 
         //--------------- add title button ---------------------------
@@ -105,6 +106,7 @@ class Canvas_manager : public View_object {
 
 
         Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "-", WHITE);
+        roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
         button_manager->add_view_object(roll_up_button);
 
         //--------------- add roll up button ---------------------------
@@ -116,7 +118,7 @@ class Canvas_manager : public View_object {
 
         Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "Title");
         button_manager->add_view_object(title_button);
-    }
+    }*/
 
 	void add_view_object(View_object* new_view) {
   	 	view_objects[count_of_views] = new_view;
@@ -155,39 +157,42 @@ class Canvas_manager : public View_object {
         return false;
     }   
 
-    virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
+    virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) {
         //rect->draw(*render);
 
         //printf("is_visible %d, is_active %d\n", is_visible, is_active);
         if(is_visible && is_active) {
             for(size_t i = 0; i < count_of_views; ++i)
-                view_objects[i]->draw(render, texture);
+                view_objects[i]->draw(render, texture, screen/*, texture_manager*/);
         }
         
         if(is_active) {
 
-            size_t count_of_buttons_in_tab = tab->button_manager->count_of_buttons;
+            /*size_t count_of_buttons_in_tab = tab->button_manager->count_of_buttons;
 
             Colour* save_colors = new Colour[count_of_buttons_in_tab];
 
             for(size_t i = 0; i < count_of_buttons_in_tab; ++i) {
                 save_colors[i] = tab->button_manager->buttons[i]->rect->get_colour();
                 tab->button_manager->buttons[i]->rect->set_colour(LIGHT_GREY_4);
-            }
+            }*/
 
-            tab->draw(render, texture);
+            tab->button_manager->buttons[0]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_BUTTON);
+            tab->button_manager->buttons[1]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON);
 
-            for(size_t i = 0; i < count_of_buttons_in_tab; ++i) {
+            tab->draw(render, texture, screen);
+
+            /*for(size_t i = 0; i < count_of_buttons_in_tab; ++i) {
                 tab->button_manager->buttons[i]->rect->set_colour(save_colors[i]);
             }
 
-            delete[] save_colors;
+            delete[] save_colors;*/
 
             //printf("TAAAAB (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
             
 
         } else if(is_alive) {
-            tab->draw(render, texture);
+            tab->draw(render, texture, screen/*, texture_manager*/);
             //printf("TAAAAB (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
         }
     }

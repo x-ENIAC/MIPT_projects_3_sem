@@ -33,7 +33,7 @@ class Rectangle {
         set_height ( 0 );*/
     }
 
-    virtual void draw(SDL_Renderer* render) {
+    void draw(SDL_Renderer* render) {
         for(size_t x = center.x - width / 2.0; x <= center.x + width / 2.0; ++x) {
             for(size_t y = center.y - height / 2.0; y <= center.y + height / 2.0; ++y) {
                 Point now_point(x, y, color);

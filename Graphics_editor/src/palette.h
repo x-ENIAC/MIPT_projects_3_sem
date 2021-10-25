@@ -18,7 +18,8 @@ class Palette : public View_object {
 
 	Button_manager* button_manager;
 
-	Palette(const double begin_width, const double begin_height, Pencil* par_pencil) : View_object(Widget_types::PALETTE) {
+	Palette(const double begin_width, const double begin_height, Pencil* par_pencil/*, Texture_manager* texture_manager*/) :
+	  View_object(Widget_types::PALETTE) {
 		pencil = par_pencil;
 
   	 	button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
@@ -26,7 +27,7 @@ class Palette : public View_object {
 
   	 	rect->center = center = Point(begin_width - DELTA_BETWEEN_BUTTONS, begin_height, DARK_GREY);
   	 	rect->height = HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS * 2;
-  	 	rect->set_colour(DARK_GREY);
+  	 	rect->set_colour(DARK_GREY_3);
 
   	 	fill_button_manager(begin_width, begin_height);
 	}
@@ -39,6 +40,8 @@ class Palette : public View_object {
 	    add_button(begin_width, begin_height, PURPLE);
 	    add_button(begin_width, begin_height, LIGHT_GREEN);
 	    add_button(begin_width, begin_height, PINK);
+	    add_button(begin_width, begin_height, WHITE);
+	    add_button(begin_width, begin_height, BLACK);
 	}
 
 	void add_button(const double begin_width, const double begin_height, Colour color) {
@@ -64,11 +67,11 @@ class Palette : public View_object {
   		return false;
   	}  	
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
 		if(is_visible) {
 			rect->draw(*render);
 
-			button_manager->draw(render, texture);
+			button_manager->draw(render, texture, screen/*, texture_manager*/);
 		}
 	}
 

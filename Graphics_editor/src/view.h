@@ -5,9 +5,13 @@
 #include "colour.h"
 #include "rectangle.h"
 #include "widget_types.h"
+#include "texture_manager.h"
 
 #ifndef VIEW_H
 #define VIEW_H
+
+extern const size_t MAX_SIZE_OF_TEXTURES_ARRAY;
+extern SDL_Renderer* render;
 
 enum class Mouse_click_state {
 	MOUSE_MOTION   		  = 1,
@@ -27,11 +31,15 @@ class View_object {
 	int* widget_types;
 	Widget_types yourself_type;
 
+	Texture* texture;
+
 	bool is_visible;
 	bool is_active;
 	bool is_alive;
 
-	View_object(const Widget_types par_widget_types = Widget_types::VIEW_OBJECT) {
+	View_object(const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
+				const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) {
+		
 		center = Point(0, 0);
 		color = {0, 0, 0, 0};
 
@@ -44,11 +52,17 @@ class View_object {
 
 		yourself_type = par_widget_types;
 
+		texture = new Texture(render);
+		texture->texture = NULL;
+		strcpy(texture->path_to_picture, par_path_to_picture);
+		//printf("!!! %s\n", path_to_picture);
+
 		is_visible = is_active = is_alive = true;
 	}
 
 	View_object(const Point par_center, const double par_width, const double par_height,
-			    const Colour par_color, const Widget_types par_widget_types = Widget_types::VIEW_OBJECT) {
+			    const Colour par_color, const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
+			    const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) {
 
 		center = par_center;
 		color = par_color;
@@ -62,6 +76,12 @@ class View_object {
 
 		yourself_type = par_widget_types;
 
+
+		texture = new Texture(render);
+		texture->texture = NULL;
+		strcpy(texture->path_to_picture, par_path_to_picture);
+		//printf("!!! %s\n", path_to_picture);
+
 		is_visible = is_active = is_alive = true;
 	}
 
@@ -72,7 +92,7 @@ class View_object {
 		// delete[] widget_types;
 	}
 
-	virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
+	virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
 		if(is_visible)
 			rect->draw(*render);
 	}

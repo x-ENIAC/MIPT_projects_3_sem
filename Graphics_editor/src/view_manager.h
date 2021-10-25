@@ -43,7 +43,7 @@ class View_manager : public View_object {
 
 	Mouse_click_state mouse_click_state;
 
-  	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color, const bool par_is_active) :
+  	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color/*, Texture_manager* texture_manager*/) :
   	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
 
   	 	count_of_view_objects = 1;
@@ -63,17 +63,17 @@ class View_manager : public View_object {
   	 																WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
   	 																HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
   	 																LIGHT_LIGHT_GREY, &pencil, 
-  	 																false, &mouse_click_state);
+  	 																false, &mouse_click_state/*, texture_manager*/);
 
         Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
         center_of_button_manager += left_up_corner;
 
-        tool_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, WHITE);
+        tool_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, DARK_GREY_2, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
         add_view_object(tool_buttons_manager);
 
         fill_tools_button_manager(left_up_corner, par_width, par_height);
 
-  	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 2, &pencil);
+  	 	Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 2, &pencil/*, texture_manager*/);
   	 	add_view_object(palette);
   	}
 
@@ -104,14 +104,14 @@ class View_manager : public View_object {
   	 	++widget_types[new_view->get_yourself_type()];
   	}  	
 
-  	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+  	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
   		if(is_visible) {
 	  		rect->draw(*render);
 
-	  		manager_of_canvas_managers->draw(render, texture);
+	  		manager_of_canvas_managers->draw(render, texture, screen/*, texture_manager*/);
 
 	  		for(size_t i = 0; i < count_of_view_objects; ++i) {
-	  			view_objects[i]->draw(render, texture);
+	  			view_objects[i]->draw(render, texture, screen/*, texture_manager*/);
 	  		}
 	  	}
   	}

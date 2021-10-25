@@ -12,9 +12,15 @@
 #include "button_delegate.h"
 #include "text.h"
 
+//#include "texture_manager.h"
+
+SDL_Renderer* render;
+
 const int SCREEN_WIDTH  = 920;
-const int SCREEN_HEIGHT = 720; 
+const int SCREEN_HEIGHT = 720;
 const double DELTA = 0.5;
+
+//extern char* NON_PATH_TO_PUCTURE;
 
 enum SDL_STATUSES {
 	SDL_OKEY		   = 0,
@@ -33,7 +39,7 @@ enum SDL_STATUSES {
     	return sdl_status;                  								\
   	}
 
-SDL_STATUSES initialize(SDL_Window** window, SDL_Renderer** render, SDL_Texture** texture, TTF_Font** font) {
+SDL_STATUSES initialize(SDL_Window** window, SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen, TTF_Font** font) {
 	if(SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_TIMER | SDL_INIT_VIDEO) != 0) {
     	printf("Could not initialize SDL: %s.\n", SDL_GetError());
     	return BAD_SDL_INIT;
@@ -47,18 +53,17 @@ SDL_STATUSES initialize(SDL_Window** window, SDL_Renderer** render, SDL_Texture*
 	char* name_font = "courier.ttf";
 
     TTF_Init();
+
+    *screen = SDL_GetWindowSurface(*window);
     
 	return SDL_OKEY;
 }
 
-void quit(SDL_Window** window, SDL_Renderer** render, SDL_Texture** texture) {
+void quit(SDL_Window** window, SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
+	SDL_FreeSurface    (*screen);
   	SDL_DestroyWindow  (*window);
   	SDL_DestroyRenderer(*render);
   	SDL_DestroyTexture (*texture);
-
-  	*window  = NULL;
-  	*render  = NULL;
-  	*texture = NULL;
 
   	TTF_Quit();
   	SDL_Quit();
@@ -81,11 +86,12 @@ int main() {
 
 	srand(time(NULL));
     SDL_Window*   window = NULL;
-    SDL_Renderer* render = NULL;
+    render = NULL;
     SDL_Texture* texture = NULL;
     TTF_Font*       font = NULL;
+    SDL_Surface* screen  = NULL;
 
-    SDL_STATUSES sdl_status = initialize(&window, &render, &texture, &font);
+    SDL_STATUSES sdl_status = initialize(&window, &render, &texture, &screen, &font);
     CHECK_SDL_STATUS
 
     Colour screen_color = BLACK;
@@ -93,7 +99,9 @@ int main() {
     SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);
     SDL_RenderClear(render);
 
-    View_manager view_manager(Point(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0), SCREEN_WIDTH, SCREEN_HEIGHT, screen_color, false);
+    //Texture_manager texture_manager(render, screen);
+
+    View_manager view_manager(Point(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0), SCREEN_WIDTH, SCREEN_HEIGHT, screen_color/*, &texture_manager*/);
 
 	//view_manager.add_new_canvas_manager(Point(450, 350), 200, 300);
   	//view_manager.add_new_canvas_manager(Point(700, 550), 100, 100);
@@ -113,14 +121,15 @@ int main() {
     	SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);
     	SDL_RenderClear(render);
 
-		view_manager.draw(&render, &texture);
+		view_manager.draw(&render, &texture, &screen);
 
+		//SDL_UpdateWindowSurface(window);
 		SDL_RenderPresent(render);
 	}
 
 
-	SDL_RenderPresent(render);
-	quit(&window, &render, &texture);
+	//SDL_RenderPresent(render);
+	quit(&window, &render, &texture, &screen);
 
 	return 0;
 }

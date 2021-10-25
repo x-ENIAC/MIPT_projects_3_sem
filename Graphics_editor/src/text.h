@@ -12,7 +12,7 @@ class Text : public View_object {
 	size_t font_size;
 	char* font_name;
   	TTF_Font* font;
-	char* text;
+	char text[100];
 	Colour color;
 
 	Text() : View_object(Widget_types::TEXT) {
@@ -20,7 +20,10 @@ class Text : public View_object {
 		font_size = 20;
 		font_name = "courier.ttf";
 		font 	  = TTF_OpenFont(font_name, font_size);
-		text 	  = "hello, world";
+
+		//text = new char[30];
+		strcpy(text, "hello, world");
+
 		color 	  = {0, 0, 0, 0};
 	    
 	    if(font == NULL) {
@@ -35,7 +38,11 @@ class Text : public View_object {
 		font_size = 20;
 		font_name = "courier.ttf";
 		font 	  = TTF_OpenFont(font_name, font_size);
-		text      = par_text;
+
+		//text = new char[30];
+		strcpy(text, par_text);
+		printf("%s\n", text);
+
 		color     = par_color;
 
 	    if(!font) {
@@ -52,7 +59,11 @@ class Text : public View_object {
 		font_size = par_font_size;
 		font_name = par_font_name;
 		font 	  = TTF_OpenFont(font_name, font_size);
-		text      = par_text;
+
+		//text = new char[30];
+		strcpy(text, par_text);
+		printf("%s\n", text);
+
 		color     = par_color;
 
 	    if(!font) {
@@ -65,13 +76,16 @@ class Text : public View_object {
 
 	}
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture) {
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) {
 		//printf("\t\t\tbegin draw text, text %s, pos %lg, %lg, size font %d\n", text, center.x, center.y, font_size);
 	    SDL_Surface* surface = {};
 	    SDL_Color text_color = {};
 
 	    set_color(&color, &text_color);
 	    SDL_Rect rect = {};
+
+	    //if(text != " ")
+	    //	printf("text: %s\n", text);
 
 	    surface = TTF_RenderText_Solid(font, text, text_color);
 	    *texture = SDL_CreateTextureFromSurface(*render, surface);

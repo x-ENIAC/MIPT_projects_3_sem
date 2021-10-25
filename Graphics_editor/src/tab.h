@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "point.h"
 #include "button.h"
@@ -41,12 +41,15 @@ class Tab : public View_object {
 
   		Tab_title_delegate*  tab_title_delegate = new Tab_title_delegate(par_mouse_click_state, par_is_visible, par_is_active);
 
-  		char* text_on_tab = new char[MAX_SIZE_OF_TEXT_ON_TAB];
+  		char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
 
   		sprintf(text_on_tab, "canvas %d", par_number_of_tab);
+  		//printf("!!! %s\n", text_on_tab);
 
-        Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON, text_on_tab, BLACK);
+        Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON,
+        								  text_on_tab, WHITE);
 
+		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_BUTTON);
 		number_of_title_in_button_manager = button_manager->count_of_buttons;
   		button_manager->add_view_object(title_button);
 
@@ -58,7 +61,7 @@ class Tab : public View_object {
   		Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, par_is_alive);
 
         Button* close_button = new Button(close_delegate, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
-
+        close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
   		button_manager->add_view_object(close_button);  
 
   		//printf("\nend add new tab %p\n\n", par_mouse_click_state);
@@ -70,11 +73,13 @@ class Tab : public View_object {
   		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
   	}
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		//rect->draw(*render);
 		//printf("!!! tab center (%lg, %lg)\n", rect->center.x, rect->center.y);
 
-		button_manager->draw(render, texture);
+		button_manager->draw(render, texture, screen);
+
+		button_manager->buttons[number_of_title_in_button_manager]->view_objects[0]->draw(render, texture, screen); // draw text
 	}
 
 	void delete_all() {
@@ -85,7 +90,7 @@ class Tab : public View_object {
 	}
 
 	void update_tabs_offset(const Point new_center) {
-		printf("... (%lg, %lg)\n", new_center.x, new_center.y);
+		//printf("... (%lg, %lg)\n", new_center.x, new_center.y);
 		Point old_center(center);
 
 		center = rect->center = new_center;
@@ -109,12 +114,12 @@ class Tab : public View_object {
 		for(size_t i = 0; i < count_objects; ++i) {
 			if(button_manager->buttons[number_of_title_in_button_manager]->view_objects[i]->yourself_type == Widget_types::TEXT) {
 				Text* text = (Text*)(button_manager->buttons[number_of_title_in_button_manager]->view_objects[i]);
-				delete[] text->text;
 
-		  		char* text_on_tab = new char[MAX_SIZE_OF_TEXT_ON_TAB];
+		  		char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
   				sprintf(text_on_tab, "canvas %d", new_number);
 				
-				text->text = text_on_tab;
+				//text->text = text_on_tab;
+				strcpy(text->text, text_on_tab);
 			}
 		}
 	}	

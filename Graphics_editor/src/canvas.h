@@ -28,8 +28,8 @@ class Canvas : public View_object {
 
     Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color, Pencil* par_pencil
                                 /*const Button_owner par_owner, */) :
-        View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS)
-    {
+        View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS) {
+            
         cells_color = (Colour**)calloc(par_width + 1, sizeof(Colour*));
 
         for(size_t i = 0; i <= par_width; ++i)
@@ -43,20 +43,17 @@ class Canvas : public View_object {
     }
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-        //printf("click Canvas\n");
         if(is_active)
             if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-                //printf("Canvas!\n");
                 Point left_up_corner(center.x - rect->width / 2, center.y - rect->height / 2);
                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)] = pencil->get_color();
-                //printf("true")
                 return true;
             }
 
         return false;
     }
 
-    void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+    void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
         if(is_visible) {
             rect->draw(*render);
 

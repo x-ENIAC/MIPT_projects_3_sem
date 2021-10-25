@@ -35,7 +35,8 @@ class Manager_of_canvas_managers : public View_object {
 	int who_is_active;
 
     Manager_of_canvas_managers(const Point par_point, const double par_width, const double par_height, 
-    						   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
+    						   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state/*,
+                               Texture_manager* texture_manager*/) :
 
       View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER_MANAGER) {
 
@@ -90,7 +91,9 @@ class Manager_of_canvas_managers : public View_object {
         Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
         center_button += left_up_corner;
 
-        Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", WHITE);
+        Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
+                                          "x", BLACK);
+        close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
         button_manager->add_view_object(close_button);
 
         //--------------- add roll up button ---------------------------
@@ -100,7 +103,9 @@ class Manager_of_canvas_managers : public View_object {
         center_button += left_up_corner;
 
 
-        Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "-", WHITE);
+        Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
+                                            "-", BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
+        roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
         button_manager->add_view_object(roll_up_button);
 
         //--------------- add title button ---------------------------
@@ -110,7 +115,9 @@ class Manager_of_canvas_managers : public View_object {
         center_button += left_up_corner;
 
 
-        Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "Title");
+        Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
+                                          "Title", BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+        title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
         button_manager->add_view_object(title_button);
     }
 
@@ -129,7 +136,6 @@ class Manager_of_canvas_managers : public View_object {
   		Canvas_manager* new_canvas_manager = new Canvas_manager(any_canvas_center, any_canvas_width, any_canvas_height,
   																WHITE, pencil, false, mouse_click_state, widget_types[(int)Widget_types::TABS]);
 
-  		//printf("adding\n");
 
   		++widget_types[(int)Widget_types::TABS];
   		set_new_active_object(count_of_canvas_managers);
@@ -185,30 +191,36 @@ class Manager_of_canvas_managers : public View_object {
     }
 
   	void set_new_active_object(const int new_active) {
-        printf("old_active %d, new %d\n", who_is_active, new_active);
-        if(who_is_active != -1)
+        //printf("old_active %d, new %d\n", who_is_active, new_active);
+        if(who_is_active != -1) {
             canvas_managers[who_is_active]->is_active = false;
+            canvas_managers[who_is_active]->tab->button_manager->buttons[0]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_1_BUTTON);
+            canvas_managers[who_is_active]->tab->button_manager->buttons[1]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
+        }
 
         who_is_active = new_active;
 
-        if(who_is_active != -1)
+        if(who_is_active != -1) {
             canvas_managers[who_is_active]->is_active = true;
+            canvas_managers[who_is_active]->tab->button_manager->buttons[0]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_BUTTON);
+            canvas_managers[who_is_active]->tab->button_manager->buttons[1]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON);
+        }
   	}
 
-    virtual void draw(SDL_Renderer** render, SDL_Texture** texture) {
-        rect->draw(*render);
+    virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) {
+        rect->draw(*render);        
+        
+        button_manager->draw(render, texture, screen/*, texture_manager*/);
 
-        button_manager->draw(render, texture);
-
-        draw_tabs_area(render, texture);
+        draw_tabs_area(render, texture, screen);
 
         if(is_visible) {
         	for(size_t i = 0; i < count_of_canvas_managers; ++i)
-        		canvas_managers[i]->draw(render, texture);
+        		canvas_managers[i]->draw(render, texture, screen/*, texture_manager*/);
         }
     }
 
-    void draw_tabs_area(SDL_Renderer** render, SDL_Texture** texture) {
+    void draw_tabs_area(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
         Point rect_center(button_manager->rect->get_center());
         rect_center += Point(0, HEIGHT_CLOSE_BUTTON / 2.0 + HEIGHT_TABS_BUTTON / 2.0);
 

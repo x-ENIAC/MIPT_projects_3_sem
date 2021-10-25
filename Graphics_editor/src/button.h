@@ -10,7 +10,7 @@
 #define BUTTON_H
 
 const size_t MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON = 5;
-
+//extern const char NON_PATH_TO_PUCTURE[];
 
 /*enum Button_status {
 	IS_PUSH 	= 1,
@@ -43,9 +43,11 @@ class Button : public View_object {
 	}	
 
 	Button(Button_delegate* par_delegate, const Point par_point, const Colour par_button_color, const double par_width, const double par_height, 
-								/*const Button_owner par_owner, */char* text_on_button = " ", const Colour par_text_color = BLACK) :
-	  View_object (par_point, par_width, par_height, par_button_color, Widget_types::BUTTON) {
+								/*const Button_owner par_owner, */char text_on_button[] = " ", const Colour par_text_color = BLACK,
+																  const char* par_path_to_picture = NON_PATH_TO_PUCTURE) :
+	  View_object (par_point, par_width, par_height, par_button_color, Widget_types::BUTTON, par_path_to_picture) {
 
+	  	//printf("%s\n", NON_PATH_TO_PUCTURE);
 	  	delegate = par_delegate;
 
 	  	//status = IS_NOT_PUSH;
@@ -82,12 +84,40 @@ class Button : public View_object {
   		return false;
   	}
 
-	void draw(SDL_Renderer** render, SDL_Texture** texture) override {
+	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) override {
 		if(is_visible) {
 			rect->draw(*render);
 
-			for(size_t i = 0; i < count_of_views; ++i)
-				view_objects[i]->draw(render, texture);
+			if(this->texture->is_using_texture) {
+				SDL_Rect sdl_rect;
+	    		sdl_rect.w = rect->get_width();
+			    sdl_rect.h = rect->get_height();
+	    		sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
+	    		sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
+
+	    		//printf("(%d, %d), %d, %d\n", sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+
+    			this->texture->draw_texture(&sdl_rect);				
+			}
+
+			/*if(strcmp(NON_PATH_TO_PUCTURE, path_to_picture)) {
+				//printf("%s\n", path_to_picture);
+	    		SDL_Rect sdl_rect;
+	    		sdl_rect.w = rect->get_width();
+			    sdl_rect.h = rect->get_height();
+	    		sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
+	    		sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
+
+	    		//printf("(%d, %d), %d, %d\n", sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+
+    			texture_manager->draw_texture(path_to_picture, &sdl_rect);
+
+    			
+			}*/
+
+			else
+				for(size_t i = 0; i < count_of_views; ++i)
+					view_objects[i]->draw(render, texture, screen/*, texture_manager*/);
 		}
 	}
 
