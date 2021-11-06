@@ -24,14 +24,14 @@ const double DEFAULT_HEIGHT = 100;
 class Close_delegate : public Button_delegate {
   public:
 
-	//View_object* view_object;
-	Texture* texture;
+	View_object* view_object;
+	//Texture* texture;
 	Mouse_click_state* mouse_click_state;
 	bool* is_alive;
 
-	Close_delegate(Texture* par_texture, Mouse_click_state* par_mouse_click_state, bool* par_is_alive) {
-		//view_manager = par_view_manager;
-		texture = par_texture;
+	Close_delegate(View_object* par_view_object, Mouse_click_state* par_mouse_click_state, bool* par_is_alive) {
+		//view_object_manager = par_view_object_manager;
+		view_object = par_view_object;
 		mouse_click_state = par_mouse_click_state;
 		is_alive = par_is_alive;
 	}
@@ -47,16 +47,12 @@ class Close_delegate : public Button_delegate {
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
 	void reactive_reaction(const double mouse_x, const double mouse_y) override {
-		//View_object* tmp = new View_object(Point(300, 300), 100, 100, BLACK);
-
-		printf("!!!!\n");
-		anim_manager->add_animation(render, "textures/grey_1_close.bmp", "textures/black_close.bmp", TIME_DELTA * 10, texture);
+		anim_manager->add_animation(render, "textures/black_close.bmp", "textures/grey_1_close.bmp", view_object, TIME_DELTA * 10);
 	}
 };
 
 
 
-//enum class Mouse_click_state;
 
 class Roll_up_delegate : public Button_delegate {
   public:
@@ -67,7 +63,6 @@ class Roll_up_delegate : public Button_delegate {
 	bool* is_active;
 
 	Roll_up_delegate(Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active) {
-		//view_manager = par_view_manager;
 		mouse_click_state = par_mouse_click_state;
 		is_visible = par_is_visible;
 		is_active  = par_is_active;
@@ -79,13 +74,14 @@ class Roll_up_delegate : public Button_delegate {
 		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {
 			*is_visible = false;
 			*is_active  = false;
-			//*is_reactive = false;
 		}
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(const double mouse_x, const double mouse_y) override {
+		//anim_manager->add_animation(render, "textures/black_close.bmp", "textures/grey_1_close.bmp", view_object, TIME_DELTA * 10);		
+	}
 };
 
 
@@ -106,7 +102,6 @@ class Tab_title_delegate : public Button_delegate {
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
-		//printf("!!! %p\n", mouse_click_state);
 		printf("Tab_title_delegate\n");
 
 		if(*mouse_click_state == Mouse_click_state::MOUSE_DOWN) {

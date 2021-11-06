@@ -194,9 +194,7 @@ class View_manager : public View_object {
 				//printf("motion\n");
 			}
 
-			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
-				check_click(x_mouse, y_mouse, &mouse_click_state);
-			}
+			check_click(x_mouse, y_mouse, &mouse_click_state);			
 		}
 
 		else if(event->type == SDL_KEYDOWN) {

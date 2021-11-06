@@ -62,7 +62,7 @@ class Tab : public View_object {
 		Button* close_button = new Button(NULL, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
 
-		Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, par_is_alive);
+		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, par_is_alive);
 		close_button->delegate = close_delegate;
 
 		button_manager->add_view_object(close_button);  

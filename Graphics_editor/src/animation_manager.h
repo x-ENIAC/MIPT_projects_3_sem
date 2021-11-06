@@ -44,9 +44,9 @@ class Animation_manager {
 
 	void operator=(const Animation_manager&) = delete;
 
-	void add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, double time_alive, Texture* texture);
+	void add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, View_object* view, double time_alive);
 
-	void add_animation(SDL_Renderer* render, const char path_old[], const char path_new[], double time_alive, Texture* texture);
+	void add_animation(SDL_Renderer* render, const char path_old[], const char path_new[], View_object* view, double time_alive);
 
 	void tick(const double time_alive);
 

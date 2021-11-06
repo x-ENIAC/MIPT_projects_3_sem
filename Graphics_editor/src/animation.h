@@ -10,25 +10,25 @@ class Animation {
 
 	double time_alive;
 
-	Texture* texture;
+	View_object* view;
 
 	size_t num_of_texture;
 
 	Animation() {
 		old_texture = new_texture = NULL;
-		texture = NULL;
+		view = NULL;
 
 		time_alive = 0;
 		num_of_texture = 0;
 	}
 
-	Animation(SDL_Texture* par_old_texture, SDL_Texture* par_new_texture, const double par_time_alive, Texture* par_texture) {
+	Animation(SDL_Texture* par_old_texture, SDL_Texture* par_new_texture, View_object* par_view, const double par_time_alive) {
 		old_texture = par_old_texture;
 		new_texture = par_new_texture;
 
 		time_alive = par_time_alive;
 
-		texture = par_texture;
+		view = par_view;
 	}
 
 	void tick(const double delta_time) {
@@ -43,12 +43,12 @@ class Animation {
 			printf("0\n");
 		}*/
 
-		texture->set_texture(new_texture);
+		view->texture->set_texture(new_texture);
 
 		time_alive -= delta_time;
 
 		if(time_alive <= 0) {
-			texture->set_texture(old_texture);
+			view->texture->set_texture(old_texture);
 			//printf("@@@\n");
 		}
 	}

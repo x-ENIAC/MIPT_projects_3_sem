@@ -25,7 +25,7 @@ void Manager_of_canvas_managers::fill_button_manager(Point left_up_corner, const
 									  "x", BLACK);
 	close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
-	Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, &is_alive);
+	Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
 	close_button->delegate = close_delegate;
 
 	button_manager->add_view_object(close_button);

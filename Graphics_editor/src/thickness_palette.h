@@ -44,9 +44,9 @@ class Thickness_palette : public View_object {
 
 		Button* close_button = new Button(NULL, center_close_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
 										  "x", BLACK);
-		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON);
+		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
-		Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, &is_alive);
+		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
 
 		close_button->delegate = close_delegate;
 
@@ -160,7 +160,7 @@ class Thickness_palette : public View_object {
 		}
 
 		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-			//printf("tools!\n");
+			//printf("tools! %d\n", *par_mouse_status);
 			return tool_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
 		}
 		

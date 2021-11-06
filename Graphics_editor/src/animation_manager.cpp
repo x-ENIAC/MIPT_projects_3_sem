@@ -4,20 +4,20 @@
 
 Animation_manager* Animation_manager::animation_manager = 0;
 
-void Animation_manager::add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, double time_alive, Texture* texture) {
-	Animation* new_anim = new Animation(old_texture, new_texture, time_alive, texture);
+void Animation_manager::add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, View_object* view, double time_alive) {
+	Animation* new_anim = new Animation(old_texture, new_texture, view, time_alive);
 
 	animations[count_of_animations++] = new_anim;
 }
 
-void Animation_manager::add_animation(SDL_Renderer* render, const char path_old[], const char path_new[], double time_alive, Texture* texture) {
+void Animation_manager::add_animation(SDL_Renderer* render, const char path_old[], const char path_new[], View_object* view, double time_alive) {
 	Texture* old_t = new Texture(render);
 	old_t->update_texture(path_old);
 
 	Texture* new_t = new Texture(render);
 	new_t->update_texture(path_new);
 
-	Animation* new_anim = new Animation(old_t->texture, new_t->texture, time_alive, texture);
+	Animation* new_anim = new Animation(old_t->texture, new_t->texture, view, time_alive);
 
 	animations[count_of_animations++] = new_anim;
 }	

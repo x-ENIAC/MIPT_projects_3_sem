@@ -45,7 +45,7 @@ class Palette : public View_object {
 										  "x", BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
-		Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, &is_alive);
+		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
 
 		close_button->delegate = close_delegate;
 
