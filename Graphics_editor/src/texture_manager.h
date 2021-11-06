@@ -52,16 +52,20 @@ struct Texture {
 		add_new_texture(par_path_to_picture);
 	}
 
+	void set_texture(SDL_Texture* par_texture) {
+		texture = par_texture;
+	}
+
 	void draw_texture(SDL_Rect* rectangle) {
 		//printf("path_to_picture %s\n", path_to_picture);
 		SDL_RenderCopy(render, texture, NULL, rectangle);
-	}	
+	}
 };
 
 /*
 class Texture_manager {
   public:
-  	SDL_Renderer* render;
+	SDL_Renderer* render;
 	SDL_Surface* screen;
 	Texture* textures_array;
 	size_t count_of_textures;

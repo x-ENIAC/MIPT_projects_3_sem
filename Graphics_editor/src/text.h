@@ -11,7 +11,7 @@ class Text : public View_object {
   public:
 	size_t font_size;
 	char* font_name;
-  	TTF_Font* font;
+	TTF_Font* font;
 	char text[100];
 	Colour color;
 
@@ -24,12 +24,12 @@ class Text : public View_object {
 		//text = new char[30];
 		strcpy(text, "hello, world");
 
-		color 	  = {0, 0, 0, 0};
-	    
-	    if(font == NULL) {
-	        printf("error: font not found, %s\n", TTF_GetError());
-	        exit(EXIT_FAILURE);
-	    }
+		color = {0, 0, 0, 0};
+		
+		if(font == NULL) {
+			printf("error: font not found, %s\n", TTF_GetError());
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	Text(const Point par_point, char* par_text, const double par_width, const double par_height, const Colour par_color) : 
@@ -44,10 +44,10 @@ class Text : public View_object {
 
 		color     = par_color;
 
-	    if(!font) {
-	        printf("error: font not found, %s\n", TTF_GetError());
-	        exit(EXIT_FAILURE);
-	    }		
+		if(!font) {
+			printf("error: font not found, %s\n", TTF_GetError());
+			exit(EXIT_FAILURE);
+		}		
 	}
 
 
@@ -64,10 +64,10 @@ class Text : public View_object {
 
 		color     = par_color;
 
-	    if(!font) {
-	        printf("error: font not found, %s\n", TTF_GetError());
-	        exit(EXIT_FAILURE);
-	    }		
+		if(!font) {
+			printf("error: font not found, %s\n", TTF_GetError());
+			exit(EXIT_FAILURE);
+		}		
 	}
 
 	~Text() {
@@ -76,46 +76,46 @@ class Text : public View_object {
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen/*, Texture_manager* texture_manager*/) {
 		//printf("\t\t\tbegin draw text, text %s, pos %lg, %lg, size font %d\n", text, center.x, center.y, font_size);
-	    SDL_Surface* surface = {};
-	    SDL_Color text_color = {};
+		SDL_Surface* surface = {};
+		SDL_Color text_color = {};
 
-	    set_color(&color, &text_color);
-	    SDL_Rect rect = {};
+		set_color(&color, &text_color);
+		SDL_Rect sdl_rect = {};
 
-	    //if(text != " ")
-	    //	printf("text: %s\n", text);
+		//if(text != " ")
+		//	printf("text: %s\n", text);
 
-	    surface = TTF_RenderText_Solid(font, text, text_color);
-	    *texture = SDL_CreateTextureFromSurface(*render, surface);
-	    rect.w = surface->w;
-	    rect.h = surface->h;
-	    SDL_FreeSurface(surface);	
+		surface = TTF_RenderText_Solid(font, text, text_color);
+		*texture = SDL_CreateTextureFromSurface(*render, surface);
+		sdl_rect.w = surface->w;
+		sdl_rect.h = surface->h;
+		SDL_FreeSurface(surface);	
 
-	    rect.x = center.x - rect.w / 2.0;
-	    rect.y = center.y - rect.h / 2.0;
+		sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
+		sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
 
-	    SDL_RenderCopy(*render, *texture, NULL, &rect);	  
-	    //printf("\t\t\tend draw text\n");
+		SDL_RenderCopy(*render, *texture, NULL, &sdl_rect);	  
+		//printf("\t\t\tend draw text\n");
 	}
 
 	void draw_text(const Point pos, SDL_Renderer** render, SDL_Texture** texture) {
-	    SDL_Surface* surface = {};
-	    SDL_Color text_color = {};
-	    set_color(&color, &text_color);
-	    SDL_Rect rect = {};
+		SDL_Surface* surface = {};
+		SDL_Color text_color = {};
+		set_color(&color, &text_color);
+		SDL_Rect sdl_rect = {};
 
-	    if(text && text != "") {
-		    surface = TTF_RenderText_Solid(font, text, text_color);
-		    *texture = SDL_CreateTextureFromSurface(*render, surface);
-		    rect.w = surface->w;
-		    rect.h = surface->h;
-		    SDL_FreeSurface(surface);	
+		if(text && text != "") {
+			surface = TTF_RenderText_Solid(font, text, text_color);
+			*texture = SDL_CreateTextureFromSurface(*render, surface);
+			sdl_rect.w = surface->w;
+			sdl_rect.h = surface->h;
+			SDL_FreeSurface(surface);	
 
-		    rect.x = pos.x - rect.w / 2.0;
-		    rect.y = pos.y - rect.h / 2.0;
+			sdl_rect.x = pos.x - sdl_rect.w / 2.0;
+			sdl_rect.y = pos.y - sdl_rect.h / 2.0;
 		}
 
-	    SDL_RenderCopy(*render, *texture, NULL, &rect);	  
+		SDL_RenderCopy(*render, *texture, NULL, &sdl_rect);	  
 	}
 
 	void set_color(const Colour* color, SDL_Color* text_color) {

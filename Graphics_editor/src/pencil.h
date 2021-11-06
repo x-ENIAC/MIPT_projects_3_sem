@@ -20,17 +20,21 @@ class Pencil {
 		thickness = par_thickness;
 	}
 
-	size_t get_thickness() const {
+	inline size_t get_thickness() const {
 		return thickness;
 	}
 
-	Colour get_color() const {
+	inline Colour get_color() const {
 		return color;
 	}
 
-	void set_color(const Colour new_color) {
+	inline void set_color(const Colour new_color) {
 		color = new_color;
 	}
+
+	inline void set_thickness(const size_t new_thickness) {
+		thickness = new_thickness;
+	}	
 };
 
 #endif

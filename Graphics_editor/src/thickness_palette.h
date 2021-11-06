@@ -4,30 +4,31 @@
 #include "button_manager.h"
 //#include "widget_types.h"
 
-#ifndef PALETTE_H
-#define PALETTE_H
+#ifndef THICKNESS_PALETTE_H
+#define THICKNESS_PALETTE_H
 
 extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-const double DELTA_BETWEEN_BUTTONS = 5;
+extern const double DELTA_BETWEEN_BUTTONS;
 extern const double WIDTH_CLOSE_BUTTON;
 extern const double HEIGHT_CLOSE_BUTTON;
 
-class Palette : public View_object {
+class Thickness_palette : public View_object {
   public:
 	Pencil* pencil;
 
 	Button_manager* tool_buttons;
-	Button_manager* colour_buttons;
+	Button_manager* thickness_buttons;
 
-	Palette(const double begin_width, const double begin_height, Pencil* par_pencil, Mouse_click_state* par_mouse_click_state) :
+	Thickness_palette(const double begin_width, const double begin_height, Pencil* par_pencil, Mouse_click_state* par_mouse_click_state) :
 	  View_object(Widget_types::PALETTE) {
 		pencil = par_pencil;
 
 		rect->height = HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS * 2;
 		rect->set_colour(DARK_GREY_3);
 
-		tool_buttons   = new Button_manager();
-		colour_buttons = new Button_manager();
+		tool_buttons = new Button_manager();
+
+		thickness_buttons = new Button_manager();
 
 
 		fill_button_manager(begin_width, begin_height, par_mouse_click_state);
@@ -43,7 +44,7 @@ class Palette : public View_object {
 
 		Button* close_button = new Button(NULL, center_close_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
 										  "x", BLACK);
-		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
+		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_2_CLOSE_BUTTON);
 
 		Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, &is_alive);
 
@@ -53,21 +54,17 @@ class Palette : public View_object {
 
 		//--------------- add colours button ---------------------------
 
-		add_colour_button(begin_width, begin_height, YELLOW);
-		add_colour_button(begin_width, begin_height, RED);
-		add_colour_button(begin_width, begin_height, GREEN);
-		add_colour_button(begin_width, begin_height, BLUE);
-		add_colour_button(begin_width, begin_height, PURPLE);
-		add_colour_button(begin_width, begin_height, LIGHT_GREEN);
-		add_colour_button(begin_width, begin_height, PINK);
-		add_colour_button(begin_width, begin_height, WHITE);
-		add_colour_button(begin_width, begin_height, BLACK);
+		add_thickness_buttons(begin_width, begin_height, 50);
+		add_thickness_buttons(begin_width, begin_height, 20);
+		add_thickness_buttons(begin_width, begin_height, 10);
+		add_thickness_buttons(begin_width, begin_height,  5);
+		add_thickness_buttons(begin_width, begin_height,  1);
 
 		set_parameters_of_colours_button_manager();
 
 		//--------------- add roll up button ---------------------------
 
-		Point center_roll_up_button = colour_buttons->buttons[colour_buttons->get_count_of_buttons() - 1]->rect->get_center();
+		Point center_roll_up_button = thickness_buttons->buttons[thickness_buttons->get_count_of_buttons() - 1]->rect->get_center();
 		center_roll_up_button -= Point(DELTA_BETWEEN_BUTTONS, HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS);
 
 		Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate(par_mouse_click_state, &is_visible, &is_active);
@@ -95,43 +92,45 @@ class Palette : public View_object {
 		tool_buttons->add_view_object(title_button);
 
 		set_parameters_of_tools_button_manager();
-		//printf("PALETTE tool_buttons CENTER: (%lg, %lg)\n", tool_buttons->rect->get_center().x, tool_buttons->rect->get_center().y);
 	}
 
-	void add_colour_button(const double begin_width, const double begin_height, Colour color) {
-		size_t old_count_of_buttons = colour_buttons->count_of_buttons;
+	void add_thickness_buttons(const double begin_width, const double begin_height, size_t added_size) {
+		char text_thickness[10];
+		sprintf(text_thickness, "%ld", added_size);
 
-		Change_colour_delegate* change_colour_to_purple_delegate = new Change_colour_delegate(pencil, color);
-		Button* set_purple = new Button(change_colour_to_purple_delegate, 
-										Point(begin_width - (DELTA_BETWEEN_BUTTONS + WIDTH_CLOSE_BUTTON) * old_count_of_buttons, begin_height), 
-										color, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON);
+		size_t old_count_of_buttons = thickness_buttons->count_of_buttons;
 
-		colour_buttons->add_view_object(set_purple);
+		Change_thickness_delegate* change_thickness_delegate = new Change_thickness_delegate(pencil, added_size);
+		Button* button = new Button(change_thickness_delegate, 
+									Point(begin_width - (DELTA_BETWEEN_BUTTONS + WIDTH_CLOSE_BUTTON) * old_count_of_buttons, begin_height), 
+									WHITE, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, text_thickness);
 
-		Point new_center(colour_buttons->buttons[old_count_of_buttons]->rect->get_center());
+		thickness_buttons->add_view_object(button);
+
+		Point new_center(thickness_buttons->buttons[old_count_of_buttons]->rect->get_center());
 		new_center += Point(rect->width / 2, 0);
 
-		//rect->center = center = new_center;
 		rect->width += WIDTH_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS;
 	}
 
 	void set_parameters_of_colours_button_manager() {
-		Point center_colour_buttons;
-		size_t count_of_buttons = colour_buttons->get_count_of_buttons();
+		Point center_thickness_buttons;
+		size_t count_of_buttons = thickness_buttons->get_count_of_buttons();
 
 		for(size_t i = 0; i < count_of_buttons; ++i) {
-			center_colour_buttons += colour_buttons->buttons[i]->rect->get_center();
+			center_thickness_buttons += thickness_buttons->buttons[i]->rect->get_center();
 		}
 
-		center_colour_buttons /= count_of_buttons;
+		center_thickness_buttons /= count_of_buttons;
 
-		colour_buttons->rect->set_center(center_colour_buttons);
+		thickness_buttons->rect->set_center(center_thickness_buttons);
 
-		colour_buttons->rect->set_height(HEIGHT_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
-		colour_buttons->rect->set_width(colour_buttons->buttons[         0          ]->rect->get_center().x -
-										colour_buttons->buttons[count_of_buttons - 1]->rect->get_center().x + WIDTH_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
+		thickness_buttons->rect->set_height(HEIGHT_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
+		thickness_buttons->rect->set_width(thickness_buttons->buttons[         0          ]->rect->get_center().x -
+										   thickness_buttons->buttons[count_of_buttons - 1]->rect->get_center().x +
+																							WIDTH_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
 
-		colour_buttons->rect->set_colour(DARK_GREY_2);
+		thickness_buttons->rect->set_colour(DARK_GREY_2);
 	}
 
 	void set_parameters_of_tools_button_manager() {
@@ -143,7 +142,7 @@ class Palette : public View_object {
 			center_tool_buttons += tool_buttons->buttons[i]->rect->get_center();
 		}
 
-		center_tool_buttons /= count_of_buttons;
+		center_tool_buttons /= count_of_buttons;		
 
 		tool_buttons->rect->set_center(center_tool_buttons);
 
@@ -153,17 +152,18 @@ class Palette : public View_object {
 	}	
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-		//printf("check_click palette, active %d\n", is_active);
-		if(colour_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, colour_buttons->rect->get_center().x,
-			//								colour_buttons->rect->get_center().y, colour_buttons->rect->get_width(), colour_buttons->rect->get_height());
-			return colour_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
+		if(thickness_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, thickness_buttons->rect->get_center().x,
+			//								thickness_buttons->rect->get_center().y, thickness_buttons->rect->get_width(), thickness_buttons->rect->get_height());
+			//printf("thickness\n");
+			return thickness_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
 		}
 
 		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			//printf("tools!\n");
 			return tool_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
-			}
+		}
+		
 		return false;
 	}  	
 
@@ -171,7 +171,7 @@ class Palette : public View_object {
 		if(is_visible) {
 			//rect->draw(*render);
 
-			colour_buttons->draw(render, texture, screen);
+			thickness_buttons->draw(render, texture, screen);
 			tool_buttons->draw(render, texture, screen);
 		}
 	}
@@ -180,15 +180,15 @@ class Palette : public View_object {
 		//delete_object()
 		printf("Hello, world!\n");
 
-		colour_buttons->delete_all();
-		delete[] colour_buttons;
+		thickness_buttons->delete_all();
+		delete[] thickness_buttons;
 	}
 
 	void update_view_object_position(const double mouse_x, const double mouse_y) override {
 		update_palette_position(mouse_x, mouse_y);
 	}
 
-	void update_palette_position(const double mouse_x, const double mouse_y) {
+	void update_palette_position(const double mouse_x, const double mouse_y) {  	
 
 		Point mouse(mouse_x, mouse_y);
 		Point delta(tool_buttons->rect->get_center());
@@ -199,13 +199,15 @@ class Palette : public View_object {
 		tool_buttons->rect->set_center(mouse);
 		tool_buttons->update_position_from_delta(delta);
 
-		colour_buttons->rect->set_center( colour_buttons->rect->get_center() - delta );
-		colour_buttons->update_position_from_delta(delta);
+		thickness_buttons->rect->set_center( thickness_buttons->rect->get_center() - delta );
+		thickness_buttons->update_position_from_delta(delta);
+
+		//printf("new (%lg, %lg)\n\n", tool_buttons->rect->get_center().x, tool_buttons->rect->get_center().y);
 	}
 
 	void tick(const double delta_time) override {
 		tool_buttons->tick(delta_time);
-		colour_buttons->tick(delta_time);
+		thickness_buttons->tick(delta_time);
 	}
 };
 

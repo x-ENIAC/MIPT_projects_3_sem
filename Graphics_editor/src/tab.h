@@ -20,58 +20,61 @@ const size_t MAX_SIZE_OF_TEXT_ON_TAB = 20;
 
 class Tab : public View_object {
   public:
-  	Button_manager* button_manager;
-  	size_t number_of_title_in_button_manager;
+	Button_manager* button_manager;
+	size_t number_of_title_in_button_manager;
 
-  	Tab() : View_object() {
-	  	button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
-  	}
+	Tab() : View_object() {
+		button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
+	}
 
-  	Tab(const Point par_center, const double par_width, const double par_height, const Colour par_color, const int par_number_of_tab,
-  								Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active, bool* par_is_alive) :
+	Tab(const Point par_center, const double par_width, const double par_height, const Colour par_color, const int par_number_of_tab,
+								Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active, bool* par_is_alive) :
 	  View_object(par_center, par_width, par_height, par_color, Widget_types::TABS) {
 
-	  	button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
+		button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
 
-	  	add_new_tab(par_center, par_number_of_tab, par_mouse_click_state, par_is_visible, par_is_active, par_is_alive);
-  	}
+		add_new_tab(par_center, par_number_of_tab, par_mouse_click_state, par_is_visible, par_is_active, par_is_alive);
+	}
 
-  	void add_new_tab(const Point par_center, const int par_number_of_tab, 
-  					 Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active, bool* par_is_alive) {
+	void add_new_tab(const Point par_center, const int par_number_of_tab, 
+					 Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active, bool* par_is_alive) {
 
-  		Tab_title_delegate*  tab_title_delegate = new Tab_title_delegate(par_mouse_click_state, par_is_visible, par_is_active);
+		Tab_title_delegate*  tab_title_delegate = new Tab_title_delegate(par_mouse_click_state, par_is_visible, par_is_active);
 
-  		char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
+		char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
 
-  		sprintf(text_on_tab, "canvas %d", par_number_of_tab);
-  		//printf("!!! %s\n", text_on_tab);
+		sprintf(text_on_tab, "canvas %d", par_number_of_tab);
+		//printf("!!! %s\n", text_on_tab);
 
-        Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON,
-        								  text_on_tab, WHITE);
+		Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON,
+										  text_on_tab, WHITE);
 
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_BUTTON);
 		number_of_title_in_button_manager = button_manager->count_of_buttons;
-  		button_manager->add_view_object(title_button);
+		button_manager->add_view_object(title_button);
 
-        //--------------- add close button ---------------------------
+		//--------------- add close button ---------------------------
 
-  		Point center = par_center;
-  		center += Point(WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0, 0);
+		Point center = par_center;
+		center += Point(WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0, 0);
 
-  		Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, par_is_alive);
 
-        Button* close_button = new Button(close_delegate, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
-        close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
-  		button_manager->add_view_object(close_button);  
+		Button* close_button = new Button(NULL, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
+		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
 
-  		//printf("\nend add new tab %p\n\n", par_mouse_click_state);
-  	}
+		Close_delegate*  close_delegate = new Close_delegate(close_button->texture, par_mouse_click_state, par_is_alive);
+		close_button->delegate = close_delegate;
 
-  	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-  		//printf("click Tab\n");
-              		
-  		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
-  	}
+		button_manager->add_view_object(close_button);  
+
+		//printf("\nend add new tab %p\n\n", par_mouse_click_state);
+	}
+
+	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+		//printf("click Tab\n");
+					
+		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
+	}
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		//rect->draw(*render);
@@ -91,9 +94,9 @@ class Tab : public View_object {
 
 	void update_tabs_offset(const Point new_center) {
 		//printf("... (%lg, %lg)\n", new_center.x, new_center.y);
-		Point old_center(center);
+		Point old_center(rect->get_center());
 
-		center = rect->center = new_center;
+		rect->center = new_center;
 
 		Point new_left_up_corner = rect->get_left_up_corner();
 
@@ -115,14 +118,17 @@ class Tab : public View_object {
 			if(button_manager->buttons[number_of_title_in_button_manager]->view_objects[i]->yourself_type == Widget_types::TEXT) {
 				Text* text = (Text*)(button_manager->buttons[number_of_title_in_button_manager]->view_objects[i]);
 
-		  		char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
-  				sprintf(text_on_tab, "canvas %d", new_number);
+				char text_on_tab[MAX_SIZE_OF_TEXT_ON_TAB];
+				sprintf(text_on_tab, "canvas %ld", new_number);
 				
-				//text->text = text_on_tab;
 				strcpy(text->text, text_on_tab);
 			}
 		}
-	}	
+	}
+
+	void tick(const double delta_time) override {
+		button_manager->tick(delta_time);
+	}
 };
 
 #endif

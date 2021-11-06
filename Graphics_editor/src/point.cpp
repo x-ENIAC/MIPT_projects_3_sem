@@ -34,14 +34,14 @@ bool intersection_of_segments(Point first_begin, Point first_end, Point second_b
 
 bool segment_into_segment(Point first_begin, Point first_end, Point second_begin, Point second_end) {
 	return ((first_begin.x <= second_begin.x && second_end.x <= first_end.x) ||
-	        (first_begin.x <= second_end.x && second_begin.x <= first_end.x) ||
+			(first_begin.x <= second_end.x && second_begin.x <= first_end.x) ||
 
- 	        (first_begin.y <= second_begin.y && second_end.y <= first_end.y) ||
-  	        (first_begin.y <= second_end.y && second_begin.y <= first_end.y) ||
+			(first_begin.y <= second_begin.y && second_end.y <= first_end.y) ||
+			(first_begin.y <= second_end.y && second_begin.y <= first_end.y) ||
 
-		    (second_begin.x <= first_begin.x && first_end.x <= second_end.x) ||
-	        (second_begin.x <= first_end.x && first_begin.x <= second_end.x) ||
-	       
-	        (second_begin.y <= first_begin.y && first_end.y <= second_end.y) ||
-	        (second_begin.y <= first_end.y && first_begin.y <= second_end.y));       
+			(second_begin.x <= first_begin.x && first_end.x <= second_end.x) ||
+			(second_begin.x <= first_end.x && first_begin.x <= second_end.x) ||
+		   
+			(second_begin.y <= first_begin.y && first_end.y <= second_end.y) ||
+			(second_begin.y <= first_end.y && first_begin.y <= second_end.y));       
 }

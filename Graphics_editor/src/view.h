@@ -24,7 +24,6 @@ const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
 
 class View_object {
   public:
-	Point center;
 	Colour color;
 
 	Rectangle* rect;
@@ -36,11 +35,11 @@ class View_object {
 	bool is_visible;
 	bool is_active;
 	bool is_alive;
+	bool is_reactive;
 
 	View_object(const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
 				const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) {
 		
-		center = Point(0, 0);
 		color = {0, 0, 0, 0};
 
 		rect = new Rectangle;
@@ -57,14 +56,13 @@ class View_object {
 		strcpy(texture->path_to_picture, par_path_to_picture);
 		//printf("!!! %s\n", path_to_picture);
 
-		is_visible = is_active = is_alive = true;
+		is_visible = is_active = is_alive = is_reactive = true;
 	}
 
 	View_object(const Point par_center, const double par_width, const double par_height,
-			    const Colour par_color, const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
-			    const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) {
+				const Colour par_color, const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
+				const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) {
 
-		center = par_center;
 		color = par_color;
 
 		rect = new Rectangle(par_center, par_width, par_height, par_color, false);
@@ -92,9 +90,18 @@ class View_object {
 		// delete[] widget_types;
 	}
 
-	virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
-		if(is_visible)
+	virtual void draw(SDL_Renderer** render, SDL_Texture** par_texture, SDL_Surface** screen) {
+		if(is_visible) {
 			rect->draw(*render);
+
+			SDL_Rect sdl_rect;
+			sdl_rect.w = rect->get_width();
+			sdl_rect.h = rect->get_height();
+			sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
+			sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
+
+			texture->draw_texture(&sdl_rect);
+		}
 	}
 
 	virtual bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) {
@@ -119,10 +126,19 @@ class View_object {
 		printf("end VIEW_OBJECT delete_all\n");
 	}
 
-    void update_position(Point delta) {
-        center -= delta;
-        rect->set_center(rect->get_center() - delta);     
-    }	
+	void update_position_from_delta(Point delta) {
+		//center -= delta;
+		rect->set_center(rect->get_center() - delta);     
+	}
+
+	virtual void update_view_object_position(const double mouse_x, const double mouse_y) {}
+
+	virtual void tick(const double delta_time) {}
+
+	/*void update_position(const double mouse_x, const double mouse_y) {
+		center = Point(mouse_x, mouse_y);
+		rect->set_center(center); 
+	}*/
 };
 
 #endif

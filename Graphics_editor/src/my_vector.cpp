@@ -34,35 +34,35 @@ double Vector::get_cos_of_angle_between_vectors(const Vector& vector) const {
 }
 
 double Vector::get_x_begin() const {
-  	return point_begin.x;
+	return point_begin.x;
 }
 
 double Vector::get_y_begin() const {
-  	return point_begin.y;
+	return point_begin.y;
 }
 
 double Vector::get_x_end() const {
-  	return point_end.x;
+	return point_end.x;
 }
 
 double Vector::get_y_end() const {
-  	return point_end.y;
+	return point_end.y;
 } 
 
 void Vector::set_x_begin(const double new_x_begin) {
-  	point_begin.x = new_x_begin;
+	point_begin.x = new_x_begin;
 }
 
 void Vector::set_y_begin(const double new_y_begin) {
-  	point_begin.y = new_y_begin;
+	point_begin.y = new_y_begin;
 }
 
 void Vector::set_x_end(const double new_x_end) {
-  	point_end.x = new_x_end;
+	point_end.x = new_x_end;
 }
 
 void Vector::set_y_end(const double new_y_end) {
-  	point_end.y = new_y_end;
+	point_end.y = new_y_end;
 }
 
 Vector& Vector::operator=(const Vector& vector) {

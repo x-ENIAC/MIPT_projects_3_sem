@@ -23,34 +23,34 @@ const double DOUBLE_SUBTRACTION_DELTA = 0.000001;
 class Vector {
   public:
 
-  	Vector() {
-  		point_begin = Point(0., 0.);
-  		point_end   = Point(0., 0.);
-  	}
+	Vector() {
+		point_begin = Point(0., 0.);
+		point_end   = Point(0., 0.);
+	}
 
-  	Vector(const Point par_point_begin, const Point par_point_end) {
-  		point_begin = par_point_begin ;
-  		point_end 	= par_point_end;
-  	}
+	Vector(const Point par_point_begin, const Point par_point_end) {
+		point_begin = par_point_begin ;
+		point_end 	= par_point_end;
+	}
 
 
-  	Vector& operator=(const Vector& vector);
+	Vector& operator=(const Vector& vector);
 
-  	Vector& operator+=(const Vector& vector);
+	Vector& operator+=(const Vector& vector);
 
-  	Vector& operator-=(const Vector& vector);
+	Vector& operator-=(const Vector& vector);
 
-  	Vector& operator*=(const double coeff);
+	Vector& operator*=(const double coeff);
 
-  	Vector& operator/=(const double coeff);
+	Vector& operator/=(const double coeff);
 
-  	friend double operator*(const Vector& first_vector, const Vector& second_vector);
+	friend double operator*(const Vector& first_vector, const Vector& second_vector);
 
-  	double scalar_multiplication(const Vector& vector) const {
+	double scalar_multiplication(const Vector& vector) const {
 
-  		return (point_end.x - point_begin.x) * (vector.get_point_end().x - vector.get_point_begin().x) + 
-  			   (point_end.y - point_begin.y) * (vector.get_point_end().y - vector.get_point_begin().y);
-  	}  	
+		return (point_end.x - point_begin.x) * (vector.get_point_end().x - vector.get_point_begin().x) + 
+			   (point_end.y - point_begin.y) * (vector.get_point_end().y - vector.get_point_begin().y);
+	}  	
 	
 
 	Vector reflect_vector(const Vector& normal_vector) {
@@ -80,50 +80,50 @@ class Vector {
 		return *this;
 	}
 
-    double get_length_vector() const;	
+	double get_length_vector() const;	
 
 	void rotate_clockwize_vector(const double delta_angle);
 
 	double get_cos_of_angle_between_vectors(const Vector& vector) const;
 
-  	double get_x_begin() const;
+	double get_x_begin() const;
 
-  	double get_y_begin() const;
+	double get_y_begin() const;
 
-  	double get_x_end() const;
+	double get_x_end() const;
 
-  	double get_y_end() const;
+	double get_y_end() const;
 
-  	double get_angle() const;
+	double get_angle() const;
 
-  	void set_x_begin(const double new_x_begin);
+	void set_x_begin(const double new_x_begin);
 
-  	void set_y_begin(const double new_y_begin);
+	void set_y_begin(const double new_y_begin);
 
-  	void set_x_end(const double new_x_end);
+	void set_x_end(const double new_x_end);
 
-  	void set_y_end(const double new_y_end);
+	void set_y_end(const double new_y_end);
 
-  	Point get_point_begin() const {
-  		return point_begin;
-  	}
+	Point get_point_begin() const {
+		return point_begin;
+	}
 
-  	Point get_point_end() const {
-  		return point_end;
-  	}
+	Point get_point_end() const {
+		return point_end;
+	}
 
-  	void set_point_begin(const Point new_point_begin) {
-  		point_begin = new_point_begin;
-  	}
+	void set_point_begin(const Point new_point_begin) {
+		point_begin = new_point_begin;
+	}
 
-  	void set_point_end(const Point new_point_end) {
-  		point_end = new_point_end;
-  	}  	
+	void set_point_end(const Point new_point_end) {
+		point_end = new_point_end;
+	}  	
 
   private:
 
-  	Point point_begin;
-  	Point point_end;
+	Point point_begin;
+	Point point_end;
 };
 
 
