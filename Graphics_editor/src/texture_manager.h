@@ -5,7 +5,7 @@
 #ifndef TEXTURE_MANAGER_H
 #define TEXTURE_MANAGER_H
 
-const size_t MAX_SIZE_OF_TEXTURES_ARRAY = 30;
+const size_t MAX_SIZE_OF_TEXTURES_ARRAY = 50;
 const char NON_PATH_TO_PUCTURE[] = "non_picture";
 
 const char PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON[]   = "textures/black_close.bmp";
@@ -23,6 +23,11 @@ const char PATH_TO_PICTURE_WITH_GREY_1_BUTTON[]	 = "textures/grey_1.bmp";
 const char PATH_TO_PICTURE_WITH_GREY_2_BUTTON[]	 = "textures/grey_2.bmp";
 const char PATH_TO_PICTURE_WITH_GREY_3_BUTTON[]	 = "textures/grey_3.bmp";
 const char PATH_TO_PICTURE_WITH_GREY_4_BUTTON[]	 = "textures/grey_4.bmp";
+
+const char PATH_TO_PICTURE_WITH_PALETTE_BUTTON[]  	   = "textures/black_palette.bmp";
+const char PATH_TO_PICTURE_WITH_THICKNESS_BUTTON[] 	   = "textures/black_thickness.bmp";
+const char PATH_TO_PICTURE_WITH_INTERPOLATION_BUTTON[] = "textures/black_interpolation.bmp";
+const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[] 	   = "textures/black_canvas.bmp";
 
 struct Texture {
 	SDL_Texture* texture;
@@ -46,6 +51,7 @@ struct Texture {
 		strcpy(path_to_picture, par_path_to_picture);
 
 		is_using_texture = true;
+		//printf("!\n");
 	}
 
 	void update_texture(const char par_path_to_picture[]) {

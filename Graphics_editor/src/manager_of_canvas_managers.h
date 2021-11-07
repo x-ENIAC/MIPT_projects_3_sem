@@ -112,6 +112,26 @@ class Manager_of_canvas_managers : public View_object {
 		return false;
 	}
 
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		if(rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+		   rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )		) {
+
+			if(button_manager->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+				return true;
+			}
+
+			for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
+				if(canvas_managers[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	void set_new_active_object(const int new_active);
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {

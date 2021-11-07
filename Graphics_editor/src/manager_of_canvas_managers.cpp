@@ -142,7 +142,6 @@ void Manager_of_canvas_managers::update_canvas_manager_position(const double mou
 
 	any_canvas_center -= delta;
 
-	//center -= delta;
 	rect->set_center(rect->get_center() - delta);
 
 	button_manager->rect->set_center(mouse);

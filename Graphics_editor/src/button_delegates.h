@@ -25,12 +25,10 @@ class Close_delegate : public Button_delegate {
   public:
 
 	View_object* view_object;
-	//Texture* texture;
 	Mouse_click_state* mouse_click_state;
 	bool* is_alive;
 
 	Close_delegate(View_object* par_view_object, Mouse_click_state* par_mouse_click_state, bool* par_is_alive) {
-		//view_object_manager = par_view_object_manager;
 		view_object = par_view_object;
 		mouse_click_state = par_mouse_click_state;
 		is_alive = par_is_alive;
@@ -46,8 +44,16 @@ class Close_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {
-		anim_manager->add_animation(render, "textures/black_close.bmp", "textures/grey_1_close.bmp", view_object, TIME_DELTA * 10);
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {
+		bool old_lie = view_object->rect->is_point_belongs_to_rectangle(old_mouse);
+		bool now_lie = view_object->rect->is_point_belongs_to_rectangle(now_mouse);
+
+		if(!old_lie && now_lie)
+			anim_manager->add_animation(render, view_object->texture->path_to_picture, "textures/grey_1_close.bmp", view_object, TIME_DELTA);
+		
+		else
+		if(old_lie && !now_lie)
+			anim_manager->add_animation(render, view_object->texture->path_to_picture, "textures/black_close.bmp", view_object, TIME_DELTA);
 	}
 };
 
@@ -79,7 +85,7 @@ class Roll_up_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {
 		//anim_manager->add_animation(render, "textures/black_close.bmp", "textures/grey_1_close.bmp", view_object, TIME_DELTA * 10);		
 	}
 };
@@ -113,7 +119,7 @@ class Tab_title_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -134,7 +140,7 @@ class Open_panel_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -159,7 +165,7 @@ class Change_colour_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -184,7 +190,7 @@ class Change_thickness_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -205,7 +211,7 @@ class Open_window_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -234,7 +240,7 @@ class Title_delegate : public Button_delegate {
 		view_object->update_view_object_position(mouse_x, mouse_y);
 	}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 
@@ -260,7 +266,7 @@ class Create_new_canvas_delegate : public Button_delegate {
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
-	void reactive_reaction(const double mouse_x, const double mouse_y) override {}
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
 };
 
 

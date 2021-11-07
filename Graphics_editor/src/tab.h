@@ -76,6 +76,12 @@ class Tab : public View_object {
 		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
 	}
 
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		return button_manager->check_motion(old_mouse, now_mouse, par_mouse_status);
+	}
+
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		//rect->draw(*render);
 		//printf("!!! tab center (%lg, %lg)\n", rect->center.x, rect->center.y);

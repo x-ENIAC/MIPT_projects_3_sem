@@ -12,6 +12,7 @@
 
 #include "button_delegate.h"
 #include "text.h"
+#include "chart.h"
 
 
 SDL_Renderer* render;
@@ -78,6 +79,10 @@ int main() {
 	SDL_Texture* texture = NULL;
 	TTF_Font*       font = NULL;
 	SDL_Surface* screen  = NULL;
+
+	printf("%d, %d, %d, %d\n", SDL_MOUSEWHEEL, SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN, SDL_MOUSEMOTION);
+	printf("%d, %d\n", SDL_WINDOWEVENT, SDL_SYSWMEVENT);
+	printf("%d %d %d %d %d\n", SDL_KEYDOWN, SDL_KEYUP, SDL_TEXTEDITING, SDL_TEXTINPUT, SDL_KEYMAPCHANGED);
 
 	SDL_STATUSES sdl_status = initialize(&window, &render, &texture, &screen, &font);
 	CHECK_SDL_STATUS

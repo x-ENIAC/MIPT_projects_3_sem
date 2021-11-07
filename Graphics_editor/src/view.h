@@ -105,8 +105,12 @@ class View_object {
 	}
 
 	virtual bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) {
-		if(is_active)
-			return true;
+		//if(is_active)
+		//	return true;
+		return false;
+	}
+
+	virtual bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) {
 		return false;
 	}
 

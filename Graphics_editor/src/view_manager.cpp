@@ -31,5 +31,5 @@ void View_manager::fill_tools_button_manager(Point left_up_corner, const double 
 	Button* help_panel_button = new Button(open_panel_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 										   "Help", BLACK);
 	help_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_HELP_BUTTON);
-	tool_buttons_manager->add_view_object(help_panel_button);
+	tool_buttons_manager->add_view_object(help_panel_button);	
 }

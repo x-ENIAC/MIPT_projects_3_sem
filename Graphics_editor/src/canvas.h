@@ -43,7 +43,7 @@ class Canvas : public View_object {
 
     Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color, Pencil* par_pencil
                                 /*const Button_owner par_owner, */) :
-        View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS) {
+      View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS) {
 
         cells_color = (Cell**)calloc(par_width + 1, sizeof(Cell*));
 

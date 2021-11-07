@@ -39,6 +39,23 @@ class Point {
 		SDL_RenderDrawPoint(render, x, y); 
 	}
 
+	inline void draw_big_point(SDL_Renderer* render, const int radius) {
+		int radius_2 = radius * radius;
+
+		SDL_SetRenderDrawColor(render, color.red, color.blue, color.green, color.alpha);
+
+		int max_x = x + radius;
+		for(int i = x - radius; i <= max_x; ++i) {
+
+			int max_y = y + radius;
+			for(int j = y - radius; j <= max_y; ++j) {
+
+				if((i - x) * (i - x) + (j - y) * (j - y) <= radius * radius)
+					SDL_RenderDrawPoint(render, i, j);
+			}
+		}
+	}	
+
 	Point& operator=(const Point& point) {
 		x = point.x;
 		y = point.y;

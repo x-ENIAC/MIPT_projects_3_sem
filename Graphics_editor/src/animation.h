@@ -47,10 +47,10 @@ class Animation {
 
 		time_alive -= delta_time;
 
-		if(time_alive <= 0) {
-			view->texture->set_texture(old_texture);
+		//if(time_alive <= 0) {
+		//	view->texture->set_texture(old_texture);
 			//printf("@@@\n");
-		}
+		//}
 	}
 
 	inline bool is_alive() const {

@@ -163,9 +163,26 @@ class Palette : public View_object {
 		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			//printf("tools!\n");
 			return tool_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
-			}
+		}
 		return false;
-	}  	
+	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+
+		if(colour_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+		   colour_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )	) {
+
+			return colour_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
+		}
+
+		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+		   tool_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+
+			return tool_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
+		}
+
+		return false;
+	}	
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {

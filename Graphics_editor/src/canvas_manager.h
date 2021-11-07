@@ -151,7 +151,35 @@ class Canvas_manager : public View_object {
 		}
 
 		return false;
-	}   
+	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		if(tab->check_motion(old_mouse, now_mouse, par_mouse_status))
+			return true;
+
+		if(is_active) {
+
+			if(rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+			   rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+
+				for(int i = count_of_views - 1; i >= 0; --i) {
+
+					/*printf("\t\tcheck_motion Canvas_manager, type %d\n", (int)view_objects[i]->yourself_type);
+					printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg), width %lg, height %lg\n", 
+									rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
+									view_objects[i]->center.x, view_objects[i]->center.y, view_objects[i]->rect->get_width(), view_objects[i]->rect->get_height());
+					*/
+					if(view_objects[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}		
 
 	virtual void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
 		//rect->draw(*render);

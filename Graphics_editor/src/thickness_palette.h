@@ -165,7 +165,26 @@ class Thickness_palette : public View_object {
 		}
 		
 		return false;
-	}  	
+	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		if(thickness_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+		   thickness_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, thickness_buttons->rect->get_center().x,
+			//								thickness_buttons->rect->get_center().y, thickness_buttons->rect->get_width(), thickness_buttons->rect->get_height());
+			return thickness_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
+		}
+
+		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
+		   tool_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+			//printf("tools!\n");
+			return tool_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
+		}
+
+		return false;
+	}		
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {

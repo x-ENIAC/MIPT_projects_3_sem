@@ -7,6 +7,7 @@
 #include "palette.h"
 #include "thickness_palette.h"
 #include "tab.h"
+#include "chart.h"
 
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
@@ -25,9 +26,9 @@ const double WIDTH_FILE_PANEL_BUTTON = 60;
 const double WIDTH_TOOLS_WIDGET      = 100;
 const double HEIGHT_TOOLS_WIDGET     = 100;
 
-const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 400);
-const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 600;
-const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 600;
+const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 600);
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 400;
+const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 200;
 
 class View_manager : public View_object {
   public:
@@ -42,7 +43,7 @@ class View_manager : public View_object {
 
 	Mouse_click_state mouse_click_state;
 
-	//Animation_manager* animation_manager;
+	Point old_pos_mouse, now_pos_mouse;
 
 	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color/*, Animation_manager* par_animation_manager*/) :
 	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
@@ -63,8 +64,10 @@ class View_manager : public View_object {
 		manager_of_canvas_managers = new Manager_of_canvas_managers(CENTER_MANAGER_OF_CANVAS_MANAGERS,
 																	WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
-																	LIGHT_LIGHT_GREY, &pencil, 
-																	false, &mouse_click_state);
+																	LIGHT_LIGHT_GREY,
+																	&pencil, 
+																	false,
+																	&mouse_click_state);
 
 		Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
 		center_of_button_manager += left_up_corner;
@@ -86,7 +89,7 @@ class View_manager : public View_object {
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 		Button* colour_palette_button = new Button(open_colour_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 											   "Palette 1", BLACK);
-		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_HELP_BUTTON);
+		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_PALETTE_BUTTON);
 		tool_buttons_manager->add_view_object(colour_palette_button);
 
 		// ----------------------- add thickness palette ---------------------------------------------------------- \\	    
@@ -99,11 +102,41 @@ class View_manager : public View_object {
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 		Button* thickness_palette_button = new Button(open_thickness_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 											   "Palette 2", BLACK);
-		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_HELP_BUTTON);
+		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
 		tool_buttons_manager->add_view_object(thickness_palette_button);
+
+		Chart* chart = new Chart(Point(600, 300), 200, 200, GREEN, &pencil, false, &mouse_click_state);
+		add_view_object(chart);
+
+		// ----------------------- add interpolation screen ---------------------------------------------------------- \\
+
+		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
+		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
+
+		Open_window_delegate* open_interpol_delegate = new Open_window_delegate(&(chart->is_visible));
+
+		Button* interpol_panel_button = new Button(open_interpol_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
+											   "Interpolation", BLACK);
+
+		interpol_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_INTERPOLATION_BUTTON);
+		tool_buttons_manager->add_view_object(interpol_panel_button);
+
+		// ----------------------- add canvases ---------------------------------------------------------- \\
+
+		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
+		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
+
+		Open_window_delegate* open_canvases_delegate = new Open_window_delegate(&(manager_of_canvas_managers->is_visible));
+
+		Button* canvas_panel_button = new Button(open_canvases_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
+											   "Canvases", BLACK);
+		canvas_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CANVAS_BUTTON);
+		tool_buttons_manager->add_view_object(canvas_panel_button);
 
 		//sdl_ticks = SDL_GetTicks();
 		//printf("%d\n", sdl_ticks);
+
+		old_pos_mouse = now_pos_mouse = Point(0, 0);
 	}
 
 	void fill_tools_button_manager(Point left_up_corner, const double par_width, const double par_height);
@@ -145,28 +178,10 @@ class View_manager : public View_object {
 		}
 	}
 
-	/*bool try_to_find_corpse() {
-		for(size_t i = 0; i < count_of_view_objects; ++i) {
-			if(view_objects[i]->is_visible && !view_objects[i]->is_active)
-				view_objects[i]->delete_object();
-		}		
-	}
-
-	bool delete_object() override {
-		//delete_object()
-		printf("Hello, world!\n");
-
-		for(size_t i = 1; i < count_of_view_objects; ++i) {
-			printf("type %d\n", view_objects[i]->get_yourself_type());
-			view_objects[i]->delete_object();
-		}
-
-		return false;		
-	}*/
-
 	void check_events(SDL_Event* event) {
 		double x_mouse = event->button.x, y_mouse = event->button.y;
 
+		//printf("%d\n", event->type);
 		if(event->type == SDL_MOUSEBUTTONUP) {
 			//printf("up\n");
 			mouse_click_state = Mouse_click_state::MOUSE_UP;
@@ -179,28 +194,26 @@ class View_manager : public View_object {
 			
 
 			bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
-			//if(!is_solved)
-			//	printf("!!!WARNING!!!\n");
 		}		
 
 		else if(event->type == SDL_MOUSEMOTION) {
-			//mouse_click_state = Mouse_click_state::MOUSE_MOTION;
 
 			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN || mouse_click_state == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
 				mouse_click_state = Mouse_click_state::MOUSE_DOWN_AND_MOTION;
+				bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
 
 			} else {
 				mouse_click_state = Mouse_click_state::MOUSE_MOTION;
 				//printf("motion\n");
-			}
 
-			check_click(x_mouse, y_mouse, &mouse_click_state);			
+				now_pos_mouse = {x_mouse, y_mouse};
+				bool is_solved = check_motion(old_pos_mouse, now_pos_mouse, &mouse_click_state);
+				old_pos_mouse = now_pos_mouse;
+			}
 		}
 
 		else if(event->type == SDL_KEYDOWN) {
 			bool is_solved = check_tap(event);
-			if(!is_solved)
-				printf("!!!WARNING!!!\n");
 		}
 	}
 
@@ -216,7 +229,6 @@ class View_manager : public View_object {
 
 			//printf("click View_manager\n");
 			for(int i = count_of_view_objects - 1; i >= 0; --i) {
-				//printf("type %d\n", get_yourself_type());
 				if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 					set_new_active_object(i);
 					find_not_alive();
@@ -226,6 +238,26 @@ class View_manager : public View_object {
 		}
 
 		find_not_alive();
+		return false;
+	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		if(is_active) {
+
+			if(manager_of_canvas_managers->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+				return true;
+			}
+
+			//printf("click View_manager\n");
+			for(int i = count_of_view_objects - 1; i >= 0; --i) {
+				if(view_objects[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 

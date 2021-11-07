@@ -61,12 +61,12 @@ class Button_manager : public View_object {
 					buttons[i]->delegate->motion_reaction(mouse_x, mouse_y);
 				}
 
-				else
-				/*if(*par_mouse_status == Mouse_click_state::MOUSE_UP || */
+				/*else
+				/*if(*par_mouse_status == Mouse_click_state::MOUSE_UP || 
 				if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
 					//printf("button up | motion\n");
 					buttons[i]->delegate->reactive_reaction(mouse_x, mouse_y);
-				}
+				}*/
 
 				return true;
 			}
@@ -76,6 +76,24 @@ class Button_manager : public View_object {
 
 		return false;
 	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		//printf("\n\nview_manager check_click\n");
+
+		for(size_t i = 0; i < count_of_buttons; ++i) {
+
+			if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) ) ||
+			   buttons[i]->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) )	) {
+
+				//if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
+					//printf("motion\n");
+					buttons[i]->delegate->reactive_reaction(old_mouse, now_mouse);
+				//}
+			}
+		}
+
+		return false;
+	}		
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		rect->draw(*render);
