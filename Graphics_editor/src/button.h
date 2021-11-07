@@ -81,15 +81,27 @@ class Button : public View_object {
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
 				delegate->click_reaction(mouse_x, mouse_y);
 
-			else
-			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION)
-				delegate->motion_reaction(mouse_x, mouse_y);
-
 			return true;
 		}
 
 		return false;
 	}
+
+	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+		if(rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) )) {
+			//printf("!!! %d\n", *par_mouse_status);
+			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION)
+				delegate->motion_reaction(now_mouse.x, now_mouse.y);
+
+			else
+			if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION)
+				delegate->reactive_reaction(old_mouse, now_mouse);				
+
+			return true;
+		}
+
+		return false;
+	}	
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {

@@ -45,3 +45,8 @@ bool segment_into_segment(Point first_begin, Point first_end, Point second_begin
 			(second_begin.y <= first_begin.y && first_end.y <= second_end.y) ||
 			(second_begin.y <= first_end.y && first_begin.y <= second_end.y));       
 }
+
+int compare(const void* p1, const void* p2) {
+	Point p1_ = *(Point*)p1, p2_ = *(Point*)p2;
+	return (p1_.x > p2_.x || p1_.x == p2_.x && p1_.y > p2_.y);
+}

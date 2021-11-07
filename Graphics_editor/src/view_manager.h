@@ -183,12 +183,10 @@ class View_manager : public View_object {
 
 		//printf("%d\n", event->type);
 		if(event->type == SDL_MOUSEBUTTONUP) {
-			//printf("up\n");
 			mouse_click_state = Mouse_click_state::MOUSE_UP;
-
-			//bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
 		}
 
+		else
 		if(event->type == SDL_MOUSEBUTTONDOWN) {
 			mouse_click_state = Mouse_click_state::MOUSE_DOWN;
 			
@@ -200,16 +198,16 @@ class View_manager : public View_object {
 
 			if(mouse_click_state == Mouse_click_state::MOUSE_DOWN || mouse_click_state == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
 				mouse_click_state = Mouse_click_state::MOUSE_DOWN_AND_MOTION;
-				bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
+				//bool is_solved = check_motion(old_pos_mouse, now_pos_mouse, &mouse_click_state);
 
-			} else {
+			} else 
 				mouse_click_state = Mouse_click_state::MOUSE_MOTION;
 				//printf("motion\n");
 
-				now_pos_mouse = {x_mouse, y_mouse};
-				bool is_solved = check_motion(old_pos_mouse, now_pos_mouse, &mouse_click_state);
-				old_pos_mouse = now_pos_mouse;
-			}
+			now_pos_mouse = {x_mouse, y_mouse};
+			bool is_solved = check_motion(old_pos_mouse, now_pos_mouse, &mouse_click_state);
+			old_pos_mouse = now_pos_mouse;
+			
 		}
 
 		else if(event->type == SDL_KEYDOWN) {

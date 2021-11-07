@@ -75,7 +75,7 @@ class Chart : public View_object {
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
         if(canvas->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
-            //printf("chart canvas!\n");
+            //printf("click chart canvas!\n");
             return canvas->check_click(mouse_x, mouse_y, par_mouse_status);
         }
 
@@ -91,7 +91,7 @@ class Chart : public View_object {
     bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
         if(canvas->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||
            canvas->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y))) {
-            //printf("chart canvas!\n");
+            //printf("motion chart canvas!\n");
             return canvas->check_motion(old_mouse, now_mouse, par_mouse_status);
         }
 
