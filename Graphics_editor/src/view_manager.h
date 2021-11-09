@@ -216,11 +216,12 @@ class View_manager : public View_object {
 	}
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-		//printf("\n\nview_manager check_click\n");
+		printf("\n\nview_manager check_click\n");
 
 		if(is_active) {
 
 			if(manager_of_canvas_managers->check_click(mouse_x, mouse_y, par_mouse_status)) {
+				printf("manager_of_canvas_managers\n");
 				find_not_alive();
 				return true;
 			}
@@ -228,7 +229,7 @@ class View_manager : public View_object {
 			//printf("click View_manager\n");
 			for(int i = count_of_view_objects - 1; i >= 0; --i) {
 				if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
-					set_new_active_object(i);
+					//set_new_active_object(i);
 					find_not_alive();
 					return true;
 				}

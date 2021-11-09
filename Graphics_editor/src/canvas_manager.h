@@ -138,11 +138,6 @@ class Canvas_manager : public View_object {
 
 				for(int i = count_of_views - 1; i >= 0; --i) {
 
-					/*printf("\t\tcheck_click Canvas_manager, type %d\n", (int)view_objects[i]->yourself_type);
-					printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg), width %lg, height %lg\n", 
-									rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
-									view_objects[i]->center.x, view_objects[i]->center.y, view_objects[i]->rect->get_width(), view_objects[i]->rect->get_height());
-					*/
 					if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 						return true;
 					}
@@ -155,9 +150,12 @@ class Canvas_manager : public View_object {
 
 	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
 		//printf("\n\nview_manager check_click\n");
+		//printf("canvas check_motion\n");
 
-		if(tab->check_motion(old_mouse, now_mouse, par_mouse_status))
+		if(tab->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+			printf("tab...\n");
 			return true;
+		}
 
 		if(is_active) {
 
@@ -166,11 +164,6 @@ class Canvas_manager : public View_object {
 
 				for(int i = count_of_views - 1; i >= 0; --i) {
 
-					/*printf("\t\tcheck_motion Canvas_manager, type %d\n", (int)view_objects[i]->yourself_type);
-					printf("\t - (((, mouse (%lg, %lg), center (%lg, %lg), width %lg, height %lg\n", 
-									rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
-									view_objects[i]->center.x, view_objects[i]->center.y, view_objects[i]->rect->get_width(), view_objects[i]->rect->get_height());
-					*/
 					if(view_objects[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
 						return true;
 					}
@@ -186,7 +179,7 @@ class Canvas_manager : public View_object {
 
 		if(is_visible && is_active) {
 			for(size_t i = 0; i < count_of_views; ++i)
-				view_objects[i]->draw(render, texture, screen/*, texture_manager*/);
+				view_objects[i]->draw(render, texture, screen);
 		}
 		
 		if(is_active) {
@@ -211,12 +204,9 @@ class Canvas_manager : public View_object {
 		//center -= delta;
 		rect->set_center(delta - rect->get_center());
 
-		//printf("tab (%lg, %lg) -> \n", tab->rect->get_center().x, tab->rect->get_center().y);
-		//tab->center -= delta;
 		tab->rect->set_center(tab->rect->get_center() - delta);
 
 		tab->button_manager->update_position_from_delta(delta);
-		//printf("(%lg, %lg)\n", tab->rect->get_center().x, tab->rect->get_center().y);
 
 		for(size_t i = 0; i < count_of_views; ++i) {
 			view_objects[i]->update_position_from_delta(delta);

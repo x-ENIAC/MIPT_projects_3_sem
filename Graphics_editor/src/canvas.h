@@ -61,7 +61,7 @@ class Canvas : public View_object {
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
         if(is_active) {
-            if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION || *par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
+            if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
                 if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
                     Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
@@ -74,6 +74,25 @@ class Canvas : public View_object {
 
         return false;
     }
+
+    bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
+        //printf("canvas check_motion\n");
+        if(is_active) {
+            double mouse_x = now_mouse.x, mouse_y = now_mouse.y;
+
+            if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
+                if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+
+                    Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color     = pencil->get_color();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness = pencil->get_thickness();
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }    
 
     void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
         if(is_visible) {

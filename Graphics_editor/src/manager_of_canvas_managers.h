@@ -74,7 +74,7 @@ class Manager_of_canvas_managers : public View_object {
 	void add_new_canvas_manager();
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-		//printf("view_manager check_click, now active %d\n", who_is_active);
+		printf("view_manager check_click, now active %d\n", who_is_active);
 
 		//if(is_active) {
 
@@ -89,9 +89,9 @@ class Manager_of_canvas_managers : public View_object {
 
 				for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
 
-					/*printf("\tcall canvas_manager number %d - (is belong %d) (((, mouse (%lg, %lg), center (%lg, %lg)\n", i,
+					printf("\tcall canvas_manager number %d - (is belong %d) (((, mouse (%lg, %lg), center (%lg, %lg)\n", i,
 									rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
-									canvas_managers[i]->center.x, canvas_managers[i]->center.y);*/
+									canvas_managers[i]->rect->center.x, canvas_managers[i]->rect->center.y);
 
 					if(canvas_managers[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 

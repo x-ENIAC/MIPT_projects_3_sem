@@ -45,6 +45,9 @@ class Interpolation_canvas : public View_object {
 
 		add_point(rect->get_left_up_corner().x, rect->get_left_up_corner().y + par_height);
 		add_point(rect->get_left_up_corner().x + par_width, rect->get_left_up_corner().y);
+
+		add_point(rect->get_left_up_corner().x + 30, rect->get_left_up_corner().y + 50);
+		//add_point(rect->get_left_up_corner().x + 70, rect->get_left_up_corner().y + 160);
 	}
 
 	~Interpolation_canvas() {
@@ -53,15 +56,15 @@ class Interpolation_canvas : public View_object {
 	}
 
 	void add_point(const double x, const double y, const Colour color = BLACK) {
-		Interpolation_point* new_point = new Interpolation_point(Point(x, y), color, mouse_click_state, interpolator->count_of_points);
+		visual_points[(int)(x - rect->get_left_up_corner().x)].y = y;
+		int now_index = interpolator->add_point(Point(x, y));
+
+		Interpolation_point* new_point = new Interpolation_point(Point(x, y), color, mouse_click_state, now_index);
 		points[count_of_points] = new_point;
 		++count_of_points;
 
-		visual_points[(int)(x - rect->get_left_up_corner().x)].y = y; //  - rect->get_left_up_corner().y
-		interpolator->add_point(Point(x, y));
-
-		if(count_of_points > 1) {
-			interpolator->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
+		if(count_of_points >= 4) {
+			interpolator->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
 		}
 	}
 
@@ -96,7 +99,8 @@ class Interpolation_canvas : public View_object {
 
 						if(points[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
 							interpolator->points[this->points[i]->index] = now_mouse;
-							interpolator->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
+							interpolator->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
+							//interpolator->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
 							return true;
 						}
 					}
@@ -105,12 +109,27 @@ class Interpolation_canvas : public View_object {
 
 			else
 			if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
-				interpolator->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
+
+				//interpolator->update(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points, now_mouse);
+				/*if(count_of_points >= 4) {
+					interpolator->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
+				}*/
+				//interpolator->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
 			}
 		}
 
 		return false;
-	}	
+	}
+
+	void func() {
+		for(int i = 0; i < count_of_points; ++i)
+			printf("(%d, %d), ", (int)points[i]->rect->center.x, (int)(points[i]->rect->center.y));
+		printf("\n");
+
+		for(int i = 0; i < interpolator->count_of_points; ++i)
+			printf("(%d, %d), ", (int)interpolator->points[i].x, (int)interpolator->points[i].y);
+		printf("\n\n");		
+	}
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {
@@ -118,7 +137,7 @@ class Interpolation_canvas : public View_object {
 
 			int width = rect->get_width();
 			for(int i = 0; i < width; ++i) {
-				Point now(i + rect->get_left_up_corner().x, visual_points[i].y);
+				Point now(i + rect->get_left_up_corner().x, visual_points[i].y);// + rect->get_height());
 				now.draw_big_point(*render, 1.5);
 				//visual_points[i].
 			}
@@ -135,6 +154,10 @@ class Interpolation_canvas : public View_object {
 		for(int i = 0; i < count_of_points; ++i) {
 			points[i]->rect->center -= delta;
 		}
+		for(int i = 0; i < rect->get_width(); ++i)
+			visual_points[i] -= delta;
+
+		interpolator->update_position_from_delta(delta);
 	}
 };
 

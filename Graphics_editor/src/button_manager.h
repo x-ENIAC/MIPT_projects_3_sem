@@ -44,25 +44,28 @@ class Button_manager : public View_object {
 		//printf("Button_manager, check_click, %d. Mouse (%lg, %lg). Center (%lg, %lg), widht %lg, height %lg\n", is_active, mouse_x, mouse_y,
 		//																rect->get_center().x, rect->get_center().y, rect->get_width(), rect->get_height());
 
-		for(size_t i = 0; i < count_of_buttons; ++i) {
-			/*printf("\tcenter (%lg, %lg), width %lg, height %lg. MMM %d\n", buttons[i]->rect->center.x, buttons[i]->rect->center.y, 
-												buttons[i]->rect->get_width(), buttons[i]->rect->get_height(),
-												buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ));*/
+		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
 
-			if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-				if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
-					//printf("button down!\n");
-					buttons[i]->delegate->click_reaction(mouse_x, mouse_y);
+			for(size_t i = 0; i < count_of_buttons; ++i) {
+				/*printf("\tcenter (%lg, %lg), width %lg, height %lg. MMM %d\n", buttons[i]->rect->center.x, buttons[i]->rect->center.y, 
+													buttons[i]->rect->get_width(), buttons[i]->rect->get_height(),
+													buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ));*/
+
+				if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+					if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
+						//printf("button down!\n");
+						buttons[i]->delegate->click_reaction(mouse_x, mouse_y);
+					}
+
+					/*else
+					/*if(*par_mouse_status == Mouse_click_state::MOUSE_UP || 
+					if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
+						//printf("button up | motion\n");
+						buttons[i]->delegate->reactive_reaction(mouse_x, mouse_y);
+					}*/
+
+					return true;
 				}
-
-				/*else
-				/*if(*par_mouse_status == Mouse_click_state::MOUSE_UP || 
-				if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
-					//printf("button up | motion\n");
-					buttons[i]->delegate->reactive_reaction(mouse_x, mouse_y);
-				}*/
-
-				return true;
 			}
 		}
 
@@ -74,21 +77,24 @@ class Button_manager : public View_object {
 	bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
 		//printf("\n\nview_manager check_click\n");
 
-		for(size_t i = 0; i < count_of_buttons; ++i) {
+		if(rect->is_point_belongs_to_rectangle(now_mouse)) {
 
-			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
-				//printf("button down and motion\n");
-				buttons[i]->delegate->motion_reaction(now_mouse.x, now_mouse.y);
-			}
+			for(size_t i = 0; i < count_of_buttons; ++i) {
 
-			else {
-				if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) ) ||
-				   buttons[i]->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) )	) {
+				if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
+					//printf("button down and motion\n");
+					buttons[i]->delegate->motion_reaction(now_mouse.x, now_mouse.y);
+				}
 
-					//if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
-						//printf("motion\n");
-						buttons[i]->delegate->reactive_reaction(old_mouse, now_mouse);
-					//}
+				else {
+					if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) ) ||
+					   buttons[i]->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) )	) {
+
+						//if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
+							//printf("motion\n");
+							buttons[i]->delegate->reactive_reaction(old_mouse, now_mouse);
+						//}
+					}
 				}
 			}
 		}

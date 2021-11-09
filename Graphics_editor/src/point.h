@@ -97,13 +97,28 @@ class Point {
 		result += second;
 
 		return result;
-	}	  	
+	}
 
 	Point operator-(const Point& second) {
 		Point result (*this);
 		result -= second;
 
 		return result;
+	}
+
+	Point operator*(const double scale) {
+		Point result (*this);
+		result *= scale;
+
+		return result;
+	}	
+
+	bool operator==(const Point& second) {
+		return (this->x == second.x && this->y == second.y);
+	}
+
+	double scalar_mult(const Point& other) {
+		return x * other.x + y * other.y;
 	}
 };
 
