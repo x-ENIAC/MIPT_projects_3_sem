@@ -41,11 +41,11 @@ class Button_manager : public View_object {
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 		
-		//printf("Button_manager, check_click, %d. Mouse (%lg, %lg). Center (%lg, %lg), widht %lg, height %lg\n", is_active, mouse_x, mouse_y,
-		//																rect->get_center().x, rect->get_center().y, rect->get_width(), rect->get_height());
+		printf("Button_manager, check_click, %d. Mouse (%lg, %lg). Center (%lg, %lg), widht %lg, height %lg\n", is_active, mouse_x, mouse_y,
+																		rect->get_center().x, rect->get_center().y, rect->get_width(), rect->get_height());
 
 		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
-
+			printf("!!\n");
 			for(size_t i = 0; i < count_of_buttons; ++i) {
 				/*printf("\tcenter (%lg, %lg), width %lg, height %lg. MMM %d\n", buttons[i]->rect->center.x, buttons[i]->rect->center.y, 
 													buttons[i]->rect->get_width(), buttons[i]->rect->get_height(),

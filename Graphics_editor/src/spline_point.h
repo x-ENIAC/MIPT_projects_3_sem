@@ -1,19 +1,19 @@
 #include "point.h"
 #include "view.h"
 
-#ifndef INTERPOLATION_POINT_H
-#define INTERPOLATION_POINT_H
+#ifndef SPLINE_POINT_H
+#define SPLINE_POINT_H
 
-class Interpolation_point : public View_object {
+class Spline_point : public View_object {
   public:
 
   	Mouse_click_state* mouse_click_state;
   	int index;
 
-  	Interpolation_point(): View_object() {}
+  	Spline_point(): View_object() {}
 
-  	Interpolation_point(const Point par_point, const Colour par_color, Mouse_click_state* par_mouse_click_state, const int par_index):
-  	  View_object(par_point, 10, 10, par_color, Widget_types::INTERPOLATION_POINT) {
+  	Spline_point(const Point par_point, const Colour par_color, Mouse_click_state* par_mouse_click_state, const int par_index):
+  	  View_object(par_point, 10, 10, par_color, Widget_types::SPLINE_POINT) {
 
   	  	rect->center.color = par_color;
   	  	mouse_click_state = par_mouse_click_state;

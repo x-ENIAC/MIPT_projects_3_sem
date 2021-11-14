@@ -1,8 +1,8 @@
 #include "view.h"
-#include "canvas.h"
+#include "canvas_manager.h"
 #include "pencil.h"
 #include "button_manager.h"
-#include "interpolation_canvas.h"
+#include "spline_canvas.h"
 
 #ifndef CHART_H
 #define CHART_H
@@ -14,11 +14,11 @@ extern const double HEIGHT_CLOSE_BUTTON;
 
 class Chart : public View_object {
   public:
-	Interpolation_canvas* canvas;
+	Spline_canvas* spline_canvas;
 	Button_manager* tools;
 
 	Chart(const Point par_point, const double par_width, const double par_height, 
-		  const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
+		  const Colour par_color, Pencil* par_pencil, Canvas_manager* par_canvas, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
 
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER_MANAGER) {
 
@@ -32,7 +32,7 @@ class Chart : public View_object {
 	  	Point canvas_center(par_point);
 	  	canvas_center.y += HEIGHT_CLOSE_BUTTON / 2;
 
-	  	canvas = new Interpolation_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil, par_mouse_click_state);
+	  	spline_canvas = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil, par_canvas, par_mouse_click_state);
 	}
 
     void fill_tools(Mouse_click_state* par_mouse_click_state) {
@@ -74,9 +74,9 @@ class Chart : public View_object {
     }
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-        if(canvas->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
-            //printf("click chart canvas!\n");
-            return canvas->check_click(mouse_x, mouse_y, par_mouse_status);
+        if(spline_canvas->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
+            //printf("click chart spline_canvas!\n");
+            return spline_canvas->check_click(mouse_x, mouse_y, par_mouse_status);
         }
 
         if(tools->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
@@ -89,10 +89,10 @@ class Chart : public View_object {
 
 
     bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
-        if(canvas->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||
-           canvas->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y))) {
-            //printf("motion chart canvas!\n");
-            return canvas->check_motion(old_mouse, now_mouse, par_mouse_status);
+        if(spline_canvas->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||
+           spline_canvas->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y))) {
+            //printf("motion chart spline_canvas!\n");
+            return spline_canvas->check_motion(old_mouse, now_mouse, par_mouse_status);
         }
 
         if(tools->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||
@@ -110,7 +110,7 @@ class Chart : public View_object {
             rect->draw(*render);
 
             tools->draw(render, texture, screen);
-            canvas->draw(render, texture, screen);
+            spline_canvas->draw(render, texture, screen);
         }
     }
 
@@ -123,7 +123,7 @@ class Chart : public View_object {
 
         tools->rect->set_center(mouse);
         tools->update_position_from_delta(delta);
-        canvas->update_position_from_delta(delta);
+        spline_canvas->update_position_from_delta(delta);
     }
 };
 

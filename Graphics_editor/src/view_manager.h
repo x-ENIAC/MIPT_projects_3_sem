@@ -105,21 +105,21 @@ class View_manager : public View_object {
 		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
 		tool_buttons_manager->add_view_object(thickness_palette_button);
 
-		Chart* chart = new Chart(Point(600, 300), 200, 200, GREEN, &pencil, false, &mouse_click_state);
+		Chart* chart = new Chart(Point(600, 300), 200, 200, GREEN, &pencil, manager_of_canvas_managers->active_canvas, false, &mouse_click_state);
 		add_view_object(chart);
 
-		// ----------------------- add interpolation screen ---------------------------------------------------------- \\
+		// ----------------------- add spline screen ---------------------------------------------------------- \\
 
 		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 
-		Open_window_delegate* open_interpol_delegate = new Open_window_delegate(&(chart->is_visible));
+		Open_window_delegate* open_spline_delegate = new Open_window_delegate(&(chart->is_visible));
 
-		Button* interpol_panel_button = new Button(open_interpol_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   "Interpolation", BLACK);
+		Button* spline_panel_button = new Button(open_spline_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
+											   "Spline", BLACK);
 
-		interpol_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_INTERPOLATION_BUTTON);
-		tool_buttons_manager->add_view_object(interpol_panel_button);
+		spline_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_SPLINE_BUTTON);
+		tool_buttons_manager->add_view_object(spline_panel_button);
 
 		// ----------------------- add canvases ---------------------------------------------------------- \\
 
@@ -289,7 +289,7 @@ class View_manager : public View_object {
 		return false;	  		
 	}
 
-	void set_new_active_object(const int new_active) {
+	/*void set_new_active_object(const int new_active) {
 		if(who_is_active != -1)
 			view_objects[who_is_active]->is_active = false;
 
@@ -297,7 +297,7 @@ class View_manager : public View_object {
 
 		if(who_is_active != -1)
 			view_objects[who_is_active]->is_active = true;
-	}
+	}*/
 
 	void find_not_alive() {
 		//for()

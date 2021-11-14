@@ -34,6 +34,7 @@ class Manager_of_canvas_managers : public View_object {
 	Mouse_click_state* mouse_click_state;
 
 	int who_is_active;
+	Canvas_manager* active_canvas;
 
 	Manager_of_canvas_managers(const Point par_point, const double par_width, const double par_height, 
 							   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
@@ -65,6 +66,7 @@ class Manager_of_canvas_managers : public View_object {
 		mouse_click_state = par_mouse_click_state;
 
 		who_is_active = -1;
+		active_canvas = NULL;
 	}
 
 	void add_canvas_manager(Canvas_manager* new_canvas_manager);
@@ -89,12 +91,13 @@ class Manager_of_canvas_managers : public View_object {
 
 				for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
 
-					printf("\tcall canvas_manager number %d - (is belong %d) (((, mouse (%lg, %lg), center (%lg, %lg)\n", i,
-									rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
-									canvas_managers[i]->rect->center.x, canvas_managers[i]->rect->center.y);
+					//printf("\tcall canvas_manager number %d - (is belong %d) (((, mouse (%lg, %lg), center (%lg, %lg)\n", i,
+					//				rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ), mouse_x, mouse_y, 
+					//				canvas_managers[i]->rect->center.x, canvas_managers[i]->rect->center.y);
 
 					if(canvas_managers[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 
+						printf("set new active??? %d mouse, i = %d\n", *par_mouse_status, i);
 						if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
 						   set_new_active_object(i);
 
@@ -119,14 +122,16 @@ class Manager_of_canvas_managers : public View_object {
 		   rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )		) {
 
 			if(button_manager->check_motion(old_mouse, now_mouse, par_mouse_status)) {
-				return true;
-			}
-
-			for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
-				if(canvas_managers[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
-					return true;
+				for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
+					canvas_managers[i]->check_motion(old_mouse, now_mouse, par_mouse_status);
+				}
+			} else {
+				for(int i = count_of_canvas_managers - 1; i >= 0; --i) {
+					canvas_managers[i]->check_motion(old_mouse, now_mouse, par_mouse_status);
 				}
 			}
+
+			return true;
 		}
 
 		return false;

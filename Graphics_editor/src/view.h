@@ -130,12 +130,12 @@ class View_object {
 		printf("end VIEW_OBJECT delete_all\n");
 	}
 
-	void update_position_from_delta(Point delta) {
+	virtual void update_position_from_delta(Point delta) {
 		//center -= delta;
 		rect->set_center(rect->get_center() - delta);     
 	}
 
-	virtual void update_view_object_position(const double mouse_x, const double mouse_y) {}
+	virtual void update_view_object_position(const double mouse_x, const double mouse_y) {printf("-------\n");}
 
 	virtual void tick(const double delta_time) {}
 

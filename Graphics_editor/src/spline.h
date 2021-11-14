@@ -1,19 +1,19 @@
 #include <algorithm>
 #include "point.h"
-#include "interpolation_point.h"
+#include "spline_point.h"
 //#include "interpolation_canvas.h"
 
-#ifndef INTERPOLATOR_H
-#define INTERPOLATOR_H
+#ifndef SPLINE_H
+#define SPLINE_H
 
 const int MAX_COUNT_OF_POINTS = 100;
 
-class Interpolator {
+class Spline {
   public:
   	Point* points;
   	size_t count_of_points;
 
-  	Interpolator() {
+  	Spline() {
   		points = new Point[MAX_COUNT_OF_POINTS];
   		count_of_points = 0;
   	}
@@ -46,10 +46,6 @@ class Interpolator {
 		}
   	}
 
-  	void catmull_rom_2_based_points(Point* &visual_points, const int n, Point left_corner, const int count_of_base_points);
-
-  	void catmull_rom_3_based_points(Point* &visual_points, const int n, Point left_corner, const int count_of_base_points);
-
   	void catmull_rom(Point* &visual_points, const int n, Point left_corner, const int count_of_base_points);
 
   	double get_t(const Point& p1, const Point& p2, const double t, const double alpha) {
@@ -62,7 +58,7 @@ class Interpolator {
   		return scalar + t;
   	}
 
-	double linear_interpolation(const double a, const double b, const double t) {
+	double linear_spline(const double a, const double b, const double t) {
 		if(t >= 0 && t <= 1)
 			return a + (b - a) * t;
 		if(t < 0)
@@ -76,7 +72,7 @@ class Interpolator {
 		double t3 = get_t(p2, p3, t2, alpha);
 		double t4 = get_t(p3, p4, t3, alpha);
 
-		t = linear_interpolation(t2, t3, t);
+		t = linear_spline(t2, t3, t);
 
 		Point A1 = p1 * ((t2 - t) / (t2 - t1)) + p2 * ((t - t1) / (t2 - t1));
 		Point A2 = p2 * ((t3 - t) / (t3 - t2)) + p3 * ((t - t2) / (t3 - t2));

@@ -17,16 +17,17 @@ const double WIDTH_TABS_BUTTON = 150;
 const double HEIGHT_TABS_BUTTON = 20;
 
 struct Cell {
-    Colour color;
+    Colour begin_color;
+    Colour color_after_correction;
     size_t thickness;
 
     Cell() {
-        color = WHITE;
+        begin_color = color_after_correction = WHITE;
         thickness = 0;
     }
 
     Cell(const Colour par_color, const size_t par_thickness) {
-        color = par_color;
+        begin_color = color_after_correction = par_color;
         thickness = par_thickness;
     }
 };
@@ -52,7 +53,7 @@ class Canvas : public View_object {
 
         for(size_t i = 0; i <= par_width; ++i)
             for(size_t j = 0; j <= par_height; ++j) {
-                cells_color[i][j].color = par_button_color;
+                cells_color[i][j].begin_color = cells_color[i][j].color_after_correction = par_button_color;
                 cells_color[i][j].thickness = 24;
             }
 
@@ -65,8 +66,9 @@ class Canvas : public View_object {
                 if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
                     Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color     = pencil->get_color();
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness = pencil->get_thickness();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = pencil->get_color();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = pencil->get_color();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = pencil->get_thickness();
                     return true;
                 }
             }
@@ -84,8 +86,9 @@ class Canvas : public View_object {
                 if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
                     Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color     = pencil->get_color();
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness = pencil->get_thickness();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = pencil->get_color();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = pencil->get_color();
+                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = pencil->get_thickness();
                     return true;
                 }
             }
@@ -102,7 +105,7 @@ class Canvas : public View_object {
 
             for(size_t i = 0; i <= rect->width; ++i)
                 for(size_t j = 0; j <= rect->height; ++j) {
-                    Colour now_color = cells_color[i][j].color;
+                    Colour now_color = cells_color[i][j].begin_color;
                     Point new_point(i + left_up_corner.x, j + left_up_corner.y, now_color);
 
                     if(now_color != color) {
@@ -121,7 +124,12 @@ class Canvas : public View_object {
         for(size_t i = 0; i < width; ++i)
             delete[] cells_color[i];
         delete[] cells_color;
-    }    
+    }
+
+    void update_position_from_delta(const Point delta) {
+        rect->set_center( rect->get_center() - delta );
+    }
+
 
     /*inline Button_owner get_owner() const {
         return owner;

@@ -14,8 +14,8 @@ enum class Widget_types {
 	TEXT		   			= 8,
 	TABS 		   			= 9,
 	CHART					= 10,
-	INTERPOLATION_CANVAS	= 11,
-	INTERPOLATION_POINT		= 12
+	SPLINE_CANVAS			= 11,
+	SPLINE_POINT			= 12
 };
 
 const size_t COUNT_OF_TYPES = 13;

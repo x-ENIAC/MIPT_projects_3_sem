@@ -13,9 +13,9 @@ LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 .PHONY : all run debug clean
 
-all: colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o interpolator.o
+all: colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
 	$(CPP) $(CFLAGS) -c ./src/main.cpp -o main.o
-	$(LD) colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o interpolator.o main.o -o $(CUR_PROG) $(LDFLAGS)
+	$(LD) colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
 	
 
 colour.o: ./src/colour.cpp ./src/colour.h
@@ -33,8 +33,8 @@ manager_of_canvas_managers.o: ./src/manager_of_canvas_managers.cpp ./src/manager
 animation_manager.o: ./src/animation_manager.cpp ./src/animation_manager.h
 	$(CPP) $(CFLAGS) -c ./src/animation_manager.cpp -o animation_manager.o
 	
-interpolator.o: ./src/interpolator.cpp ./src/interpolator.h
-	$(CPP) $(CFLAGS) -c ./src/interpolator.cpp -o interpolator.o		
+spline.o: ./src/spline.cpp ./src/spline.h
+	$(CPP) $(CFLAGS) -c ./src/spline.cpp -o spline.o		
 
 run: all
 	./$(CUR_PROG) $(ARGS)

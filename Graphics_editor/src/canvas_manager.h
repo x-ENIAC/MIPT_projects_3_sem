@@ -28,7 +28,6 @@ class Canvas_manager : public View_object {
 	//Pencil* pencil;
 	Tab* tab;
 
-
 	Canvas_manager() : View_object (Widget_types::CANVAS_MANAGER) {
 
 		view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
@@ -71,6 +70,7 @@ class Canvas_manager : public View_object {
 		center_tab += Point(WIDTH_TABS_BUTTON / 2.0, HEIGHT_TABS_BUTTON / 2.0);
 		center_tab += Point((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON) * number_of_tab, 0);
 
+		//printf("center_tab (%lg, %lg), %lg, %lg\n", center_tab.x, center_tab.y, WIDTH_CLOSE_BUTTON + WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON);
 		tab = new Tab(center_tab, (WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON), HEIGHT_TABS_BUTTON, YELLOW, 
 					  number_of_tab, par_mouse_click_state, &is_visible, &is_active, &is_alive);
 	}
@@ -129,15 +129,17 @@ class Canvas_manager : public View_object {
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 
+		printf("check click Canvas_manager? Tab (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
 		if(tab->check_click(mouse_x, mouse_y, par_mouse_status))
 			return true;
 
+		printf("not tab((( %d\n", is_active);
 		if(is_active) {
-
+			printf("rect? (%lg, %lg), %lg, %lg\n\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
 			if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
 				for(int i = count_of_views - 1; i >= 0; --i) {
-
+					printf("\t\tcheck.\n");
 					if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 						return true;
 					}
@@ -153,10 +155,14 @@ class Canvas_manager : public View_object {
 		//printf("canvas check_motion\n");
 
 		if(tab->check_motion(old_mouse, now_mouse, par_mouse_status)) {
-			printf("tab...\n");
+			//printf("tab...\n");
+			for(int i = count_of_views - 1; i >= 0; --i) {
+				view_objects[i]->check_motion(old_mouse, now_mouse, par_mouse_status);
+			}
 			return true;
 		}
 
+		//printf("NOT TAB %d\n", is_active);
 		if(is_active) {
 
 			if(rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
@@ -201,12 +207,13 @@ class Canvas_manager : public View_object {
 	}
 
 	void update_position_from_delta(Point delta) {
-		//center -= delta;
-		rect->set_center(delta - rect->get_center());
+		rect->set_center(rect->get_center() - delta);
+		//printf("CANVAS_MANAGER CENTER (%lg, %lg)\n", rect->get_center().x, rect->get_center().y);
 
-		tab->rect->set_center(tab->rect->get_center() - delta);
-
-		tab->button_manager->update_position_from_delta(delta);
+		tab->update_position_from_delta(delta);
+		//tab->rect->set_center();
+		//tab->button_manager->rect->set_center(tab->rect->get_center() - delta);
+		//tab->button_manager->update_position_from_delta(delta);
 
 		for(size_t i = 0; i < count_of_views; ++i) {
 			view_objects[i]->update_position_from_delta(delta);

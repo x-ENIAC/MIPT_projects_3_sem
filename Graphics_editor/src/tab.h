@@ -9,7 +9,6 @@
 #ifndef TAB_H
 #define TAB_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
 //extern const double DELTA_BETWEEN_BUTTONS;
 extern const double WIDTH_CLOSE_BUTTON;
 extern const double HEIGHT_CLOSE_BUTTON;
@@ -24,14 +23,17 @@ class Tab : public View_object {
 	size_t number_of_title_in_button_manager;
 
 	Tab() : View_object() {
-		button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
+		button_manager = new Button_manager();
 	}
 
 	Tab(const Point par_center, const double par_width, const double par_height, const Colour par_color, const int par_number_of_tab,
 								Mouse_click_state* par_mouse_click_state, bool* par_is_visible, bool* par_is_active, bool* par_is_alive) :
 	  View_object(par_center, par_width, par_height, par_color, Widget_types::TABS) {
 
-		button_manager = new Button_manager[MAX_COUNT_OF_VIEW_OBJECTS];
+	  	Point pt = par_center;
+	  	pt += Point(WIDTH_CLOSE_BUTTON / 2, 0);
+	  	//printf("center button manager? (%lg, %lg), %lg, %lg\n", par_center.x, par_center.y, par_width, par_height);
+		button_manager = new Button_manager(pt, par_width, par_height, par_color);
 
 		add_new_tab(par_center, par_number_of_tab, par_mouse_click_state, par_is_visible, par_is_active, par_is_alive);
 	}
@@ -49,6 +51,7 @@ class Tab : public View_object {
 		Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON,
 										  text_on_tab, WHITE);
 
+		//printf("@ tab, center title (%lg, %lg), %lg, %lg\n", par_center.x, par_center.y, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON);
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_BUTTON);
 		number_of_title_in_button_manager = button_manager->count_of_buttons;
 		button_manager->add_view_object(title_button);
@@ -58,7 +61,7 @@ class Tab : public View_object {
 		Point center = par_center;
 		center += Point(WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0, 0);
 
-
+		//printf("@ tab, center close (%lg, %lg), %lg, %lg\n", center.x, center.y, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON);
 		Button* close_button = new Button(NULL, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
 
@@ -72,7 +75,7 @@ class Tab : public View_object {
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 		//printf("click Tab\n");
-					
+		//printf("\ttab: (%lg, %lg) width %lg, height %lg\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
 		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);
 	}
 
@@ -100,9 +103,11 @@ class Tab : public View_object {
 
 	void update_tabs_offset(const Point new_center) {
 		//printf("... (%lg, %lg)\n", new_center.x, new_center.y);
+		Point delta(rect->get_center());
 		Point old_center(rect->get_center());
+		delta -= new_center;
 
-		rect->center = new_center;
+		set_new_center(new_center);
 
 		Point new_left_up_corner = rect->get_left_up_corner();
 
@@ -112,7 +117,6 @@ class Tab : public View_object {
 			now_center -= old_center;
 
 			button_manager->buttons[i]->update_center_position(now_center);
-			//printf("\t... (%lg, %lg)\n", now_center.x, now_center.y);
 		}
 
 	}
@@ -134,6 +138,30 @@ class Tab : public View_object {
 
 	void tick(const double delta_time) override {
 		button_manager->tick(delta_time);
+	}
+
+	void set_new_center(const Point new_center) {
+		printf("tab. was (%lg, %lg) -> ", rect->center.x, rect->center.y);
+
+		Point delta = rect->center;
+		delta -= new_center;
+
+		rect->center = new_center;
+		printf("now (%lg, %lg)\n", rect->center.x, rect->center.y);
+		button_manager->rect->center = rect->center;
+		button_manager->rect->center += Point(WIDTH_CLOSE_BUTTON / 2, 0);
+
+		//button_manager->update_position_from_delta(delta);
+	}
+
+	void update_position_from_delta(const Point delta) {
+		printf("tab. was (%lg, %lg) -> ", rect->center.x, rect->center.y);
+		rect->center = rect->get_center() - delta;
+		printf("now (%lg, %lg)\n", rect->center.x, rect->center.y);
+		button_manager->rect->center = rect->center;
+		button_manager->rect->center += Point(WIDTH_CLOSE_BUTTON / 2, 0);
+
+		button_manager->update_position_from_delta(delta);
 	}
 };
 

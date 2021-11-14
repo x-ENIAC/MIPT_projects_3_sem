@@ -26,8 +26,8 @@ const char PATH_TO_PICTURE_WITH_GREY_4_BUTTON[]	 = "textures/grey_4.bmp";
 
 const char PATH_TO_PICTURE_WITH_PALETTE_BUTTON[]  	   = "textures/black_palette.bmp";
 const char PATH_TO_PICTURE_WITH_THICKNESS_BUTTON[] 	   = "textures/black_thickness.bmp";
-const char PATH_TO_PICTURE_WITH_INTERPOLATION_BUTTON[] = "textures/black_interpolation.bmp";
-const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[] 	   = "textures/black_canvas.bmp";
+const char PATH_TO_PICTURE_WITH_SPLINE_BUTTON[]		   = "textures/black_spline.bmp";
+const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[]	 	   = "textures/black_canvas.bmp";
 
 struct Texture {
 	SDL_Texture* texture;
@@ -40,6 +40,8 @@ struct Texture {
 		is_using_texture = false;
 	}
 
+	~Texture() {}
+
 	void add_new_texture(const char par_path_to_picture[]) {
 		SDL_Surface *bmp = SDL_LoadBMP(par_path_to_picture);
 
@@ -48,10 +50,12 @@ struct Texture {
 		}
 
 		texture = SDL_CreateTextureFromSurface(render, bmp);
-		strcpy(path_to_picture, par_path_to_picture);
+		if(strcmp(par_path_to_picture, path_to_picture)) {
+			//printf("%s --> %s\n", path_to_picture, par_path_to_picture);
+			strcpy(path_to_picture, par_path_to_picture);
+		}
 
 		is_using_texture = true;
-		//printf("!\n");
 	}
 
 	void update_texture(const char par_path_to_picture[]) {
