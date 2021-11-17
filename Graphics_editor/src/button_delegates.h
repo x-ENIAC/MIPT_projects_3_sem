@@ -271,4 +271,29 @@ class Create_new_canvas_delegate : public Button_delegate {
 
 
 
+class Change_color_with_spline_delegate : public Button_delegate {
+  public:
+
+	Manager_of_canvas_managers* manager_of_canvas_managers;
+
+	Change_color_with_spline_delegate(Manager_of_canvas_managers* par_manager_of_canvas_managers) {
+		manager_of_canvas_managers = par_manager_of_canvas_managers;
+	}
+
+	void click_reaction(const double mouse_x, const double mouse_y) override {
+		//printf("Create_new_canvas_delegate\n");
+		//printf("%d\n", view_manager->widget_types[(int)Widget_types::TABS]);
+		//view_manager->add_new_canvas_manager(CENTER_OF_SPAWN_CANVASES, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		//view_manager->add_new_canvas_manager(Point(rand() % 600 + 100, rand() % 500 + 250), rand() % 200 + 300, rand() % 200 + 300);
+
+		//manager_of_canvas_managers->add_new_canvas_manager();
+	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
+
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
+};
+
+
+
 #endif

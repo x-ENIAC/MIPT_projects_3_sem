@@ -60,6 +60,7 @@ class Palette : public View_object {
 		add_colour_button(begin_width, begin_height, PURPLE);
 		add_colour_button(begin_width, begin_height, LIGHT_GREEN);
 		add_colour_button(begin_width, begin_height, PINK);
+		add_colour_button(begin_width, begin_height, LIGHT_CARROT);
 		add_colour_button(begin_width, begin_height, WHITE);
 		add_colour_button(begin_width, begin_height, BLACK);
 

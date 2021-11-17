@@ -11,7 +11,10 @@ void Spline::catmull_rom(Point* &visual_points, const int n, Point left_corner, 
 		}
 
 		double now_x = i + left_corner.x;
-		visual_points[i].y = catmull_rom_get_y_from_x(now_x, points[index - 1], points[index], points[index + 1], points[index + 2],
-														(now_x - points[index].x) / (points[index + 1].x - points[index].x));
+		visual_points[i].y = catmull_rom_get_y_from_x(now_x, points[index - 1],
+													  		 points[index],
+													  		 points[index + 1],
+													  		 points[index + 2],
+									(now_x - points[index].x) / (points[index + 1].x - points[index].x));
 	}
 }

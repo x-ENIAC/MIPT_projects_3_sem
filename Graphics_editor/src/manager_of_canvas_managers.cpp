@@ -84,7 +84,8 @@ void Manager_of_canvas_managers::set_new_active_object(const int new_active) {
 	who_is_active = new_active;
 
 	if(who_is_active != -1) {
-		//active_canvas = canvas_managers[who_is_active];
+		active_canvas = canvas_managers[who_is_active];
+		printf("!!!!!!!!!!!!!!! %p\n", active_canvas);
 		//printf("new %p\n", active_canvas);
 		canvas_managers[who_is_active]->is_active = true;
 		canvas_managers[who_is_active]->tab->button_manager->buttons[0]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_BUTTON);
@@ -132,9 +133,9 @@ void Manager_of_canvas_managers::update_tabs_offset(const size_t pos) {
 	for(size_t i = pos + 1; i < count_of_canvas_managers; ++i) {
 		Point before_point(canvas_managers[i]->tab->rect->get_center());
 
-		printf("(%lg, %lg) -> ", before_point.x, before_point.y);
+		//printf("(%lg, %lg) -> ", before_point.x, before_point.y);
 		before_point -= Point((WIDTH_TABS_BUTTON + WIDTH_CLOSE_BUTTON), 0);
-		printf("(%lg, %lg)\n", before_point.x, before_point.y);
+		//printf("(%lg, %lg)\n", before_point.x, before_point.y);
 		canvas_managers[i]->tab->update_tabs_offset(before_point);
 		canvas_managers[i]->tab->update_tabs_number(i - 1);
 
@@ -147,7 +148,7 @@ void Manager_of_canvas_managers::update_canvas_manager_position(const double mou
 	Point delta(button_manager->rect->get_center());
 	delta -= mouse;
 
-	printf("delta (%lg, %lg)\n", delta.x, delta.y);
+	//printf("delta (%lg, %lg)\n", delta.x, delta.y);
 
 	any_canvas_center -= delta;
 

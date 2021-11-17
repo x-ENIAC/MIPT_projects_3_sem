@@ -5,12 +5,20 @@
 #include "colour.h"
 #include "spline_point.h"
 #include "spline.h"
-#include "canvas_manager.h"
+#include "manager_of_canvas_managers.h"
+
+#include <unistd.h>
 
 #ifndef SPLINE_CANVAS_H
 #define SPLINE_CANVAS_H
 
 extern const int MAX_COUNT_OF_POINTS;
+
+enum Color_management {
+	MAN_RED,
+	MAN_GREEN,
+	MAN_BLUE
+};
 
 class Spline_canvas : public View_object {
   public:
@@ -19,14 +27,18 @@ class Spline_canvas : public View_object {
 	size_t count_of_points;
 
 	Spline* spline;
-	Canvas_manager* canvas;
+	Manager_of_canvas_managers* manager_of_canvas_managers;
 
 	Point* visual_points;
 
 	Mouse_click_state* mouse_click_state;
+	Color_management color_management;
+
+	Spline_canvas() : View_object() {}
 
 	Spline_canvas(const Point par_point, const double par_width, const double par_height, 
-		  const Colour par_color, Pencil* par_pencil, Canvas_manager* par_canvas, Mouse_click_state* par_mouse_click_state) :
+		  			const Colour par_color, Pencil* par_pencil, Manager_of_canvas_managers* par_manager_of_canvas_managers,
+		  			Color_management par_color_management, Mouse_click_state* par_mouse_click_state) :
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::SPLINE_CANVAS) {
 
 		pencil = par_pencil;
@@ -38,13 +50,19 @@ class Spline_canvas : public View_object {
 		count_of_points = 0;
 
 		spline = new Spline;
-		canvas = par_canvas;
+		manager_of_canvas_managers = par_manager_of_canvas_managers;
 
 		mouse_click_state = par_mouse_click_state;
 
+		color_management = par_color_management;
+
+		//printf("%lg, %lg\n", par_width, par_height);
+
 		visual_points = new Point[(int)par_width + 1];
-		for(size_t i = 0; i <= (int)par_width; ++i)
+		for(size_t i = 0; i <= (int)par_width; ++i) {
 			visual_points[i].x = i;
+			visual_points[i].color = get_color(color_management);
+		}
 
 		add_point(rect->get_left_up_corner().x - 10, rect->get_left_up_corner().y + par_height + 11);
 		add_point(rect->get_left_up_corner().x + par_width + 11, rect->get_left_up_corner().y - 11);
@@ -56,6 +74,8 @@ class Spline_canvas : public View_object {
 	}
 
 	~Spline_canvas() {
+
+		delete spline;
 		delete[] points;
 		count_of_points = 0;
 	}
@@ -90,13 +110,15 @@ class Spline_canvas : public View_object {
 		visual_points[(int)(x - rect->get_left_up_corner().x)].y = y;
 		int now_index = spline->add_point(Point(x, y));
 
-		Spline_point* new_point = new Spline_point(Point(x, y), color, mouse_click_state, now_index);
+		Spline_point* new_point = new Spline_point(Point(x, y, get_color(color_management)), get_color(color_management), mouse_click_state, now_index);
 		points[count_of_points] = new_point;
+		//printf("color %lg, %lg, %lg\n", points[count_of_points]->rect->get_colour().red, points[count_of_points]->rect->get_colour().green, points[count_of_points]->rect->get_colour().blue);
+
+		((Change_color_with_spline_delegate*)(points[count_of_points]->button->delegate))->manager_of_canvas_managers = manager_of_canvas_managers;
+
 		++count_of_points;
 
-		if(count_of_points > 4) {
-			spline->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
-		}
+		spline->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
 	}
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
@@ -132,6 +154,9 @@ class Spline_canvas : public View_object {
 							spline->points[this->points[i]->index] = now_mouse;
 							spline->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
 							//spline->update_coords(visual_points, rect->get_width() + 1, rect->get_left_up_corner());
+
+							update_colors_into_canvas();
+
 							return true;
 						}
 					}
@@ -152,30 +177,20 @@ class Spline_canvas : public View_object {
 		return false;
 	}
 
-	void func() {
-		for(int i = 0; i < count_of_points; ++i)
-			printf("(%d, %d), ", (int)points[i]->rect->center.x, (int)(points[i]->rect->center.y));
-		printf("\n");
-
-		for(int i = 0; i < spline->count_of_points; ++i)
-			printf("(%d, %d), ", (int)spline->points[i].x, (int)spline->points[i].y);
-		printf("\n\n");		
-	}
-
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {
 			rect->draw(*render);
 
 			int width = rect->get_width();
 			for(int i = 0; i < width; ++i) {
-				Point now(i + rect->get_left_up_corner().x, visual_points[i].y);
+				Point now(i + rect->get_left_up_corner().x, visual_points[i].y, visual_points[i].color);
 
 				if(rect->is_point_belongs_to_rectangle(now))
 					now.draw_big_point(*render, 1.5);
 			}
 
 			for(int i = 0; i < count_of_points; ++i) {
-				Point now(points[i]->rect->get_center());
+				Point now(points[i]->rect->get_center(), points[i]->rect->get_colour());
 
 				if(rect->is_point_belongs_to_rectangle(now))
 					points[i]->draw(render, texture, screen);
@@ -194,6 +209,93 @@ class Spline_canvas : public View_object {
 
 		spline->update_position_from_delta(delta);
 	}
+
+
+	void update_colors_into_canvas() {
+		//printf("%p, (%lg, %lg)\n", manager_of_canvas_managers, manager_of_canvas_managers->active_canvas->tab->rect->get_center().x,
+		//													   manager_of_canvas_managers->active_canvas->tab->rect->get_center().y);
+		if(!manager_of_canvas_managers || !manager_of_canvas_managers->active_canvas) 
+			return;
+
+		//Canvas* canvas; // = new Canvas;
+		//canvas = (Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]);
+		int width = rect->get_width(), canvas_width  = manager_of_canvas_managers->active_canvas->view_objects[0]->rect->get_width(),
+									   canvas_height = manager_of_canvas_managers->active_canvas->view_objects[0]->rect->get_height();
+
+		Point left_down_corner = {points[0]->rect->center.x,points[0]->rect->center.y};
+
+		for(int i = 0; i <= width; ++i) {
+			//if(i <= 20)
+			//	printf("%lg, %lg, corner %lg\n", visual_points[i].x, visual_points[i].y, left_down_corner.x);
+
+			double find_value = visual_points[i].x - left_down_corner.x;
+			double new_value  = left_down_corner.y - visual_points[i].y;
+
+			if(find_value == new_value)
+				continue;
+
+			//printf("find_value %lg, new_value %lg\n", find_value, new_value);
+
+			//if(i <= 20)
+			//printf("(%lg, %lg), find %lg\n\n", visual_points[i].x - left_down_corner.x, left_down_corner.y - visual_points[i].y, find_value);
+
+			//printf("..............\n");
+			for(int i = 0; i <= canvas_width; ++i) {
+				for(int j = 0; j <= canvas_height; ++j) {
+					//printf("\t%d, %d\n", i, j);
+					//printf("\t%p\n", canvas->cells_color[i]);
+					if(color_management == Color_management::MAN_RED &&
+					  ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].begin_color.red == find_value) {
+						//if(((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].begin_color.red != 255)
+							//printf("!!! %lg -> %lg\n", ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].begin_color.red, new_value);
+						//if(find_value < 255)
+						//	printf("(%lg, %lg, %lg) ->", ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.red,
+						//									((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.green,
+						//									((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.blue);
+						((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.red = new_value;
+						//	printf("(%lg, %lg, %lg)\n \n", ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.red,
+						//									((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.green,
+						//									((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.blue);
+
+					}
+					else
+					if(color_management == Color_management::MAN_GREEN &&
+					  ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].begin_color.green == find_value) {
+						((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.green = new_value;
+					}
+					else
+					if(color_management == Color_management::MAN_BLUE &&
+					  ((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].begin_color.blue == find_value) {
+						((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]))->cells_color[i][j].color_after_correction.blue = new_value;
+					}					
+				}
+			}
+		}
+
+		//pause();
+		//printf("2\n");
+	}
+
+	Colour get_color(const Color_management m_color) {
+		if(m_color == Color_management::MAN_RED)
+			return RED;
+		else
+		if(m_color == Color_management::MAN_GREEN)
+			return GREEN;
+		else
+		if(m_color == Color_management::MAN_BLUE)
+			return BLUE;
+	}
+
+	void func() {
+		for(int i = 0; i < count_of_points; ++i)
+			printf("(%d, %d), ", (int)points[i]->rect->center.x, (int)(points[i]->rect->center.y));
+		printf("\n");
+
+		for(int i = 0; i < spline->count_of_points; ++i)
+			printf("(%d, %d), ", (int)spline->points[i].x, (int)spline->points[i].y);
+		printf("\n\n");		
+	}	
 };
 
 #endif

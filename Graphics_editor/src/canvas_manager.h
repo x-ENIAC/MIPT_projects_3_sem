@@ -129,17 +129,17 @@ class Canvas_manager : public View_object {
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 
-		printf("check click Canvas_manager? Tab (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
+		//printf("check click Canvas_manager? Tab (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
 		if(tab->check_click(mouse_x, mouse_y, par_mouse_status))
 			return true;
 
-		printf("not tab((( %d\n", is_active);
+		//printf("not tab((( %d\n", is_active);
 		if(is_active) {
-			printf("rect? (%lg, %lg), %lg, %lg\n\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
+			//printf("rect? (%lg, %lg), %lg, %lg\n\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
 			if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
 				for(int i = count_of_views - 1; i >= 0; --i) {
-					printf("\t\tcheck.\n");
+					//printf("\t\tcheck.\n");
 					if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 						return true;
 					}

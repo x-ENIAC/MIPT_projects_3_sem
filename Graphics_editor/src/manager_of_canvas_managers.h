@@ -66,7 +66,7 @@ class Manager_of_canvas_managers : public View_object {
 		mouse_click_state = par_mouse_click_state;
 
 		who_is_active = -1;
-		active_canvas = NULL;
+		active_canvas = new Canvas_manager;
 	}
 
 	void add_canvas_manager(Canvas_manager* new_canvas_manager);
@@ -97,7 +97,7 @@ class Manager_of_canvas_managers : public View_object {
 
 					if(canvas_managers[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
 
-						printf("set new active??? %d mouse, i = %d\n", *par_mouse_status, i);
+						//printf("set new active??? %d mouse, i = %d\n", *par_mouse_status, i);
 						if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
 						   set_new_active_object(i);
 

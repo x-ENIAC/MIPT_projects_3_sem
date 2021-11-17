@@ -27,8 +27,8 @@ const double WIDTH_TOOLS_WIDGET      = 100;
 const double HEIGHT_TOOLS_WIDGET     = 100;
 
 const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 600);
-const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 400;
-const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 200;
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 100; // 340;
+const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 100; // 200;
 
 class View_manager : public View_object {
   public:
@@ -105,7 +105,7 @@ class View_manager : public View_object {
 		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
 		tool_buttons_manager->add_view_object(thickness_palette_button);
 
-		Chart* chart = new Chart(Point(600, 300), 200, 200, GREEN, &pencil, manager_of_canvas_managers->active_canvas, false, &mouse_click_state);
+		Chart* chart = new Chart(Point(600, 300), 255, 255, GREEN, &pencil, manager_of_canvas_managers, false, &mouse_click_state);
 		add_view_object(chart);
 
 		// ----------------------- add spline screen ---------------------------------------------------------- \\

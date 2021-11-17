@@ -47,20 +47,21 @@ const Colour RED   = Colour(255,   0,   0, 255);
 const Colour GREEN = Colour(0,     0, 255, 255);
 const Colour BLUE  = Colour(0,   255,   0, 255);
 const Colour YELLOW = Colour(255, 0, 255, 255);
-const Colour PURPLE = Colour(161, 161, 98, 256);
-const Colour LIGHT_GREEN = Colour(153, 153, 255, 256);
-const Colour PINK = Colour(255, 203, 192, 256);
+const Colour PURPLE = Colour(161, 161, 98, 255);
+const Colour LIGHT_GREEN = Colour(153, 153, 255, 255);
+const Colour PINK = Colour(255, 203, 192, 255);
+const Colour LIGHT_CARROT = Colour(237, 33, 145, 255);
 
 
-//const Colour LIGHT_GREY_5 = Colour(245, 245, 245, 256);
-const Colour LIGHT_GREY_4 = Colour(245, 245, 245, 256);
-const Colour LIGHT_LIGHT_GREY = Colour(230, 230, 230, 256);
-const Colour LIGHT_GREY_2 = Colour(200, 200, 200, 256);
-const Colour LIGHT_GREY = Colour(170, 170, 170, 256);
-//const Colour MIDDLE_GREY = Colour(135, 135, 135, 256);
-const Colour DARK_GREY = Colour(128, 128, 128, 256);
-const Colour DARK_GREY_3 = Colour(75, 75, 75, 256);
-const Colour DARK_GREY_2 = Colour(50, 50, 50, 256);
+//const Colour LIGHT_GREY_5 = Colour(245, 245, 245, 255);
+const Colour LIGHT_GREY_4 = Colour(245, 245, 245, 255);
+const Colour LIGHT_LIGHT_GREY = Colour(230, 230, 230, 255);
+const Colour LIGHT_GREY_2 = Colour(200, 200, 200, 255);
+const Colour LIGHT_GREY = Colour(170, 170, 170, 255);
+//const Colour MIDDLE_GREY = Colour(135, 135, 135, 255);
+const Colour DARK_GREY = Colour(128, 128, 128, 255);
+const Colour DARK_GREY_3 = Colour(75, 75, 75, 255);
+const Colour DARK_GREY_2 = Colour(50, 50, 50, 255);
 
 const Colour AMBIENT = Colour(20, 0, 0, 255);
 

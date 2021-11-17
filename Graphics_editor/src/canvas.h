@@ -42,6 +42,8 @@ class Canvas : public View_object {
     Pencil* pencil;
     Cell** cells_color;
 
+    Canvas() : View_object() {}
+
     Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color, Pencil* par_pencil
                                 /*const Button_owner par_owner, */) :
       View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS) {
@@ -55,9 +57,14 @@ class Canvas : public View_object {
             for(size_t j = 0; j <= par_height; ++j) {
                 cells_color[i][j].begin_color = cells_color[i][j].color_after_correction = par_button_color;
                 cells_color[i][j].thickness = 24;
+
+                //cells_color[i][j].begin_color =  cells_color[i][j].color_after_correction = {(i * par_width + j) / (par_height * par_width) * 255.0, 0, 0, 255};
+                //printf("red = %lg\n", cells_color[i][j].color_after_correction.red);
             }
 
         pencil = par_pencil;
+
+
     }
 
     bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
@@ -88,6 +95,12 @@ class Canvas : public View_object {
                     Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
                     cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = pencil->get_color();
                     cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = pencil->get_color();
+
+                    //if(cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction != WHITE)
+                    //    printf("!!! (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
+                    //                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
+                    //                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
+
                     cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = pencil->get_thickness();
                     return true;
                 }
@@ -105,10 +118,13 @@ class Canvas : public View_object {
 
             for(size_t i = 0; i <= rect->width; ++i)
                 for(size_t j = 0; j <= rect->height; ++j) {
-                    Colour now_color = cells_color[i][j].begin_color;
+                    Colour now_color = cells_color[i][j].color_after_correction, old_color = cells_color[i][j].begin_color;
                     Point new_point(i + left_up_corner.x, j + left_up_corner.y, now_color);
 
-                    if(now_color != color) {
+                    //if(now_color != cells_color[i][j].begin_color)
+                        //printf("red %lg -> %lg\n", cells_color[i][j].begin_color.red, cells_color[i][j].color_after_correction.red);
+
+                    if(old_color != color) {
                         Rectangle new_rect(new_point, cells_color[i][j].thickness / 2.0, cells_color[i][j].thickness / 2.0, now_color, false);
                         new_rect.draw(*render);
                     } else

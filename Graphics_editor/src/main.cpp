@@ -122,7 +122,7 @@ int main() {
 		anim_manager->tick(TIME_DELTA);
 
 		//tmp.draw(&render, &texture, &screen);
-		tmp.draw_big_point(render, 2);
+		//tmp.draw_big_point(render, 2);
 
 		SDL_RenderPresent(render);
 	}
