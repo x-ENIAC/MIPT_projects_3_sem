@@ -38,9 +38,9 @@ class Chart : public View_object {
 
 	  	spline_canvas[0] = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
                                             par_manager_of_canvas_managers, Color_management::MAN_RED, par_mouse_click_state);
-        spline_canvas[1] = new Spline_canvas(Point(300, 600), par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
+        spline_canvas[1] = new Spline_canvas(/*Point(300, 600)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
                                             par_manager_of_canvas_managers, Color_management::MAN_GREEN, par_mouse_click_state);
-        spline_canvas[2] = new Spline_canvas(Point(300, 300), par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
+        spline_canvas[2] = new Spline_canvas(/*Point(300, 300)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
                                             par_manager_of_canvas_managers, Color_management::MAN_BLUE, par_mouse_click_state);        
         count_spline_canvases = 3;
         //spline_canvas = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
@@ -89,7 +89,8 @@ class Chart : public View_object {
         for(int i = 0; i < count_spline_canvases; ++i)
             if(spline_canvas[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
                 //printf("click chart spline_canvas[i]!\n");
-                return spline_canvas[i]->check_click(mouse_x, mouse_y, par_mouse_status);
+                if(spline_canvas[i]->check_click(mouse_x, mouse_y, par_mouse_status))
+                    return true;
             }
 
         if(tools->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
@@ -106,7 +107,8 @@ class Chart : public View_object {
             if(spline_canvas[i]->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||
                 spline_canvas[i]->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y))) {
                 //printf("motion chart spline_canvas!\n");
-                return spline_canvas[i]->check_motion(old_mouse, now_mouse, par_mouse_status);
+                if(spline_canvas[i]->check_motion(old_mouse, now_mouse, par_mouse_status))
+                    return true;
             }
 
         if(tools->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y)) ||

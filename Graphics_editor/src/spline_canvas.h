@@ -127,14 +127,22 @@ class Spline_canvas : public View_object {
 
 				bool flag = false;
 				for(size_t i = 0; i < count_of_points; ++i) {
+					//printf("\ttry %d\n", i);
 					if(points[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) 
 						flag = points[i]->check_click(mouse_x, mouse_y, par_mouse_status);
 				}
 
-				if(!flag)
-					add_point(mouse_x, mouse_y);
+				if(!flag) {
+					if(fabs(visual_points[(int)(mouse_x - rect->get_left_up_corner().x)].y - mouse_y) < 3) {
+						add_point(mouse_x, mouse_y);
+						flag = true;
+					}
+				}
 
-				return true;
+				//if(!flag)
+				//	add_point(mouse_x, mouse_y);
+
+				return flag;
 			}
 		}
 
@@ -148,7 +156,6 @@ class Spline_canvas : public View_object {
 
 				for(size_t i = 0; i < count_of_points; ++i) {
 					if(points[i]->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y))) {
-						//printf("%d\n", *par_mouse_status);
 
 						if(points[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
 							spline->points[this->points[i]->index] = now_mouse;
@@ -179,7 +186,7 @@ class Spline_canvas : public View_object {
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		if(is_visible) {
-			rect->draw(*render);
+			//rect->draw(*render);
 
 			int width = rect->get_width();
 			for(int i = 0; i < width; ++i) {
