@@ -4,7 +4,7 @@
 #define PENCIL_H
 
 class Pencil {
-  private:
+  public:
 	Colour color;
 	size_t thickness;
 

@@ -10,26 +10,27 @@ const int MAX_COUNT_OF_POINTS = 100;
 
 class Spline {
   public:
-  	Point* points;
-  	size_t count_of_points;
+	Point* points;
+	size_t count_of_points;
 
-  	Spline() {
-  		points = new Point[MAX_COUNT_OF_POINTS];
-  		count_of_points = 0;
-  	}
+	Spline() {
+		points = new Point[MAX_COUNT_OF_POINTS];
+		count_of_points = 0;
+	}
 
-  	int add_point(const Point new_point) {
-  		points[count_of_points] = new_point;
-  		++count_of_points;
+	int add_point(const Point new_point) {
+		points[count_of_points] = new_point;
+		++count_of_points;
+	
+		qsort(points, count_of_points, sizeof(Point), compare);
+	
+		for(int i = 0; i < count_of_points; ++i)
+			if(points[i] == new_point)
+				return i;
+		return 0;
+	}
 
-  		qsort(points, count_of_points, sizeof(Point), compare);
-
-  		for(int i = 0; i < count_of_points; ++i)
-  			if(points[i] == new_point)
-  				return i;
-  	}
-
-  	void update_coords(Point* &visual_points, const int n, Point left_corner) {
+	void update_coords(Point* &visual_points, const int n, Point left_corner) {
 		int index = 0;
 
 		//printf("\tinterpolation_point\n");
@@ -44,19 +45,19 @@ class Spline {
 
 			visual_points[i].y = get_y_from_x(points[index], points[index + 1], i + left_corner.x);
 		}
-  	}
+	}
 
-  	void catmull_rom(Point* &visual_points, const int n, Point left_corner, const int count_of_base_points);
+	void catmull_rom(Point* &visual_points, const int n, Point left_corner, const int count_of_base_points);
 
-  	double get_t(const Point& p1, const Point& p2, const double t, const double alpha) {
-  		Point d = p2;
-  		d -= p1;
+	double get_t(const Point& p1, const Point& p2, const double t, const double alpha) {
+		Point d = p2;
+		d -= p1;
 
-  		double scalar = d.scalar_mult(d);
-  		scalar = std::pow(scalar, alpha * 0.5);
+		double scalar = d.scalar_mult(d);
+		scalar = std::pow(scalar, alpha * 0.5);
 
-  		return scalar + t;
-  	}
+		return scalar + t;
+	}
 
 	double linear_spline(const double a, const double b, const double t) {
 		if(t >= 0 && t <= 1)
@@ -81,7 +82,7 @@ class Spline {
 		Point B1 = A1 * ((t3 - t) / (t3 - t1)) + A2 * ((t - t1) / (t3 - t1));
 		Point B2 = A2 * ((t4 - t) / (t4 - t2)) + A3 * ((t - t2) / (t4 - t2));
 
-		Point C  = B1 * ((t3 - t) / (t3 - t2)) + B2 * ((t - t2) / (t3 - t2));
+		Point C= B1 * ((t3 - t) / (t3 - t2)) + B2 * ((t - t2) / (t3 - t2));
 
 		return C.y;
 	}

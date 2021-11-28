@@ -9,13 +9,13 @@ STANDARD =
 OPTIMIZATION = -O1 -Wno-reorder
 
 CFLAGS = $(WARNINGS) $(STANDARD) $(OPTIMIZATION)
-LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lmy_plagin -L.
 
 .PHONY : all run debug clean
 
 all: colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
 	$(CPP) $(CFLAGS) -c ./src/main.cpp -o main.o
-	$(LD) colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
+	$(LD) -Llib/ colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
 	
 
 colour.o: ./src/colour.cpp ./src/colour.h
@@ -38,6 +38,13 @@ spline.o: ./src/spline.cpp ./src/spline.h
 
 run: all
 	./$(CUR_PROG) $(ARGS)
+	
+update_library:
+	gcc -fPIC -Wall -g -c src/my_plagin.cpp
+	gcc -g -shared -Wl,-soname,libhello.so.0 -o libhello.so.0.0 my_plagin.o -lc
+	ldconfig -v -n .
+	ln -sf libhello.so.0 libhello.so
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 
 callgrind_debug: all
 	valgrind --dump-instr=yes --tool=callgrind  ./$(CUR_PROG) $(ARGS)

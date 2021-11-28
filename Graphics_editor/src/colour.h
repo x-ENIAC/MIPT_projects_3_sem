@@ -44,13 +44,13 @@ class Colour {
 const Colour BLACK = Colour(0,     0,   0,   0);
 const Colour WHITE = Colour(255, 255, 255, 255);
 const Colour RED   = Colour(255,   0,   0, 255);
-const Colour GREEN = Colour(0,     0, 255, 255);
-const Colour BLUE  = Colour(0,   255,   0, 255);
-const Colour YELLOW = Colour(255, 0, 255, 255);
-const Colour PURPLE = Colour(161, 161, 98, 255);
-const Colour LIGHT_GREEN = Colour(153, 153, 255, 255);
-const Colour PINK = Colour(255, 203, 192, 255);
-const Colour LIGHT_CARROT = Colour(237, 33, 145, 255);
+const Colour GREEN = Colour(0, 255, 0, 255);
+const Colour BLUE  = Colour(0,   0, 255, 255);
+const Colour YELLOW = Colour(255, 255, 0, 255);
+const Colour PURPLE = Colour(161, 98, 161, 255);
+const Colour LIGHT_GREEN = Colour(153, 255, 153, 255);
+const Colour PINK = Colour(255, 192, 203, 255);
+const Colour LIGHT_CARROT = Colour(237, 145, 33, 255);
 
 
 //const Colour LIGHT_GREY_5 = Colour(245, 245, 245, 255);

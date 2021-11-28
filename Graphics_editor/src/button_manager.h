@@ -58,7 +58,7 @@ class Button_manager : public View_object {
 					}
 
 					/*else
-					/*if(*par_mouse_status == Mouse_click_state::MOUSE_UP || 
+					if(*par_mouse_status == Mouse_click_state::MOUSE_UP || 
 					if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
 						//printf("button up | motion\n");
 						buttons[i]->delegate->reactive_reaction(mouse_x, mouse_y);

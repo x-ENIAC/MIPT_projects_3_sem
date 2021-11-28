@@ -85,7 +85,7 @@ void Manager_of_canvas_managers::set_new_active_object(const int new_active) {
 
 	if(who_is_active != -1) {
 		active_canvas = canvas_managers[who_is_active];
-		printf("!!!!!!!!!!!!!!! %p\n", active_canvas);
+		//printf("!!!!!!!!!!!!!!! %p\n", active_canvas);
 		//printf("new %p\n", active_canvas);
 		canvas_managers[who_is_active]->is_active = true;
 		canvas_managers[who_is_active]->tab->button_manager->buttons[0]->texture->update_texture(PATH_TO_PICTURE_WITH_GREY_2_BUTTON);

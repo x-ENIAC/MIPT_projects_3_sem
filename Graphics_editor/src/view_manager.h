@@ -8,6 +8,8 @@
 #include "thickness_palette.h"
 #include "tab.h"
 #include "chart.h"
+#include "slider_manager.h"
+#include "my_plagin.h"
 
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
@@ -77,7 +79,7 @@ class View_manager : public View_object {
 
 		fill_tools_button_manager(left_up_corner, par_width, par_height);
 
-		// ----------------------- add colour palette ---------------------------------------------------------- \\
+		/* ----------------------- add colour palette ---------------------------------------------------------- */
 
 		Point center_button(tool_buttons_manager->buttons[tool_buttons_manager->get_count_of_buttons() - 1]->rect->get_center());
 
@@ -92,7 +94,7 @@ class View_manager : public View_object {
 		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_PALETTE_BUTTON);
 		tool_buttons_manager->add_view_object(colour_palette_button);
 
-		// ----------------------- add thickness palette ---------------------------------------------------------- \\	    
+		/* ----------------------- add thickness palette ---------------------------------------------------------- \\	  */
 
 		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &pencil, &mouse_click_state);
 		add_view_object(thickness_palette);
@@ -108,9 +110,14 @@ class View_manager : public View_object {
 		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, &pencil, manager_of_canvas_managers, false, &mouse_click_state);
 		add_view_object(chart);
 
-		// ----------------------- add spline screen ---------------------------------------------------------- \\
+		/* ----------------------- add slider ---------------------------------------------------------- \\	  */
 
-		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
+		Slider_manager* slider_manager = new Slider_manager(Point(300, 100), 10, 0, 100, &mouse_click_state);
+		add_view_object(slider_manager);
+
+		/* ----------------------- add spline screen ---------------------------------------------------------- */
+
+		/*Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center()*/
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 
 		Open_window_delegate* open_spline_delegate = new Open_window_delegate(&(chart->is_visible));
@@ -121,7 +128,7 @@ class View_manager : public View_object {
 		spline_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_SPLINE_BUTTON);
 		tool_buttons_manager->add_view_object(spline_panel_button);
 
-		// ----------------------- add canvases ---------------------------------------------------------- \\
+		/* ----------------------- add canvases ---------------------------------------------------------- */
 
 		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
@@ -283,8 +290,13 @@ class View_manager : public View_object {
 
 			case SDLK_l:					// BLUE (l)
 				pencil.set_color(BLUE);
-				return true;                
-		} 			
+				return true;
+
+			case SDLK_p:					// BLUE (l)
+				printf("canvas??? %p\n", manager_of_canvas_managers->active_canvas->view_objects[0]);
+				make_negative((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]));
+				return true;				
+		}
 
 		return false;	  		
 	}

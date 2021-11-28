@@ -11,9 +11,6 @@ void View_manager::fill_tools_button_manager(Point left_up_corner, const double 
 	file_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_FILE_BUTTON);
 	tool_buttons_manager->add_view_object(file_panel_button);
 
-
-
-
 	Create_new_canvas_delegate* create_new_canvas_delegate = new Create_new_canvas_delegate(manager_of_canvas_managers);        
 
 	center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
@@ -22,9 +19,6 @@ void View_manager::fill_tools_button_manager(Point left_up_corner, const double 
 	//printf("before add NEW %s\n", PATH_TO_PICTURE_WITH_NEW_BUTTON);
 	edit_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_NEW_BUTTON);
 	tool_buttons_manager->add_view_object(edit_panel_button);
-
-
-
 
 
 	center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);

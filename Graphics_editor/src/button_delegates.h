@@ -6,6 +6,7 @@
 #include "pencil.h"
 #include "view.h"
 #include "animation_manager.h"
+#include "slider_field.h"
 
 #ifndef OBJECT_DELEGATES_H
 #define OBJECT_DELEGATES_H
@@ -212,6 +213,35 @@ class Open_window_delegate : public Button_delegate {
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
 
 	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
+};
+
+
+
+
+
+class Slider_field_delegate : public Button_delegate {
+  public:
+
+	Slider_field* slider_field;
+	Point* center;
+
+	Slider_field_delegate(Slider_field* par_slider_field, Point* par_center) {
+		slider_field = par_slider_field;
+		center = par_center;
+		//printf("tttttttttttt!\n");
+	}
+
+	void click_reaction(const double mouse_x, const double mouse_y) override {
+		center->x = mouse_x;
+	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {
+		//printf("motion slider!\n");
+	}
+
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {
+		//printf("reactive slider!\n");
+	}
 };
 
 

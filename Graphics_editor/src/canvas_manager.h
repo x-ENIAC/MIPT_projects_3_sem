@@ -59,7 +59,7 @@ class Canvas_manager : public View_object {
 		center_button = par_point;
 		center_button += Point(0, HEIGHT_CLOSE_BUTTON / 2);
 
-		Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, par_color, par_pencil);
+		Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, GREEN, par_pencil);
 		view_objects[count_of_views++] = canvas;
 
 		++widget_types[(int)Widget_types::CANVAS];

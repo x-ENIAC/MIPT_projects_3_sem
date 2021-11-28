@@ -20,7 +20,7 @@ class Rectangle {
 	}    
 
 
-	Rectangle(const Point par_point, const double par_width, const double par_height, const Colour par_color, const bool par_is_active) {
+	Rectangle(const Point par_point, const double par_width, const double par_height, const Colour par_color, const bool par_is_active = true) {
 		center = par_point;
 		width  = par_width;
 		height = par_height;

@@ -98,7 +98,6 @@ int main() {
 
 	//View_object tmp(Point(300, 300), 100, 100, BLACK);
 	//animation_manager.add_animation(render, "textures/grey_1_close.bmp", "textures/grey_2_close.bmp", TIME_DELTA * 10, &tmp);
-	Point tmp(600, 620);
 
 	SDL_Event event = {};
 	bool is_run = true;
@@ -120,9 +119,6 @@ int main() {
 
 		view_manager.tick(TIME_DELTA);
 		anim_manager->tick(TIME_DELTA);
-
-		//tmp.draw(&render, &texture, &screen);
-		//tmp.draw_big_point(render, 2);
 
 		SDL_RenderPresent(render);
 	}

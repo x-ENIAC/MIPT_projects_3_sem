@@ -35,14 +35,14 @@ class Point {
 	}  	
 
 	inline void draw_point(SDL_Renderer* render) {
-		SDL_SetRenderDrawColor(render, color.red, color.blue, color.green, 20);
+		SDL_SetRenderDrawColor(render, color.red, color.green, color.blue, 20);
 		SDL_RenderDrawPoint(render, x, y); 
 	}
 
 	inline void draw_big_point(SDL_Renderer* render, const int radius) {
 		int radius_2 = radius * radius;
 
-		SDL_SetRenderDrawColor(render, color.red, color.blue, color.green, 20);
+		SDL_SetRenderDrawColor(render, color.red, color.green, color.blue, 20);
 
 		int max_x = x + radius;
 		for(int i = x - radius; i <= max_x; ++i) {
@@ -50,7 +50,7 @@ class Point {
 			int max_y = y + radius;
 			for(int j = y - radius; j <= max_y; ++j) {
 
-				if((i - x) * (i - x) + (j - y) * (j - y) <= radius * radius)
+				if((i - x) * (i - x) + (j - y) * (j - y) <= radius_2)
 					SDL_RenderDrawPoint(render, i, j);
 			}
 		}

@@ -135,7 +135,7 @@ class View_object {
 		rect->set_center(rect->get_center() - delta);     
 	}
 
-	virtual void update_view_object_position(const double mouse_x, const double mouse_y) {printf("-------\n");}
+	virtual void update_view_object_position(const double mouse_x, const double mouse_y) {/*printf("-------\n");*/}
 
 	virtual void tick(const double delta_time) {}
 

@@ -232,8 +232,6 @@ class Spline_canvas : public View_object {
 		Point left_down_corner = {points[0]->rect->center.x,points[0]->rect->center.y};
 
 		for(int i = 0; i <= width; ++i) {
-			//if(i <= 20)
-			//	printf("%lg, %lg, corner %lg\n", visual_points[i].x, visual_points[i].y, left_down_corner.x);
 
 			double find_value = visual_points[i].x - left_down_corner.x;
 			double new_value  = left_down_corner.y - visual_points[i].y;
@@ -241,12 +239,6 @@ class Spline_canvas : public View_object {
 			if(find_value == new_value)
 				continue;
 
-			//printf("find_value %lg, new_value %lg\n", find_value, new_value);
-
-			//if(i <= 20)
-			//printf("(%lg, %lg), find %lg\n\n", visual_points[i].x - left_down_corner.x, left_down_corner.y - visual_points[i].y, find_value);
-
-			//printf("..............\n");
 			for(int i = 0; i <= canvas_width; ++i) {
 				for(int j = 0; j <= canvas_height; ++j) {
 					//printf("\t%d, %d\n", i, j);
@@ -278,9 +270,6 @@ class Spline_canvas : public View_object {
 				}
 			}
 		}
-
-		//pause();
-		//printf("2\n");
 	}
 
 	Colour get_color(const Color_management m_color) {
@@ -289,9 +278,10 @@ class Spline_canvas : public View_object {
 		else
 		if(m_color == Color_management::MAN_GREEN)
 			return GREEN;
-		else
-		if(m_color == Color_management::MAN_BLUE)
+		//else
+		//if(m_color == Color_management::MAN_BLUE)
 			return BLUE;
+
 	}
 
 	void func() {

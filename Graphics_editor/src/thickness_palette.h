@@ -55,10 +55,10 @@ class Thickness_palette : public View_object {
 		//--------------- add colours button ---------------------------
 
 		add_thickness_buttons(begin_width, begin_height, 50);
+		add_thickness_buttons(begin_width, begin_height, 40);
+		add_thickness_buttons(begin_width, begin_height, 30);
 		add_thickness_buttons(begin_width, begin_height, 20);
 		add_thickness_buttons(begin_width, begin_height, 10);
-		add_thickness_buttons(begin_width, begin_height,  5);
-		add_thickness_buttons(begin_width, begin_height,  1);
 
 		set_parameters_of_colours_button_manager();
 
@@ -220,8 +220,6 @@ class Thickness_palette : public View_object {
 
 		thickness_buttons->rect->set_center( thickness_buttons->rect->get_center() - delta );
 		thickness_buttons->update_position_from_delta(delta);
-
-		//printf("new (%lg, %lg)\n\n", tool_buttons->rect->get_center().x, tool_buttons->rect->get_center().y);
 	}
 
 	void tick(const double delta_time) override {

@@ -114,7 +114,7 @@ class Button : public View_object {
 				sdl_rect.x = rect->get_center().x - sdl_rect.w / 2.0;
 				sdl_rect.y = rect->get_center().y - sdl_rect.h / 2.0;
 
-				this->texture->draw_texture(&sdl_rect);				
+				this->texture->draw_texture(&sdl_rect);
 			}
 
 			/*if(strcmp(NON_PATH_TO_PUCTURE, path_to_picture)) {
