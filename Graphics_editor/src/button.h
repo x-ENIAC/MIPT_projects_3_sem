@@ -77,6 +77,7 @@ class Button : public View_object {
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
 		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+			printf("Begin check button\n");
 			//printf("!!! %d\n", *par_mouse_status);
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
 				delegate->click_reaction(mouse_x, mouse_y);

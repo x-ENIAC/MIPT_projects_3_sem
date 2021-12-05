@@ -185,8 +185,9 @@ class Change_thickness_delegate : public Button_delegate {
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
-		//printf("Change_thickness_delegate\n");
+		printf("\tbegin Change_thickness_delegate, pencil %p, %ld\n", pencil, yourself_thickness);
 		pencil->set_thickness(yourself_thickness);
+		printf("\tend Change_thickness_delegate, pencil %p\n", pencil);
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}

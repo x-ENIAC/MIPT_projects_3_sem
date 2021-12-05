@@ -21,6 +21,7 @@ class Thickness_palette : public View_object {
 
 	Thickness_palette(const double begin_width, const double begin_height, Pencil* par_pencil, Mouse_click_state* par_mouse_click_state) :
 	  View_object(Widget_types::PALETTE) {
+	  	printf("begin fill thickness palette\n");
 		pencil = par_pencil;
 
 		rect->height = HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS * 2;
@@ -32,6 +33,7 @@ class Thickness_palette : public View_object {
 
 
 		fill_button_manager(begin_width, begin_height, par_mouse_click_state);
+		printf("end fill thickness palette\n");
 	}
 
 	void fill_button_manager(const double begin_width, const double begin_height, Mouse_click_state* par_mouse_click_state) {
@@ -152,6 +154,7 @@ class Thickness_palette : public View_object {
 	}	
 
 	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+		printf("check click thickness palette %p\n", thickness_buttons);
 		if(thickness_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, thickness_buttons->rect->get_center().x,
 			//								thickness_buttons->rect->get_center().y, thickness_buttons->rect->get_width(), thickness_buttons->rect->get_height());

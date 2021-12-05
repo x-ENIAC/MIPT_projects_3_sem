@@ -105,7 +105,7 @@ class Canvas : public View_object {
     }
 
     bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
-        printf("canvas check_motion, active %d\n", is_active);
+        // printf("canvas check_motion, active %d\n", is_active);
         if(is_active) {
             double mouse_x = now_mouse.x, mouse_y = now_mouse.y;
 
@@ -114,18 +114,18 @@ class Canvas : public View_object {
 
                     Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
 
-                    printf("??? %lg, %lg, (%lg, %lg, %lg)", mouse_x - left_up_corner.x, mouse_y - left_up_corner.y,
-                                                            cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                                                            cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                                                            cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
+                    // printf("??? %lg, %lg, (%lg, %lg, %lg)", mouse_x - left_up_corner.x, mouse_y - left_up_corner.y,
+                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
+                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
+                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
 
                     cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = pencil->get_color();
                     cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = pencil->get_color();
 
 
-                    printf(" -> (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
+                    // printf(" -> (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
+                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
+                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
                     //if(cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction != WHITE)
                     //    printf("!!! (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
                     //                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
@@ -136,7 +136,7 @@ class Canvas : public View_object {
                 }
             }
 
-            printf("%lg, %lg, %lg\n", cells_color[10][10].get_color().red, cells_color[10][10].get_color().green, cells_color[10][10].get_color().blue);
+            // printf("%lg, %lg, %lg\n", cells_color[10][10].get_color().red, cells_color[10][10].get_color().green, cells_color[10][10].get_color().blue);
         }
 
         return false;

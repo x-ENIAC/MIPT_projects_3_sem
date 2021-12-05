@@ -29,6 +29,8 @@ const char PATH_TO_PICTURE_WITH_THICKNESS_BUTTON[] 	   = "textures/black_thickne
 const char PATH_TO_PICTURE_WITH_SPLINE_BUTTON[]		   = "textures/black_spline.bmp";
 const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[]	 	   = "textures/black_canvas.bmp";
 
+const char PATH_TO_PICTURE_WITH_PENCIL[] = "textures/pencil.bmp";
+
 struct Texture {
 	SDL_Texture* texture;
 	SDL_Renderer* render;
@@ -42,14 +44,21 @@ struct Texture {
 
 	~Texture() {}
 
-	void add_new_texture(const char par_path_to_picture[]) {
-		SDL_Surface *bmp = SDL_LoadBMP(par_path_to_picture);
+	void add_new_texture(const char par_path_to_picture[]) { // TRANSPARRENSY !!! DOESN'T WORK !!! STUPID SDL !!!
+		/*SDL_Surface *bmp = SDL_LoadBMP(par_path_to_picture);
 
 		if(!bmp) {
 			printf("add> %s (%s)\n", SDL_GetError(), par_path_to_picture);
 		}
 
-		texture = SDL_CreateTextureFromSurface(render, bmp);
+		texture = SDL_CreateTextureFromSurface(render, bmp);*/
+
+		texture = IMG_LoadTexture(render, par_path_to_picture);
+		if(!texture) {
+			printf("%s\n", IMG_GetError()); // Можно заменить на SDL_GetError()
+			return;
+		}
+
 		if(strcmp(par_path_to_picture, path_to_picture)) {
 			//printf("%s --> %s\n", path_to_picture, par_path_to_picture);
 			strcpy(path_to_picture, par_path_to_picture);
@@ -67,7 +76,6 @@ struct Texture {
 	}
 
 	void draw_texture(SDL_Rect* rectangle) {
-		//printf("path_to_picture %s\n", path_to_picture);
 		SDL_RenderCopy(render, texture, NULL, rectangle);
 	}
 };

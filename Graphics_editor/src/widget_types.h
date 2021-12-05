@@ -18,7 +18,9 @@ enum class Widget_types {
 	SPLINE_POINT			= 12,
 	SLIDER_MANAGER			= 13,
 	SLIDER_FIELD			= 14,
-	SLIDER					= 15
+	SLIDER					= 15,
+	TOOL_MANAGER			= 16,
+	TOOL					= 17
 };
 
 const size_t COUNT_OF_TYPES = 13;

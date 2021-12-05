@@ -44,12 +44,13 @@ class Button_manager : public View_object {
 		//printf("Button_manager, check_click, %d. Mouse (%lg, %lg). Center (%lg, %lg), widht %lg, height %lg\n", is_active, mouse_x, mouse_y,
 		//																rect->get_center().x, rect->get_center().y, rect->get_width(), rect->get_height());
 
+		printf("check click button manager %p\n", buttons);
 		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
 			//printf("!!\n");
 			for(size_t i = 0; i < count_of_buttons; ++i) {
-				/*printf("\tcenter (%lg, %lg), width %lg, height %lg. MMM %d\n", buttons[i]->rect->center.x, buttons[i]->rect->center.y, 
+				printf("\tcenter (%lg, %lg), width %lg, height %lg. MMM %d\n", buttons[i]->rect->center.x, buttons[i]->rect->center.y, 
 													buttons[i]->rect->get_width(), buttons[i]->rect->get_height(),
-													buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ));*/
+													buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ));
 
 				if(buttons[i]->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 					if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {

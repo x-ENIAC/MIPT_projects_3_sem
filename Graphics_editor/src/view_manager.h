@@ -9,7 +9,9 @@
 #include "tab.h"
 #include "chart.h"
 #include "slider_manager.h"
-#include "my_plagin.h"
+#include "tool_manager.h"
+//#include "my_plagin.h"
+#include "plugin_interface.h"
 
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
@@ -38,14 +40,17 @@ class View_manager : public View_object {
 	size_t count_of_view_objects;
 	int who_is_active;
 
-	Pencil pencil;
+	Pencil* pencil;
 
-	Button_manager* tool_buttons_manager;
+	Button_manager* panel_buttons_manager;
+	Tool_manager* tool_manager;
 	Manager_of_canvas_managers* manager_of_canvas_managers;
 
 	Mouse_click_state mouse_click_state;
 
 	Point old_pos_mouse, now_pos_mouse;
+
+	PAppInterface* app_interface;
 
 	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color/*, Animation_manager* par_animation_manager*/) :
 	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
@@ -59,31 +64,40 @@ class View_manager : public View_object {
 
 		who_is_active = -1;
 
-		pencil = {};
-
 		mouse_click_state = Mouse_click_state::MOUSE_UP;
+
+		//pencil = new Pencil;
+
+		/* ----------------------- add tool manager ---------------------------------------------------------- */
+
+		tool_manager = new Tool_manager(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER); //, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+		add_view_object(tool_manager);
+
+		fill_tool_manager();
+
+		/* ----------------------- add manager of canvas managers ---------------------------------------------------------- */		
 
 		manager_of_canvas_managers = new Manager_of_canvas_managers(CENTER_MANAGER_OF_CANVAS_MANAGERS,
 																	WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	LIGHT_LIGHT_GREY,
-																	&pencil, 
+																	pencil, 
 																	false,
 																	&mouse_click_state);
 
 		Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
 		center_of_button_manager += left_up_corner;
 
-		tool_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, DARK_GREY_2, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-		add_view_object(tool_buttons_manager);
+		panel_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, DARK_GREY_2, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+		add_view_object(panel_buttons_manager);
 
-		fill_tools_button_manager(left_up_corner, par_width, par_height);
+		fill_panel_button_manager(left_up_corner, par_width, par_height);
 
 		/* ----------------------- add colour palette ---------------------------------------------------------- */
 
-		Point center_button(tool_buttons_manager->buttons[tool_buttons_manager->get_count_of_buttons() - 1]->rect->get_center());
+		Point center_button(panel_buttons_manager->buttons[panel_buttons_manager->get_count_of_buttons() - 1]->rect->get_center());
 
-		Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &pencil, &mouse_click_state);
+		Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, pencil, &mouse_click_state);
 		add_view_object(palette);
 
 		Open_window_delegate* open_colour_palette_delegate = new Open_window_delegate(&(palette->is_visible));
@@ -92,11 +106,11 @@ class View_manager : public View_object {
 		Button* colour_palette_button = new Button(open_colour_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 											   "Palette 1", BLACK);
 		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_PALETTE_BUTTON);
-		tool_buttons_manager->add_view_object(colour_palette_button);
+		panel_buttons_manager->add_view_object(colour_palette_button);
 
 		/* ----------------------- add thickness palette ---------------------------------------------------------- \\	  */
 
-		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &pencil, &mouse_click_state);
+		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, pencil, &mouse_click_state);
 		add_view_object(thickness_palette);
 
 		Open_window_delegate* open_thickness_palette_delegate = new Open_window_delegate(&(thickness_palette->is_visible));
@@ -105,9 +119,9 @@ class View_manager : public View_object {
 		Button* thickness_palette_button = new Button(open_thickness_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 											   "Palette 2", BLACK);
 		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
-		tool_buttons_manager->add_view_object(thickness_palette_button);
+		panel_buttons_manager->add_view_object(thickness_palette_button);
 
-		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, &pencil, manager_of_canvas_managers, false, &mouse_click_state);
+		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, pencil, manager_of_canvas_managers, false, &mouse_click_state);
 		add_view_object(chart);
 
 		/* ----------------------- add slider ---------------------------------------------------------- \\	  */
@@ -126,7 +140,7 @@ class View_manager : public View_object {
 											   "Spline", BLACK);
 
 		spline_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_SPLINE_BUTTON);
-		tool_buttons_manager->add_view_object(spline_panel_button);
+		panel_buttons_manager->add_view_object(spline_panel_button);
 
 		/* ----------------------- add canvases ---------------------------------------------------------- */
 
@@ -138,15 +152,19 @@ class View_manager : public View_object {
 		Button* canvas_panel_button = new Button(open_canvases_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
 											   "Canvases", BLACK);
 		canvas_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CANVAS_BUTTON);
-		tool_buttons_manager->add_view_object(canvas_panel_button);
+		panel_buttons_manager->add_view_object(canvas_panel_button);
 
 		//sdl_ticks = SDL_GetTicks();
 		//printf("%d\n", sdl_ticks);
 
+		//fill_app_interface();
+
 		old_pos_mouse = now_pos_mouse = Point(0, 0);
 	}
 
-	void fill_tools_button_manager(Point left_up_corner, const double par_width, const double par_height);
+	void fill_panel_button_manager(Point left_up_corner, const double par_width, const double par_height);
+
+	void fill_tool_manager();
 
 	~View_manager() {
 		printf("Destruct View_manager, %ld\n", count_of_view_objects);
@@ -155,7 +173,7 @@ class View_manager : public View_object {
 			delete[] view_objects[i];
 		delete[] view_objects;
 
-		delete[] tool_buttons_manager;
+		delete[] panel_buttons_manager;
 		delete[] manager_of_canvas_managers;*/
 
 		count_of_view_objects = 0;
@@ -182,6 +200,8 @@ class View_manager : public View_object {
 			for(size_t i = 0; i < count_of_view_objects; ++i) {
 				view_objects[i]->draw(render, texture, screen);
 			}
+
+			tool_manager->draw(render, texture, screen);
 		}
 	}
 
@@ -273,28 +293,29 @@ class View_manager : public View_object {
 
 		switch (event->key.keysym.sym) {                    
 			case SDLK_b:					// black
-				pencil.set_color(BLACK);
+				pencil->set_color(BLACK);
 				return true;
 
 			case SDLK_r:					// RED
-				pencil.set_color(RED);
+				pencil->set_color(RED);
 				return true;
 
 			case SDLK_g:					// GREEN
-				pencil.set_color(GREEN);
+				pencil->set_color(GREEN);
 				return true;
 
 			case SDLK_y:					// YELLOW
-				pencil.set_color(YELLOW);
+				pencil->set_color(YELLOW);
 				return true;
 
 			case SDLK_l:					// BLUE (l)
-				pencil.set_color(BLUE);
+				pencil->set_color(BLUE);
 				return true;
 
 			case SDLK_p:					// BLUE (l)
 				printf("canvas??? %p\n", manager_of_canvas_managers->active_canvas->view_objects[0]);
-				make_negative((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]));
+				//start_plagin();
+				//make_negative((Canvas*)(manager_of_canvas_managers->active_canvas->view_objects[0]));
 				return true;				
 		}
 

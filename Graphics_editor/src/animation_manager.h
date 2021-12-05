@@ -4,16 +4,11 @@
 #ifndef ANIMATION_MANAGER_H
 #define ANIMATION_MANAGER_H
 
-//#include "view_manager.h"
-//class View_manager;
-
 const int MAX_COUNT_OF_ANIMATIONS = 100;
 
 class Animation_manager {
   private:
 	static Animation_manager* animation_manager;
-
-	//View_manager* view_manager;
 	
 	Animation** animations;
 	size_t count_of_animations;

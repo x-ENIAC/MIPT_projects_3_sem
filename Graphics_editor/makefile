@@ -13,10 +13,12 @@ LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lmy_plagin -L.
 
 .PHONY : all run debug clean
 
-all: colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
+all: app.o colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
 	$(CPP) $(CFLAGS) -c ./src/main.cpp -o main.o
-	$(LD) -Llib/ colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
+	$(LD) -Llib/ app.o colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
 	
+app.o: ./src/app.cpp ./src/app.h
+	$(CPP) $(CFLAGS) -c ./src/app.cpp -o app.o
 
 colour.o: ./src/colour.cpp ./src/colour.h
 	$(CPP) $(CFLAGS) -c ./src/colour.cpp -o colour.o
