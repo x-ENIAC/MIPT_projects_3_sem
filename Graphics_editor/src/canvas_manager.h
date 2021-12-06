@@ -13,14 +13,16 @@
 #ifndef CANVAS_MANAGER_H
 #define CANVAS_MANAGER_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+//extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
 //const double WIDTH_CLOSE_BUTTON  = 20;
 //const double HEIGHT_CLOSE_BUTTON = 20;
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
+//extern const double WIDTH_TABS_BUTTON;
+//extern const double HEIGHT_TABS_BUTTON;
 
 class Canvas_manager : public View_object {
   public:
+
+  	// Canvas* canvas;
 
 	View_object** view_objects;
 	size_t count_of_views;
@@ -29,6 +31,8 @@ class Canvas_manager : public View_object {
 	Tab* tab;
 
 	Canvas_manager() : View_object (Widget_types::CANVAS_MANAGER) {
+
+		// canvas = new Canvas;
 
 		view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
 		for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
@@ -138,6 +142,9 @@ class Canvas_manager : public View_object {
 			//printf("rect? (%lg, %lg), %lg, %lg\n\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
 			if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 
+				// if(canvas->check_click(mouse_x, mouse_y, par_mouse_status)) {
+				// 	return true;
+
 				for(int i = count_of_views - 1; i >= 0; --i) {
 					//printf("\t\tcheck.\n");
 					if(view_objects[i]->check_click(mouse_x, mouse_y, par_mouse_status)) {
@@ -168,6 +175,9 @@ class Canvas_manager : public View_object {
 			if(rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
 			   rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
 
+				// if(canvas->check_motion(old_mouse, now_mouse, par_mouse_status)) {
+				// 	return true;
+
 				for(int i = count_of_views - 1; i >= 0; --i) {
 
 					if(view_objects[i]->check_motion(old_mouse, now_mouse, par_mouse_status)) {
@@ -184,6 +194,8 @@ class Canvas_manager : public View_object {
 		//rect->draw(*render);
 
 		if(is_visible && is_active) {
+			// canvas->draw(render, texture, screen);
+
 			for(size_t i = 0; i < count_of_views; ++i)
 				view_objects[i]->draw(render, texture, screen);
 		}
@@ -214,6 +226,8 @@ class Canvas_manager : public View_object {
 		//tab->rect->set_center();
 		//tab->button_manager->rect->set_center(tab->rect->get_center() - delta);
 		//tab->button_manager->update_position_from_delta(delta);
+
+		// canvas->update_position_from_delta(delta);
 
 		for(size_t i = 0; i < count_of_views; ++i) {
 			view_objects[i]->update_position_from_delta(delta);

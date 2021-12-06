@@ -7,10 +7,10 @@
 #ifndef THICKNESS_PALETTE_H
 #define THICKNESS_PALETTE_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-extern const double DELTA_BETWEEN_BUTTONS;
-extern const double WIDTH_CLOSE_BUTTON;
-extern const double HEIGHT_CLOSE_BUTTON;
+// extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+// //extern const double DELTA_BETWEEN_BUTTONS;
+// extern const double WIDTH_CLOSE_BUTTON;
+// extern const double HEIGHT_CLOSE_BUTTON;
 
 class Thickness_palette : public View_object {
   public:

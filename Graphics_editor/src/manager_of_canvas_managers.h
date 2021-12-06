@@ -15,9 +15,9 @@
 class Title_delegate;
 class Create_new_canvas_delegate;
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
+// extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+// extern const double WIDTH_TABS_BUTTON;
+// extern const double HEIGHT_TABS_BUTTON;
 
 class Manager_of_canvas_managers : public View_object {
   public:

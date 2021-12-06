@@ -1,6 +1,3 @@
-#ifndef PLUGIN_INTERFACE_H
-#define PLUGIN_INTERFACE_H
-
 #ifndef PLUGIN_STD_HPP
 #define PLUGIN_STD_HPP
 
@@ -15,22 +12,26 @@
 #if __cplusplus >= 201703L
 
 constexpr char PGET_INTERFACE_FUNC[] = "get_plugin_interface";
-constexpr uint32_t PSTD_VERSION = 1;
+constexpr uint32_t PSTD_VERSION = 0;
 
 constexpr char PST_TEXT_LINE[]    = "pst_text_line";
 constexpr char PST_SLIDER_1D[]    = "pst_slider_1d";
 constexpr char PST_SLIDER_2D[]    = "pst_slider_2d";
 constexpr char PST_COLOR_PICKER[] = "pst_color_picker";
 
+constexpr char PEXT_STD[] = "std";
+
 #else
 
 #define PGET_INTERFACE_FUNC "get_plugin_interface"
-#define PSTD_VERSION 1
+#define PSTD_VERSION 0
 
 #define PST_TEXT_LINE    "pst_text_line"
 #define PST_SLIDER_1D    "pst_slider_1d"
 #define PST_SLIDER_2D    "pst_slider_2d"
 #define PST_COLOR_PICKER "pst_color_picker"
+
+#define PEXT_STD  "std"
 
 #endif
 
@@ -123,8 +124,11 @@ struct PPluginInterface {
     void *reserved;
 
     struct {
-        bool  (*enable)(const char *name);   // enables specified extension
-        void *(*get_func)(const char *name); // returns given function, if it is implemented in some enabled extension
+        // enables specified extension
+        bool  (*enable)(const char *name);
+
+        // returns given function, if it is implemented in the specified (enabled) extension
+        void *(*get_func)(const char *extension, const char *func);
     } extensions;
 
     struct {
@@ -169,13 +173,22 @@ struct PColorPickerSetting {
     PRGBA color;
 };
 
+enum PShaderType {
+    PST_VERTEX,
+    PST_FRAGMENT,
+    PST_COMPUTE,
+};
+
 struct PAppInterface {
     uint32_t std_version;
     void *reserved;
 
     struct {
-        bool  (*enable)(const char *name);   // enables specified extension
-        void *(*get_func)(const char *name); // returns given function, if it is implemented in some enabled extension
+        // enables specified extension
+        bool  (*enable)(const char *name);
+
+        // returns given function, if it is implemented in the specified (enabled) extension
+        void *(*get_func)(const char *extension, const char *func);
     } extensions;
 
     struct {
@@ -205,28 +218,26 @@ struct PAppInterface {
     } render;
 
     struct {
-        void  (*create_surface) (size_t width, size_t height);
-        void  (*destroy_surface)();
+        void  (*create_surface) (const PPluginInterface *self, size_t width, size_t height);
+        void  (*destroy_surface)(const PPluginInterface *self);
 
-        void *(*add)(PSettingType type, const char *name);
-        void  (*get)(void *handle, void *answer);
+        void *(*add)(const PPluginInterface *self, PSettingType type, const char *name);
+        void  (*get)(const PPluginInterface *self, void *handle, void *answer);
     } settings;
 
     // set everything to nullptr here if you don't support shaders
     struct {
-        void (*apply)(void *shader, const PRenderMode *render_mode);
+        void (*apply)(const PRenderMode *render_mode);
 
-        void *(*compile)(const char *code);
+        void *(*compile)(const char *code, PShaderType type);
         void  (*release)(void *);
 
-        void (*set_uniform_int)    (const char *name, int  val);
-        void (*set_uniform_int_arr)(const char *name, int *val, size_t cnt);
+        void (*set_uniform_int)      (void *shader, const char *name, int  val);
+        void (*set_uniform_int_arr)  (void *shader, const char *name, int *val, size_t cnt);
 
-        void (*set_uniform_float)    (const char *name, float  val);
-        void (*set_uniform_float_arr)(const char *name, float *val, size_t cnt);
+        void (*set_uniform_float)    (void *shader, const char *name, float  val);
+        void (*set_uniform_float_arr)(void *shader, const char *name, float *val, size_t cnt);
     } shader;
 };
-
-#endif
 
 #endif

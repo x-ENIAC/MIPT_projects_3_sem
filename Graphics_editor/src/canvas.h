@@ -10,11 +10,11 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
+/*extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
 const double WIDTH_CLOSE_BUTTON  = 20;
 const double HEIGHT_CLOSE_BUTTON = 20;
 const double WIDTH_TABS_BUTTON = 150;
-const double HEIGHT_TABS_BUTTON = 20;
+const double HEIGHT_TABS_BUTTON = 20;*/
 
 struct Cell {
     Colour begin_color;

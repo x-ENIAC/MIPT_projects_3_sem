@@ -10,10 +10,10 @@
 #define TAB_H
 
 //extern const double DELTA_BETWEEN_BUTTONS;
-extern const double WIDTH_CLOSE_BUTTON;
-extern const double HEIGHT_CLOSE_BUTTON;
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
+// extern const double WIDTH_CLOSE_BUTTON;
+// extern const double HEIGHT_CLOSE_BUTTON;
+// extern const double WIDTH_TABS_BUTTON;
+// extern const double HEIGHT_TABS_BUTTON;
 
 const size_t MAX_SIZE_OF_TEXT_ON_TAB = 20;
 

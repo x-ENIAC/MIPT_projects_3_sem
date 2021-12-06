@@ -10,7 +10,15 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-extern const size_t MAX_SIZE_OF_TEXTURES_ARRAY;
+//extern const size_t MAX_SIZE_OF_TEXTURES_ARRAY;
+const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
+const double DELTA_BETWEEN_BUTTONS = 5;
+
+const double WIDTH_CLOSE_BUTTON  = 20;
+const double HEIGHT_CLOSE_BUTTON = 20;
+const double WIDTH_TABS_BUTTON = 150;
+const double HEIGHT_TABS_BUTTON = 20;
+
 extern SDL_Renderer* render;
 
 enum class Mouse_click_state {
@@ -19,8 +27,6 @@ enum class Mouse_click_state {
 	MOUSE_DOWN_AND_MOTION = 3,
 	MOUSE_UP 			  = 4,
 };
-
-const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
 
 class View_object {
   public:

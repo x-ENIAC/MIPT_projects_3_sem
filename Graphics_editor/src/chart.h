@@ -7,10 +7,10 @@
 #ifndef CHART_H
 #define CHART_H
 
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
-extern const double WIDTH_CLOSE_BUTTON;
-extern const double HEIGHT_CLOSE_BUTTON;
+// extern const double WIDTH_TABS_BUTTON;
+// extern const double HEIGHT_TABS_BUTTON;
+// extern const double WIDTH_CLOSE_BUTTON;
+// extern const double HEIGHT_CLOSE_BUTTON;
 
 class Chart : public View_object {
   public:

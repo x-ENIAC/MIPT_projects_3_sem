@@ -80,6 +80,11 @@ class Vector {
 		return *this;
 	}
 
+	inline void draw(SDL_Renderer* render, Colour color) {
+		SDL_SetRenderDrawColor(render, color.red, color.green, color.blue, 20);
+		SDL_RenderDrawLine(render, point_begin.x, point_begin.y, point_end.x, point_end.y);
+	}
+
 	double get_length_vector() const;	
 
 	void rotate_clockwize_vector(const double delta_angle);
@@ -118,7 +123,7 @@ class Vector {
 
 	void set_point_end(const Point new_point_end) {
 		point_end = new_point_end;
-	}  	
+	}
 
   private:
 

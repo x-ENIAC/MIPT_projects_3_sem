@@ -6,8 +6,8 @@
 #ifndef BUTTON_MANAGER_H
 #define BUTTON_MANAGER_H
 
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
+// extern const double WIDTH_TABS_BUTTON;
+// extern const double HEIGHT_TABS_BUTTON;
 
 class Button_manager : public View_object {
   public:

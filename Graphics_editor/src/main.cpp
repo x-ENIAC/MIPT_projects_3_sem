@@ -17,23 +17,20 @@
 
 SDL_Renderer* render;
 
-Animation_manager* anim_manager = Animation_manager::initialize();
-
 const int SCREEN_WIDTH  = 920;
 const int SCREEN_HEIGHT = 720;
 const double DELTA = 0.5;
-extern const double TIME_DELTA = 0.005;
+const double TIME_DELTA = 0.005;
+
+Animation_manager* anim_manager = Animation_manager::initialize();
 
 int main() {
-
-	App* app = new App(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	app->initialize();
+	App::get_app()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	render = app->render;
+	render = App::get_app()->get_render();
 
-	app->update();
-	app->deinitialize();
+	App::get_app()->update();
+	App::get_app()->deinitialize();
 
 	return 0;
 }

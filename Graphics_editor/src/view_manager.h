@@ -19,11 +19,11 @@
 //class Animation_manager;
 class Create_new_canvas_delegate;
 
-extern const double DELTA_BETWEEN_BUTTONS;
-extern const double WIDTH_CLOSE_BUTTON;
-extern const double HEIGHT_CLOSE_BUTTON;
-extern const double WIDTH_TABS_BUTTON;
-extern const double HEIGHT_TABS_BUTTON;
+//extern const double DELTA_BETWEEN_BUTTONS;
+// extern const double WIDTH_CLOSE_BUTTON;
+// extern const double HEIGHT_CLOSE_BUTTON;
+// extern const double WIDTH_TABS_BUTTON;
+// extern const double HEIGHT_TABS_BUTTON;
 
 const double WIDTH_FILE_PANEL_BUTTON = 60;
 
@@ -50,7 +50,7 @@ class View_manager : public View_object {
 
 	Point old_pos_mouse, now_pos_mouse;
 
-	PAppInterface* app_interface;
+	//PAppInterface* app_interface;
 
 	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color/*, Animation_manager* par_animation_manager*/) :
 	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
