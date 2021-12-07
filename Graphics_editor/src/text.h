@@ -36,12 +36,9 @@ class Text : public View_object {
 	Text(const Point par_point, const char* par_text, const double par_width, const double par_height, const Colour par_color) : 
 	  View_object(par_point, par_width, par_height, par_color, Widget_types::TEXT) {
 
-	  	printf("\t1 into text\n");
 		font_size = 20;
-		printf("\tbefore\n");
 		font_name = (char*)calloc(100, sizeof(char));
 		strcpy(font_name, "courier.ttf");
-		printf("\tafter\n");
 		font = TTF_OpenFont(font_name, font_size);
 
 		//text = new char[30];
@@ -53,12 +50,10 @@ class Text : public View_object {
 			printf("error: font not found, %s\n", TTF_GetError());
 			exit(EXIT_FAILURE);
 		}
-
-		printf("\tend into text\n");
 	}
 
 
-	Text(const Point par_point, char* par_font_name, const size_t par_font_size, char* par_text, 
+	/*Text(const Point par_point, char* par_font_name, const size_t par_font_size, char* par_text, 
 								const double par_width, const double par_height, const Colour par_color) : 
 	  View_object(par_point, par_width, par_height, par_color, Widget_types::TEXT) {
 
@@ -74,8 +69,8 @@ class Text : public View_object {
 		if(!font) {
 			printf("error: font not found, %s\n", TTF_GetError());
 			exit(EXIT_FAILURE);
-		}		
-	}
+		}
+	}*/
 
 	~Text() {
 

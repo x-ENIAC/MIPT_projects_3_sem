@@ -56,7 +56,7 @@ void Manager_of_canvas_managers::fill_button_manager(Point left_up_corner, const
 void Manager_of_canvas_managers::add_new_canvas_manager() {
 
 	Canvas_manager* new_canvas_manager = new Canvas_manager(any_canvas_center, any_canvas_width, any_canvas_height,
-															WHITE, pencil, false, mouse_click_state, widget_types[(int)Widget_types::TABS]);
+															WHITE, false, mouse_click_state, widget_types[(int)Widget_types::TABS]);
 
 	++widget_types[(int)Widget_types::TABS];
 	set_new_active_object(count_of_canvas_managers);

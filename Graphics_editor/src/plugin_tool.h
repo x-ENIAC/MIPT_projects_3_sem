@@ -14,7 +14,9 @@ class Plugin_tool: public Tool {
   	PPluginInterface* plugin_interface;
 
 	Plugin_tool(const char* file_name, const PAppInterface* app_interface) :
-	  Tool(Point(0, 0), 50, 50) {
+	  Tool(Point(0, 0), 50, 50, Widget_types::PLUGIN_TOOL) {
+
+	  	printf("begin load plugin\n");
 
 		library = dlopen(file_name, RTLD_NOW);
 		if(library == NULL) {
@@ -35,6 +37,8 @@ class Plugin_tool: public Tool {
 			printf("error init\n");
 			return;
 		}
+
+		printf("end load plugin\n");
 	}
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {
@@ -53,7 +57,7 @@ class Plugin_tool: public Tool {
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		printf("check click plugin tool\n");
-		plugin_interface->tool.on_press({mouse_x, mouse_y});
+		//plugin_interface->tool.on_press({mouse_x, mouse_y});
 		return true;
 	}
 };

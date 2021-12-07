@@ -72,6 +72,8 @@ class App {
 
 	void update();
 
+	Canvas* get_active_canvas();
+
 	void fill_app_interface();
 
 	SDL_Renderer* get_render();
@@ -92,9 +94,7 @@ class App {
 
 	View_manager* get_view_manager();
 
-	PAppInterface* get_app_interface() {
-		return app_interface;
-	}
+	PAppInterface* get_app_interface();
 };
 
 #endif

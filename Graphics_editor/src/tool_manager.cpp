@@ -3,7 +3,7 @@
 Tool_manager* Tool_manager::tool_manager = 0;
 
 void Tool_manager::initialize(const Point par_center, const double par_width, const double par_height,
-	 const Colour par_color, const Widget_types par_widget_types, const char par_path_to_picture[]) {
+								const Colour par_color, const Widget_types par_widget_types, const char par_path_to_picture[]) {
 
 	printf("Start initialize the tool manager\n");
 

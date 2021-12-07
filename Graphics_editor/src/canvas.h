@@ -3,7 +3,6 @@
 #include "colour.h"
 #include "rectangle.h"
 #include "view.h"
-#include "pencil.h"
 #include "button_delegates.h"
 #include "tool_manager.h"
 
@@ -58,7 +57,7 @@ class Canvas : public View_object {
 
     Canvas() : View_object() {}
 
-    Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color, Pencil* par_pencil
+    Canvas(const Point par_point, const double par_width, const double par_height, const Colour par_button_color
                                 /*const Button_owner par_owner, */) :
       View_object(par_point, par_width, par_height, par_button_color, Widget_types::CANVAS) {
 
@@ -71,39 +70,34 @@ class Canvas : public View_object {
             for(size_t j = 0; j <= par_height; ++j) {
                 cells_color[i][j].begin_color = cells_color[i][j].color_after_correction = par_button_color;
                 cells_color[i][j].thickness = 24;
-
-                //cells_color[i][j].begin_color =  cells_color[i][j].color_after_correction = {(i * par_width + j) / (par_height * par_width) * 255.0, 0, 0, 255};
-                //printf("red = %lg\n", cells_color[i][j].color_after_correction.red);
             }
 
-        // pencil = par_pencil;
         active_tool = Tool_manager::get_tool_manager()->get_active_tool();
 
     }
 
     bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
         if(is_active) {
-            if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
-                if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+            if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+                if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
 
-                    Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
+                    // printf("\tDOWN MOUSE\n");
+                    Tool_manager::get_tool_manager()->on_press(mouse_x, mouse_y, par_mouse_status);
 
+                    // Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
 
-                    // printf("??? %lg, %lg, (%lg, %lg, %lg)", mouse_x - left_up_corner.x, mouse_y - left_up_corner.y,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
-
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
-
-                    // printf(" -> (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
-
-                    return true;
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
+                // } else if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
+                //     printf("\tMOOOOOOTION\n");
+                //     Tool_manager::get_tool_manager()->on_move(mouse_x, mouse_y, par_mouse_status);
+                } else if(*par_mouse_status == Mouse_click_state::MOUSE_UP) {
+                    // printf("\tMOUSE UP\n");
+                    Tool_manager::get_tool_manager()->on_release(mouse_x, mouse_y, par_mouse_status);
                 }
+
+                return true;
             }
         }
 
@@ -111,38 +105,10 @@ class Canvas : public View_object {
     }
 
     bool check_motion(Point old_mouse, Point now_mouse, const Mouse_click_state* par_mouse_status) override {
-        // printf("canvas check_motion, active %d\n", is_active);
         if(is_active) {
-            double mouse_x = now_mouse.x, mouse_y = now_mouse.y;
-
-            if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN_AND_MOTION) {
-                if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-
-                    Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
-
-                    // printf("??? %lg, %lg, (%lg, %lg, %lg)", mouse_x - left_up_corner.x, mouse_y - left_up_corner.y,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                    //                                         cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
-
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
-
-
-                    // printf(" -> (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                    //                                 cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
-                    //if(cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction != WHITE)
-                    //    printf("!!! (%lg, %lg, %lg)\n", cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.red,
-                    //                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.green,
-                    //                                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction.blue);
-
-                    cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
-                    return true;
-                }
-            }
-
-            // printf("%lg, %lg, %lg\n", cells_color[10][10].get_color().red, cells_color[10][10].get_color().green, cells_color[10][10].get_color().blue);
+            // printf("MOTIOOOOOOOOOOOOOOOOOOOOOOON\n");
+            Tool_manager::get_tool_manager()->on_move(old_mouse, now_mouse, par_mouse_status);
+            return true;
         }
 
         return false;
@@ -158,9 +124,6 @@ class Canvas : public View_object {
                 for(size_t j = 0; j <= rect->height; ++j) {
                     Colour now_color = cells_color[i][j].color_after_correction, old_color = cells_color[i][j].begin_color;
                     Point new_point(i + left_up_corner.x, j + left_up_corner.y, now_color);
-
-                    //if(now_color != cells_color[i][j].begin_color)
-                        //printf("red %lg -> %lg\n", cells_color[i][j].begin_color.red, cells_color[i][j].color_after_correction.red);
 
                     if(old_color != color) {
                         Rectangle new_rect(new_point, cells_color[i][j].thickness / 2.0, cells_color[i][j].thickness / 2.0, now_color, false);

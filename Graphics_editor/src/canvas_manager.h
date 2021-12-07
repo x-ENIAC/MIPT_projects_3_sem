@@ -4,7 +4,6 @@
 #include "rectangle.h"
 #include "view.h"
 #include "button_delegates.h"
-#include "pencil.h"
 #include "button_manager.h"
 #include "tab.h"
 //#include "widget_types.h"
@@ -45,7 +44,7 @@ class Canvas_manager : public View_object {
 	}
 
 	Canvas_manager(const Point par_point, const double par_width, const double par_height, 
-										  const Colour par_color, Pencil* par_pencil, const bool par_is_active, 
+										  const Colour par_color, const bool par_is_active, 
 										  Mouse_click_state* par_mouse_click_state, const size_t number_of_tab) :
 
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER) {
@@ -65,7 +64,7 @@ class Canvas_manager : public View_object {
 		center_button = par_point;
 		center_button += Point(0, HEIGHT_CLOSE_BUTTON / 2);
 
-		Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, GREEN, par_pencil);
+		Canvas* canvas = new Canvas(center_button, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE);
 		view_objects[count_of_views++] = canvas;
 
 		++widget_types[(int)Widget_types::CANVAS];
@@ -91,46 +90,11 @@ class Canvas_manager : public View_object {
 		delete tab;*/
 	}
 
-	/*void fill_button_manager(Button_manager* button_manager, Point left_up_corner, const double par_width, const double par_height,
-															 Mouse_click_state* par_mouse_click_state) {
-
-		//--------------- add close button ---------------------------
-		Close_delegate*  close_delegate = new Close_delegate(par_mouse_click_state, &is_alive);
-
-		Point center_button(par_width - WIDTH_CLOSE_BUTTON / 2.0,  HEIGHT_CLOSE_BUTTON / 2.0);
-		center_button += left_up_corner;
-
-		Button* close_button = new Button(close_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", WHITE);
-		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CLOSE_BUTTON);
-		button_manager->add_view_object(close_button);
-
-		//--------------- add title button ---------------------------
-		Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate(par_mouse_click_state, &is_visible, &is_active);
-
-		center_button = Point(WIDTH_CLOSE_BUTTON / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
-		center_button += left_up_corner;
-
-
-		Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "-", WHITE);
-		roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
-		button_manager->add_view_object(roll_up_button);
-
-		//--------------- add roll up button ---------------------------
-		Title_delegate*  title_delegate = new Title_delegate;
-
-		center_button = Point(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0);
-		center_button += left_up_corner;
-
-
-		Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "Title");
-		button_manager->add_view_object(title_button);
-	}*/
-
 	void add_view_object(View_object* new_view) {
 		view_objects[count_of_views] = new_view;
 		++count_of_views;
 
-		++widget_types[new_view->get_yourself_type()];
+		++widget_types[(int)new_view->get_yourself_type()];
 	}
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {

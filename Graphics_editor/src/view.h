@@ -137,8 +137,8 @@ class View_object {
 		return false;
 	}
 
-	size_t get_yourself_type() const {
-		return (size_t)yourself_type;
+	Widget_types get_yourself_type() const {
+		return yourself_type;
 	}
 
 	void delete_all() {

@@ -36,7 +36,7 @@ class Button_manager : public View_object {
 		buttons[count_of_buttons] = new_button;
 		++count_of_buttons;
 
-		++widget_types[new_button->get_yourself_type()];
+		++widget_types[int(new_button->get_yourself_type())];
 	}
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {

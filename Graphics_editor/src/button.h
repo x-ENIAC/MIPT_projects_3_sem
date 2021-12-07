@@ -47,11 +47,8 @@ class Button : public View_object {
 																  const char* par_path_to_picture = NON_PATH_TO_PUCTURE) :
 	  View_object (par_point, par_width, par_height, par_button_color, Widget_types::BUTTON, par_path_to_picture) {
 
-		//printf("%s\n", NON_PATH_TO_PUCTURE);
-		printf("begin construct button!\n");
 		delegate = par_delegate;
 
-		//status = IS_NOT_PUSH;
 
 		view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON];
 		for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS_FOR_BUTTON; ++i)
@@ -60,10 +57,8 @@ class Button : public View_object {
 
 		Point text_center = par_point;
 
-		printf("text: %s\n", text_on_button);
 		Text* text = new Text(text_center, text_on_button, par_width, par_height, par_text_color);
 		view_objects[count_of_views++] = text;
-		printf("end construct button\n");
 	}
 
 	~Button() {
@@ -80,7 +75,7 @@ class Button : public View_object {
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
-			printf("Begin check button\n");
+			// printf("Begin check button\n");
 			//printf("!!! %d\n", *par_mouse_status);
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
 				delegate->click_reaction(mouse_x, mouse_y);

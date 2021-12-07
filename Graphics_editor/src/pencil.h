@@ -4,6 +4,7 @@
 #ifndef PENCIL_H
 #define PENCIL_H
 
+#include "app.h"
 class Pencil : public Tool {
   public:
 	Colour* color;
@@ -43,14 +44,56 @@ class Pencil : public Tool {
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 
 		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
-			printf("activate pencil\n");
+			// printf("activate pencil\n");
 			return true;
 		}
 
 		//printf("return false Button_manager\n");
 
 		return false;
-	}	
+	}
+
+	bool on_press(const float mouse_x, const float mouse_y) override {
+		printf("press pencil\n");
+
+		Canvas* active_canvas = App::get_app()->get_active_canvas();
+		Point left_up_corner(active_canvas->rect->get_center().x - active_canvas->rect->width / 2,
+							 active_canvas->rect->get_center().y - active_canvas->rect->height / 2);
+
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color			= Tool_manager::get_tool_manager()->get_pen_colour();
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction	= Tool_manager::get_tool_manager()->get_pen_colour();
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness				= Tool_manager::get_tool_manager()->get_pen_size() * 2;
+
+
+
+		//Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
+
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
+                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
+		return true;
+	}
+
+	bool on_release(const float mouse_x, const float mouse_y) override {
+		// printf("release pencil\n");
+		return true;
+	}
+
+	bool on_move(const Point old_pos, const Point new_pos) override {
+		// printf("move pencil\n");
+
+		int mouse_x = new_pos.x, mouse_y = new_pos.y;
+
+		Canvas* active_canvas = App::get_app()->get_active_canvas();
+		Point left_up_corner(active_canvas->rect->get_center().x - active_canvas->rect->width / 2,
+							 active_canvas->rect->get_center().y - active_canvas->rect->height / 2);
+
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color			= Tool_manager::get_tool_manager()->get_pen_colour();
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction	= Tool_manager::get_tool_manager()->get_pen_colour();
+		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness				= Tool_manager::get_tool_manager()->get_pen_size() * 2;
+
+		return true;
+	}
 
 	inline size_t get_thickness() const {
 		return thickness;

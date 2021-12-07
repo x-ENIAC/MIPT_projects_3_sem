@@ -1,6 +1,5 @@
 //#include "view.h"
 #include "manager_of_canvas_managers.h"
-#include "pencil.h"
 #include "button_manager.h"
 #include "spline_canvas.h"
 
@@ -19,7 +18,7 @@ class Chart : public View_object {
 	Button_manager* tools;
 
 	Chart(const Point par_point, const double par_width, const double par_height, 
-		  const Colour par_color, Pencil* par_pencil, Manager_of_canvas_managers* par_manager_of_canvas_managers,
+		  const Colour par_color, Manager_of_canvas_managers* par_manager_of_canvas_managers,
           const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
 
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::CHART) {
@@ -36,11 +35,11 @@ class Chart : public View_object {
 
         spline_canvas = new Spline_canvas*[5];
 
-	  	spline_canvas[0] = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
+	  	spline_canvas[0] = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE,
                                             par_manager_of_canvas_managers, Color_management::MAN_RED, par_mouse_click_state);
-        spline_canvas[1] = new Spline_canvas(/*Point(300, 600)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
+        spline_canvas[1] = new Spline_canvas(/*Point(300, 600)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE,
                                             par_manager_of_canvas_managers, Color_management::MAN_GREEN, par_mouse_click_state);
-        spline_canvas[2] = new Spline_canvas(/*Point(300, 300)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,
+        spline_canvas[2] = new Spline_canvas(/*Point(300, 300)*/ canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE,
                                             par_manager_of_canvas_managers, Color_management::MAN_BLUE, par_mouse_click_state);        
         count_spline_canvases = 3;
         //spline_canvas = new Spline_canvas(canvas_center, par_width, par_height - HEIGHT_CLOSE_BUTTON, WHITE, par_pencil,

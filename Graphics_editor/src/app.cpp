@@ -52,7 +52,14 @@ double get_absolute_time() {
 }
 
 void log(const char *fmt, ...) {
-	printf("log\n");
+    va_list args;
+    va_start(args, fmt);
+
+    FILE* log_file = fopen("log.txt", "w");
+    fprintf(log_file, fmt, args);
+    fclose(log_file);
+
+    va_end(args);
 }
 
 void release_pixels(PRGBA *pixels) {
@@ -61,7 +68,7 @@ void release_pixels(PRGBA *pixels) {
 
 PRGBA get_color() {
 	Colour color = Tool_manager::get_tool_manager()->get_pen_colour();
-	PRGBA new_color = {color.red, color.green, color.blue, color.alpha};
+	PRGBA new_color = {(unsigned char)color.red, (unsigned char)color.green, (unsigned char)color.blue, (unsigned char)color.alpha};
 	return new_color;
 }
 
@@ -81,7 +88,7 @@ PRGBA* get_pixels() {
 	for(int i = 0; i < height; ++i) {
 		for(int j = 0; j < width; ++j) {
 			Colour now = (active_canvas->cells_color[i][j].color_after_correction);
-			pixels[i * width + j] = {now.red, now.green, now.blue, now.alpha};
+			pixels[i * width + j] = {(unsigned char)now.red, (unsigned char)now.green, (unsigned char)now.blue, (unsigned char)now.alpha};
 		}
 	}
 
@@ -89,17 +96,48 @@ PRGBA* get_pixels() {
 }
 
 void get_size(size_t *width, size_t *height) {
-	Canvas_manager* active_canvas = App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas;
+	Canvas_manager* active_canvas_manager = App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas;
 
-	*width  = active_canvas->view_objects[0]->rect->get_width();
-	*height = active_canvas->view_objects[0]->rect->get_height();
+	*width  = active_canvas_manager->view_objects[0]->rect->get_width();
+	*height = active_canvas_manager->view_objects[0]->rect->get_height();
 }
 
 // ----------- Render ---------------------- 
 
 void circle(PVec2f position, float radius, PRGBA color, const PRenderMode *render_mode) {
-	Point center = {position.x, position.y, from_prgba_to_colour(color)};
-	center.draw_big_point(App::get_app()->get_render(), radius);
+	printf("draw circle\n");
+	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
+
+	Point left_up_corner = active_canvas->rect->get_left_up_corner();
+
+	int x_begin = position.x - radius / 2, x_end = position.x + radius / 2;
+	int y_begin = position.y - radius / 2, y_end = position.y + radius / 2;
+
+	radius /= 2;
+
+	SDL_SetRenderDrawColor(render, color.r, color.g, color.b, color.a);
+
+	printf("position (%f, %f), colour (%d, %d, %d)\n", position.x, position.y, (int)color.r, (int)color.g, (int)color.b);
+
+	for(int x = x_begin; x <= x_end; ++x)
+		for(int y = y_begin; y <= y_end; ++y) {
+			if((x - position.x) * (x - position.x) + (y - position.y) * (y - position.y) <= radius * radius) {
+				//printf("\tx = %d, y = %d, x_begin = %d, y_begin = %d, left_up_corner.x = %lg, left_up_corner.y = %lg\n", x, y, x_begin, y_begin, left_up_corner.x, left_up_corner.y);
+				printf("(%d - %f) ^ 2 + (%d - %f) ^ 2 <= %f ^ 2\n", x, position.x, y, position.y, radius);
+
+				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].begin_color 			  = from_prgba_to_colour(color);
+				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].color_after_correction = from_prgba_to_colour(color);
+				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].thickness			  = 1;
+
+				SDL_RenderDrawPoint(render, x, y);
+			}
+		}
+
+	// Point center = {position.x, position.y, from_prgba_to_colour(color)};
+	// center.draw_big_point(App::get_app()->get_render(), radius);
+
+	// SDL_SetRenderDrawColor(render, color.r, color.g, color.b, 20);
+	// SDL_RenderDrawPoint(render, position.x, position.y);
 }
 
 void line(PVec2f start, PVec2f end, PRGBA color, const PRenderMode *render_mode) {
@@ -221,6 +259,10 @@ void App::update() {
 	}		
 }
 
+Canvas* App::get_active_canvas() {
+	return (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
+}
+
 SDL_Renderer* App::get_render() {
 	return app->render;
 }
@@ -257,4 +299,8 @@ long long App::get_height_screen() {
 
 View_manager* App::get_view_manager() {
 	return view_manager;
+}
+
+PAppInterface* App::get_app_interface() {
+	return app_interface;
 }

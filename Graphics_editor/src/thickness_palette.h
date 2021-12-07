@@ -13,16 +13,14 @@
 // extern const double HEIGHT_CLOSE_BUTTON;
 
 class Thickness_palette : public View_object {
-  public:
-	Pencil* pencil;
+	public:
 
 	Button_manager* tool_buttons;
 	Button_manager* thickness_buttons;
 
-	Thickness_palette(const double begin_width, const double begin_height, Pencil* par_pencil, Mouse_click_state* par_mouse_click_state) :
-	  View_object(Widget_types::PALETTE) {
-	  	printf("begin fill thickness palette\n");
-		pencil = par_pencil;
+	Thickness_palette(const double begin_width, const double begin_height, Mouse_click_state* par_mouse_click_state) :
+	View_object(Widget_types::PALETTE) {
+		printf("begin fill thickness palette\n");
 
 		rect->height = HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS * 2;
 		rect->set_colour(DARK_GREY_3);
@@ -42,10 +40,10 @@ class Thickness_palette : public View_object {
 		//--------------- add close button ---------------------------
 
 		Point center_close_button(begin_width + WIDTH_CLOSE_BUTTON / 2.0 - DELTA_BETWEEN_BUTTONS,
-								  begin_height - (HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS / 2.0));
+									begin_height - (HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS / 2.0));
 
 		Button* close_button = new Button(NULL, center_close_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-										  TEXT_CLOSE, BLACK);
+											TEXT_CLOSE, BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
 		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
@@ -86,9 +84,9 @@ class Thickness_palette : public View_object {
 		center_title_button /= 2.0;
 
 		Button* title_button = new Button(title_delegate, center_title_button, DARK_GREY,
-										  center_close_button.x - center_roll_up_button.x - WIDTH_CLOSE_BUTTON,
-										  HEIGHT_CLOSE_BUTTON,
-										  TEXT_TITLE, BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+											center_close_button.x - center_roll_up_button.x - WIDTH_CLOSE_BUTTON,
+											HEIGHT_CLOSE_BUTTON,
+											TEXT_TITLE, BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 		tool_buttons->add_view_object(title_button);
@@ -129,7 +127,7 @@ class Thickness_palette : public View_object {
 
 		thickness_buttons->rect->set_height(HEIGHT_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
 		thickness_buttons->rect->set_width(thickness_buttons->buttons[         0          ]->rect->get_center().x -
-										   thickness_buttons->buttons[count_of_buttons - 1]->rect->get_center().x +
+											 thickness_buttons->buttons[count_of_buttons - 1]->rect->get_center().x +
 																							WIDTH_CLOSE_BUTTON + 2 * DELTA_BETWEEN_BUTTONS);
 
 		thickness_buttons->rect->set_colour(DARK_GREY_2);
@@ -150,7 +148,7 @@ class Thickness_palette : public View_object {
 
 		tool_buttons->rect->set_height(HEIGHT_CLOSE_BUTTON);
 		tool_buttons->rect->set_width(tool_buttons->buttons[         0          ]->rect->get_center().x -
-									  tool_buttons->buttons[count_of_buttons - 2]->rect->get_center().x + WIDTH_CLOSE_BUTTON);
+										tool_buttons->buttons[count_of_buttons - 2]->rect->get_center().x + WIDTH_CLOSE_BUTTON);
 	}	
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
@@ -174,14 +172,14 @@ class Thickness_palette : public View_object {
 		//printf("\n\nview_manager check_click\n");
 
 		if(thickness_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
-		   thickness_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+			 thickness_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
 			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, thickness_buttons->rect->get_center().x,
 			//								thickness_buttons->rect->get_center().y, thickness_buttons->rect->get_width(), thickness_buttons->rect->get_height());
 			return thickness_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
 		}
 
 		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(now_mouse.x, now_mouse.y) ) ||
-		   tool_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
+			 tool_buttons->rect->is_point_belongs_to_rectangle( Point(old_mouse.x, old_mouse.y) )) {
 			//printf("tools!\n");
 			return tool_buttons->check_motion(old_mouse, now_mouse, par_mouse_status);
 		}

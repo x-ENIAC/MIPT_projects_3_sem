@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include "point.h"
 #include "view.h"
-#include "pencil.h"
 #include "colour.h"
 #include "spline_point.h"
 #include "spline.h"
@@ -22,7 +21,6 @@ enum Color_management {
 
 class Spline_canvas : public View_object {
   public:
-	Pencil* pencil;
 	Spline_point** points;
 	size_t count_of_points;
 
@@ -37,11 +35,9 @@ class Spline_canvas : public View_object {
 	Spline_canvas() : View_object() {}
 
 	Spline_canvas(const Point par_point, const double par_width, const double par_height, 
-		  			const Colour par_color, Pencil* par_pencil, Manager_of_canvas_managers* par_manager_of_canvas_managers,
+		  			const Colour par_color, Manager_of_canvas_managers* par_manager_of_canvas_managers,
 		  			Color_management par_color_management, Mouse_click_state* par_mouse_click_state) :
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::SPLINE_CANVAS) {
-
-		pencil = par_pencil;
 
 		points = new Spline_point*[MAX_COUNT_OF_POINTS];
 		for(size_t i = 0; i < MAX_COUNT_OF_POINTS; ++i)

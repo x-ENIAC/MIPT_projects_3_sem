@@ -5,7 +5,6 @@
 #include "view.h"
 #include "button_delegates.h"
 #include "canvas_manager.h"
-#include "pencil.h"
 #include "button_manager.h"
 #include "tab.h"
 
@@ -30,14 +29,13 @@ class Manager_of_canvas_managers : public View_object {
 	double any_canvas_width;
 	double any_canvas_height;
 
-	Pencil* pencil;
 	Mouse_click_state* mouse_click_state;
 
 	int who_is_active;
 	Canvas_manager* active_canvas;
 
 	Manager_of_canvas_managers(const Point par_point, const double par_width, const double par_height, 
-							   const Colour par_color, Pencil* par_pencil, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
+							   const Colour par_color, const bool par_is_active, Mouse_click_state* par_mouse_click_state) :
 
 	  View_object (par_point, par_width, par_height, par_color, Widget_types::CANVAS_MANAGER_MANAGER) {
 
@@ -62,7 +60,6 @@ class Manager_of_canvas_managers : public View_object {
 		any_canvas_width = par_width;
 		any_canvas_height = par_height - HEIGHT_CLOSE_BUTTON;
 
-		pencil = par_pencil;
 		mouse_click_state = par_mouse_click_state;
 
 		who_is_active = -1;

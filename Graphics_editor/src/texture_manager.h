@@ -29,7 +29,8 @@ const char PATH_TO_PICTURE_WITH_THICKNESS_BUTTON[] 	   = "textures/black_thickne
 const char PATH_TO_PICTURE_WITH_SPLINE_BUTTON[]		   = "textures/black_spline.bmp";
 const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[]	 	   = "textures/black_canvas.bmp";
 
-const char PATH_TO_PICTURE_WITH_PENCIL[] = "textures/pencil.bmp";
+const char PATH_TO_PICTURE_WITH_PENCIL[]	= "textures/pencil.bmp";
+const char PATH_TO_PICTURE_WITH_PENCIL_1[]	= "textures/pencil_1.bmp";
 
 struct Texture {
 	SDL_Texture* texture;

@@ -14,14 +14,12 @@
 
 class Palette : public View_object {
   public:
-	Pencil* pencil;
 
 	Button_manager* tool_buttons;
 	Button_manager* colour_buttons;
 
-	Palette(const double begin_width, const double begin_height, Pencil* par_pencil, Mouse_click_state* par_mouse_click_state) :
+	Palette(const double begin_width, const double begin_height, Mouse_click_state* par_mouse_click_state) :
 	  View_object(Widget_types::PALETTE) {
-		pencil = par_pencil;
 
 		rect->height = HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS * 2;
 		rect->set_colour(DARK_GREY_3);

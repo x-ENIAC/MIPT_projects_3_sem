@@ -31,8 +31,8 @@ const double WIDTH_TOOLS_WIDGET      = 100;
 const double HEIGHT_TOOLS_WIDGET     = 100;
 
 const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 600);
-const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 100; // 340;
-const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 100; // 200;
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 300; // 340;
+const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 150; // 200;
 
 class View_manager : public View_object {
   public:
@@ -40,7 +40,7 @@ class View_manager : public View_object {
 	size_t count_of_view_objects;
 	int who_is_active;
 
-	Pencil* pencil;
+	// Pencil* pencil;
 
 	Button_manager* panel_buttons_manager;
 	// Tool_manager* tool_manager;
@@ -83,7 +83,6 @@ class View_manager : public View_object {
 																	WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	LIGHT_LIGHT_GREY,
-																	pencil, 
 																	false,
 																	&mouse_click_state);
 
@@ -99,7 +98,7 @@ class View_manager : public View_object {
 
 		Point center_button(panel_buttons_manager->buttons[panel_buttons_manager->get_count_of_buttons() - 1]->rect->get_center());
 
-		Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, pencil, &mouse_click_state);
+		Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &mouse_click_state);
 		add_view_object(palette);
 
 		Open_window_delegate* open_colour_palette_delegate = new Open_window_delegate(&(palette->is_visible));
@@ -112,7 +111,7 @@ class View_manager : public View_object {
 
 		/* ----------------------- add thickness palette ---------------------------------------------------------- \\	  */
 
-		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, pencil, &mouse_click_state);
+		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &mouse_click_state);
 		add_view_object(thickness_palette);
 
 		Open_window_delegate* open_thickness_palette_delegate = new Open_window_delegate(&(thickness_palette->is_visible));
@@ -123,7 +122,7 @@ class View_manager : public View_object {
 		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
 		panel_buttons_manager->add_view_object(thickness_palette_button);
 
-		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, pencil, manager_of_canvas_managers, false, &mouse_click_state);
+		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, manager_of_canvas_managers, false, &mouse_click_state);
 		add_view_object(chart);
 
 		/* ----------------------- add slider ---------------------------------------------------------- \\	  */
@@ -190,7 +189,7 @@ class View_manager : public View_object {
 		view_objects[count_of_view_objects] = new_view;
 		++count_of_view_objects;
 
-		++widget_types[new_view->get_yourself_type()];
+		++widget_types[(int)new_view->get_yourself_type()];
 	}  	
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
@@ -213,6 +212,8 @@ class View_manager : public View_object {
 		//printf("%d\n", event->type);
 		if(event->type == SDL_MOUSEBUTTONUP) {
 			mouse_click_state = Mouse_click_state::MOUSE_UP;
+
+			bool is_solved = check_click(x_mouse, y_mouse, &mouse_click_state);
 		}
 
 		else
@@ -293,25 +294,30 @@ class View_manager : public View_object {
 		//if(event->key.repeat != 0) // клавиша зажата
 		//	printf("NICE\n");
 
-		switch (event->key.keysym.sym) {                    
+		switch (event->key.keysym.sym) {
 			case SDLK_b:					// black
-				pencil->set_color(BLACK);
+				Tool_manager::get_tool_manager()->set_pen_colour(BLACK);
+				// pencil->set_color(BLACK);
 				return true;
 
 			case SDLK_r:					// RED
-				pencil->set_color(RED);
+				Tool_manager::get_tool_manager()->set_pen_colour(RED);
+				// pencil->set_color(RED);
 				return true;
 
 			case SDLK_g:					// GREEN
-				pencil->set_color(GREEN);
+				Tool_manager::get_tool_manager()->set_pen_colour(GREEN);
+				// pencil->set_color(GREEN);
 				return true;
 
 			case SDLK_y:					// YELLOW
-				pencil->set_color(YELLOW);
+				Tool_manager::get_tool_manager()->set_pen_colour(YELLOW);
+				// pencil->set_color(YELLOW);
 				return true;
 
 			case SDLK_l:					// BLUE (l)
-				pencil->set_color(BLUE);
+				Tool_manager::get_tool_manager()->set_pen_colour(BLUE);
+				// pencil->set_color(BLUE);
 				return true;
 
 			case SDLK_p:					// BLUE (l)
