@@ -39,7 +39,7 @@ class Button_manager : public View_object {
 		++widget_types[new_button->get_yourself_type()];
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		
 		//printf("Button_manager, check_click, %d. Mouse (%lg, %lg). Center (%lg, %lg), widht %lg, height %lg\n", is_active, mouse_x, mouse_y,
 		//																rect->get_center().x, rect->get_center().y, rect->get_width(), rect->get_height());

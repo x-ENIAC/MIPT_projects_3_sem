@@ -6,22 +6,22 @@
 
 class Pencil : public Tool {
   public:
-	Colour color;
+	Colour* color;
 	size_t thickness;
 
   public:
 
 	Pencil() : Tool() {
-		color = {255, 255, 0, 255};
+		*color = {255, 255, 0, 255};
 		thickness = 10;
 	}
 
-	Pencil(const Point par_center, const double par_width, const double par_height,
+	Pencil(const Point par_center, const double par_width, const double par_height, Colour* par_color,
 		   const Widget_types par_widget_types = Widget_types::VIEW_OBJECT, const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) :
 	  Tool(par_center, par_width, par_height, par_widget_types, par_path_to_picture) /*{const Colour par_color, const size_t par_thickness)*/ {
 		// color = par_color;
 		// thickness = par_thickness;
-		color = {255, 255, 0, 255};
+		color = par_color;
 		thickness = 10;	
 	}
 
@@ -40,7 +40,7 @@ class Pencil : public Tool {
 		}
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 
 		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
 			printf("activate pencil\n");
@@ -57,11 +57,11 @@ class Pencil : public Tool {
 	}
 
 	inline Colour get_color() const {
-		return color;
+		return *color;
 	}
 
 	inline void set_color(const Colour new_color) {
-		color = new_color;
+		*color = new_color;
 	}
 
 	inline void set_thickness(const size_t new_thickness) {

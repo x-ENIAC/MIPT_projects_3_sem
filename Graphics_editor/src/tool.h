@@ -1,3 +1,8 @@
+#include "view.h"
+#include "point.h"
+#include "colour.h"
+#include "widget_types.h"
+
 #ifndef TOOL_H
 #define TOOL_H
 
@@ -15,7 +20,12 @@ class Tool : public View_object {
 
 	}
 
-	//bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {}
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
+		printf("check click tool\n");
+		return false;
+	}
+
+	//bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {}
 
 	/*void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) override {
 		

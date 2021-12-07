@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "view.h"
 #include "app.h"
 #include "view_manager.h"
 #include "animation_manager.h"
@@ -25,6 +26,7 @@ const double TIME_DELTA = 0.005;
 Animation_manager* anim_manager = Animation_manager::initialize();
 
 int main() {
+	printf("Start initialize the app\n");
 	App::get_app()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	render = App::get_app()->get_render();

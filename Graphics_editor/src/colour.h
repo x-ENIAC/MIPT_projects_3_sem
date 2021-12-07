@@ -5,10 +5,10 @@
 
 class Colour {
   public:
-	double red;
-	double green;
-	double blue;
-	double alpha;
+	int red;
+	int green;
+	int blue;
+	int alpha;
 
 	Colour() {
 		red   = 0;
@@ -17,7 +17,7 @@ class Colour {
 		alpha = 0;
 	}
 
-	Colour(double now_red, double now_green, double now_blue, double now_alpha) {
+	Colour(int now_red, int now_green, int now_blue, int now_alpha) {
 		red   = now_red;
 		green = now_green;
 		blue  = now_blue;
@@ -25,7 +25,7 @@ class Colour {
 	}
 
 	inline void print() const {
-		printf("(%lg, %lg, %lg, %lg)", red, green, blue, alpha);
+		printf("(%d, %d, %d, %d)", red, green, blue, alpha);
 	}
 
 	bool operator<=(const Colour& color) const;

@@ -10,7 +10,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-//extern const size_t MAX_SIZE_OF_TEXTURES_ARRAY;
+
 const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
 const double DELTA_BETWEEN_BUTTONS = 5;
 
@@ -20,6 +20,23 @@ const double WIDTH_TABS_BUTTON = 150;
 const double HEIGHT_TABS_BUTTON = 20;
 
 extern SDL_Renderer* render;
+
+#ifndef CONSTANTS
+#define CONSTANTS
+
+static  char TEXT_SPACE[] = " ";
+static  char TEXT_CLOSE[] = "x";
+static  char TEXT_ROLL_UP[] = "-";
+static  char TEXT_TITLE[] = "Title";
+static  char TEXT_FILE[] = "File";
+static  char TEXT_NEW[] = "New";
+static  char TEXT_HELP[] = "Help";
+static  char TEXT_PALETTE_1[] = "Palette 1";
+static  char TEXT_PALETTE_2[] = "Palette 2";
+static  char TEXT_SPLINE[]	  = "Spline";
+static  char TEXT_CANVASES[]  = "Canvases";
+
+#endif
 
 enum class Mouse_click_state {
 	MOUSE_MOTION   		  = 1,
@@ -110,7 +127,7 @@ class View_object {
 		}
 	}
 
-	virtual bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) {
+	virtual bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) {
 		//if(is_active)
 		//	return true;
 		return false;

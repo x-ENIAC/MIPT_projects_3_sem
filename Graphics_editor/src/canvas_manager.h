@@ -4,11 +4,13 @@
 #include "rectangle.h"
 #include "view.h"
 #include "button_delegates.h"
-#include "canvas.h"
 #include "pencil.h"
 #include "button_manager.h"
 #include "tab.h"
 //#include "widget_types.h"
+
+#include "canvas.h"
+class Canvas;
 
 #ifndef CANVAS_MANAGER_H
 #define CANVAS_MANAGER_H
@@ -131,7 +133,7 @@ class Canvas_manager : public View_object {
 		++widget_types[new_view->get_yourself_type()];
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 
 		//printf("check click Canvas_manager? Tab (%lg, %lg)\n", tab->rect->center.x, tab->rect->center.y);
 		if(tab->check_click(mouse_x, mouse_y, par_mouse_status))

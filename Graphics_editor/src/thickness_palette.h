@@ -45,7 +45,7 @@ class Thickness_palette : public View_object {
 								  begin_height - (HEIGHT_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS / 2.0));
 
 		Button* close_button = new Button(NULL, center_close_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-										  "x", BLACK);
+										  TEXT_CLOSE, BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
 		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
@@ -72,7 +72,7 @@ class Thickness_palette : public View_object {
 		Roll_up_delegate*  roll_up_delegate = new Roll_up_delegate(par_mouse_click_state, &is_visible, &is_active);
 
 		Button* roll_up_button = new Button(roll_up_delegate, center_roll_up_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-											"-", BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
+											TEXT_ROLL_UP, BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
 
 		roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
 		tool_buttons->add_view_object(roll_up_button);
@@ -88,7 +88,7 @@ class Thickness_palette : public View_object {
 		Button* title_button = new Button(title_delegate, center_title_button, DARK_GREY,
 										  center_close_button.x - center_roll_up_button.x - WIDTH_CLOSE_BUTTON,
 										  HEIGHT_CLOSE_BUTTON,
-										  "Title", BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+										  TEXT_TITLE, BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 		tool_buttons->add_view_object(title_button);
@@ -102,7 +102,7 @@ class Thickness_palette : public View_object {
 
 		size_t old_count_of_buttons = thickness_buttons->count_of_buttons;
 
-		Change_thickness_delegate* change_thickness_delegate = new Change_thickness_delegate(pencil, added_size);
+		Change_thickness_delegate* change_thickness_delegate = new Change_thickness_delegate(added_size);
 		Button* button = new Button(change_thickness_delegate, 
 									Point(begin_width - (DELTA_BETWEEN_BUTTONS + WIDTH_CLOSE_BUTTON) * old_count_of_buttons, begin_height), 
 									WHITE, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, text_thickness);
@@ -153,7 +153,7 @@ class Thickness_palette : public View_object {
 									  tool_buttons->buttons[count_of_buttons - 2]->rect->get_center().x + WIDTH_CLOSE_BUTTON);
 	}	
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		printf("check click thickness palette %p\n", thickness_buttons);
 		if(thickness_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, thickness_buttons->rect->get_center().x,

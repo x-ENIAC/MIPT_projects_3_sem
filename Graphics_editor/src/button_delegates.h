@@ -11,6 +11,7 @@
 #ifndef OBJECT_DELEGATES_H
 #define OBJECT_DELEGATES_H
 
+#include "tool_manager.h"
 
 extern SDL_Renderer* render;
 
@@ -151,17 +152,15 @@ class Open_panel_delegate : public Button_delegate {
 class Change_colour_delegate : public Button_delegate {
   public:
 
-	Pencil* pencil;
 	Colour yourself_color;
 
-	Change_colour_delegate(Pencil* par_pencil, const Colour par_yourself_color = BLACK) {
-		pencil = par_pencil;
+	Change_colour_delegate(const Colour par_yourself_color = BLACK) {
 		yourself_color = par_yourself_color;
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
 		//printf("Change_colour_delegate\n");
-		pencil->set_color(yourself_color);
+		Tool_manager::get_tool_manager()->set_pen_colour(yourself_color);
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
@@ -176,18 +175,16 @@ class Change_colour_delegate : public Button_delegate {
 class Change_thickness_delegate : public Button_delegate {
   public:
 
-	Pencil* pencil;
 	size_t yourself_thickness;
 
-	Change_thickness_delegate(Pencil* par_pencil, const size_t par_yourself_thickness = 24) {
-		pencil = par_pencil;
+	Change_thickness_delegate(const size_t par_yourself_thickness = 24) {
 		yourself_thickness = par_yourself_thickness;
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
-		printf("\tbegin Change_thickness_delegate, pencil %p, %ld\n", pencil, yourself_thickness);
-		pencil->set_thickness(yourself_thickness);
-		printf("\tend Change_thickness_delegate, pencil %p\n", pencil);
+		printf("\tbegin Change_thickness_delegate, pencil %ld\n", yourself_thickness);
+		Tool_manager::get_tool_manager()->set_pen_size(yourself_thickness);
+		printf("\tend Change_thickness_delegate, pencil\n");
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}

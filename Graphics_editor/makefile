@@ -9,16 +9,19 @@ STANDARD =
 OPTIMIZATION = -O1 -Wno-reorder
 
 CFLAGS = $(WARNINGS) $(STANDARD) $(OPTIMIZATION)
-LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lmy_plagin -L.
+LDFLAGS = -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer -L.
 
 .PHONY : all run debug clean
 
-all: app.o colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
+all: app.o tool_manager.o colour.o point.o view_manager.o manager_of_canvas_managers.o animation_manager.o spline.o
 	$(CPP) $(CFLAGS) -c ./src/main.cpp -o main.o
-	$(LD) -Llib/ app.o colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -o $(CUR_PROG) $(LDFLAGS)
+	$(LD) -Llib/ app.o tool_manager.o colour.o point.o view_manager.o animation_manager.o manager_of_canvas_managers.o spline.o main.o -ldl -o $(CUR_PROG) $(LDFLAGS)
 	
 app.o: ./src/app.cpp ./src/app.h
 	$(CPP) $(CFLAGS) -c ./src/app.cpp -o app.o
+	
+tool_manager.o: ./src/tool_manager.cpp ./src/tool_manager.h
+	$(CPP) $(CFLAGS) -c ./src/tool_manager.cpp -o tool_manager.o
 
 colour.o: ./src/colour.cpp ./src/colour.h
 	$(CPP) $(CFLAGS) -c ./src/colour.cpp -o colour.o
@@ -40,13 +43,6 @@ spline.o: ./src/spline.cpp ./src/spline.h
 
 run: all
 	./$(CUR_PROG) $(ARGS)
-	
-update_library:
-	gcc -fPIC -Wall -g -c src/my_plagin.cpp
-	gcc -g -shared -Wl,-soname,libhello.so.0 -o libhello.so.0.0 my_plagin.o -lc
-	ldconfig -v -n .
-	ln -sf libhello.so.0 libhello.so
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 
 callgrind_debug: all
 	valgrind --dump-instr=yes --tool=callgrind  ./$(CUR_PROG) $(ARGS)

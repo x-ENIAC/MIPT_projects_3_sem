@@ -35,7 +35,7 @@ class Spline_point : public View_object {
   		}
   	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		//if(is_active) {
 			printf("click!\n");
 			return true;

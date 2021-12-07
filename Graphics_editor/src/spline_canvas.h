@@ -121,7 +121,7 @@ class Spline_canvas : public View_object {
 		spline->catmull_rom(visual_points, rect->get_width() + 1, rect->get_left_up_corner(), count_of_points);
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		if(is_active && rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y))) {
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
 

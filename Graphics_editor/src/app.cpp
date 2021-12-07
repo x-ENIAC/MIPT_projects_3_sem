@@ -60,13 +60,13 @@ void release_pixels(PRGBA *pixels) {
 }
 
 PRGBA get_color() {
-	Colour color = App::get_app()->get_pen_colour();
+	Colour color = Tool_manager::get_tool_manager()->get_pen_colour();
 	PRGBA new_color = {color.red, color.green, color.blue, color.alpha};
 	return new_color;
 }
 
 float get_size() {
-	return App::get_app()->get_pen_size();
+	return Tool_manager::get_tool_manager()->get_pen_size();
 }
 
 // ----------- Target ---------------------- 
@@ -141,6 +141,8 @@ void pixels(PVec2f position, const PRGBA *data, size_t width, size_t height, con
 
 
 void App::fill_app_interface() {
+	printf("Start fill app interface\n");
+	
 	app_interface = new PAppInterface;
 
 	app_interface->std_version = 1;
@@ -192,6 +194,7 @@ void App::update() {
 	SDL_SetRenderDrawColor(render, screen_color.red, screen_color.green, screen_color.blue, screen_color.alpha);
 	SDL_RenderClear(app->render);
 
+	printf("Start initialize the view manager\n");
 	app->view_manager = new View_manager(Point(width_screen / 2.0, height_screen / 2.0), width_screen, height_screen, screen_color/*, &animation_manager*/);
 
 	SDL_Event event = {};
@@ -232,13 +235,17 @@ long long App::get_begin_era() {
 	return begin_era;
 }
 
-Colour App::get_pen_colour() {
-	return pen_colour;
-}
+// Colour App::get_pen_colour() {
+// 	return pen_colour;
+// }
 
-float App::get_pen_size() {
-	return pen_size;
-}
+// Colour* App::get_ptr_to_pen_colour()  {
+// 	return &pen_colour;
+// }
+
+// float App::get_pen_size() {
+// 	return pen_size;
+// }
 
 long long App::get_width_screen() {
 	return width_screen;

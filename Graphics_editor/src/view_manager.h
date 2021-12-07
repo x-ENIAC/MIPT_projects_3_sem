@@ -1,4 +1,4 @@
-#include "view.h"
+//#include "view.h"
 //#include "animation_manager.h"
 #include "manager_of_canvas_managers.h"
 #include "button.h"
@@ -10,20 +10,20 @@
 #include "chart.h"
 #include "slider_manager.h"
 #include "tool_manager.h"
-//#include "my_plagin.h"
+#include "plugin_tool.h"
 #include "plugin_interface.h"
 
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
 
 //class Animation_manager;
-class Create_new_canvas_delegate;
+class View_manager;
 
-//extern const double DELTA_BETWEEN_BUTTONS;
-// extern const double WIDTH_CLOSE_BUTTON;
-// extern const double HEIGHT_CLOSE_BUTTON;
-// extern const double WIDTH_TABS_BUTTON;
-// extern const double HEIGHT_TABS_BUTTON;
+//#include "app.h"
+//class App;
+
+class Create_new_canvas_delegate;
+//class Tool_manager;
 
 const double WIDTH_FILE_PANEL_BUTTON = 60;
 
@@ -43,7 +43,7 @@ class View_manager : public View_object {
 	Pencil* pencil;
 
 	Button_manager* panel_buttons_manager;
-	Tool_manager* tool_manager;
+	// Tool_manager* tool_manager;
 	Manager_of_canvas_managers* manager_of_canvas_managers;
 
 	Mouse_click_state mouse_click_state;
@@ -56,7 +56,6 @@ class View_manager : public View_object {
 	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
 
 		count_of_view_objects = 1;
-		printf("Construct View_manager, %ld\n", count_of_view_objects);
 
 		view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
 		for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
@@ -70,13 +69,16 @@ class View_manager : public View_object {
 
 		/* ----------------------- add tool manager ---------------------------------------------------------- */
 
-		tool_manager = new Tool_manager(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER); //, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-		add_view_object(tool_manager);
+		Tool_manager::get_tool_manager()->initialize(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER);
 
+		// tool_manager = new Tool_manager(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER); //, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 		fill_tool_manager();
+
+		add_view_object(Tool_manager::get_tool_manager());
 
 		/* ----------------------- add manager of canvas managers ---------------------------------------------------------- */		
 
+		printf("Start initialize the manager_of_canvas_managers\n");
 		manager_of_canvas_managers = new Manager_of_canvas_managers(CENTER_MANAGER_OF_CANVAS_MANAGERS,
 																	WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
 																	HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
@@ -104,7 +106,7 @@ class View_manager : public View_object {
 
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 		Button* colour_palette_button = new Button(open_colour_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   "Palette 1", BLACK);
+											   TEXT_PALETTE_1, BLACK);
 		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_PALETTE_BUTTON);
 		panel_buttons_manager->add_view_object(colour_palette_button);
 
@@ -117,7 +119,7 @@ class View_manager : public View_object {
 
 		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
 		Button* thickness_palette_button = new Button(open_thickness_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   "Palette 2", BLACK);
+											   TEXT_PALETTE_2, BLACK);
 		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
 		panel_buttons_manager->add_view_object(thickness_palette_button);
 
@@ -137,7 +139,7 @@ class View_manager : public View_object {
 		Open_window_delegate* open_spline_delegate = new Open_window_delegate(&(chart->is_visible));
 
 		Button* spline_panel_button = new Button(open_spline_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   "Spline", BLACK);
+											   TEXT_SPLINE, BLACK);
 
 		spline_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_SPLINE_BUTTON);
 		panel_buttons_manager->add_view_object(spline_panel_button);
@@ -150,7 +152,7 @@ class View_manager : public View_object {
 		Open_window_delegate* open_canvases_delegate = new Open_window_delegate(&(manager_of_canvas_managers->is_visible));
 
 		Button* canvas_panel_button = new Button(open_canvases_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   "Canvases", BLACK);
+											   TEXT_CANVASES, BLACK);
 		canvas_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CANVAS_BUTTON);
 		panel_buttons_manager->add_view_object(canvas_panel_button);
 
@@ -201,7 +203,7 @@ class View_manager : public View_object {
 				view_objects[i]->draw(render, texture, screen);
 			}
 
-			tool_manager->draw(render, texture, screen);
+			// tool_manager->draw(render, texture, screen);
 		}
 	}
 
@@ -242,8 +244,8 @@ class View_manager : public View_object {
 		}
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
-		printf("\n\nview_manager check_click\n");
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
+		printf("\n\nview_manager check_click, mouse (%d, %d)\n", (int)mouse_x, (int)mouse_y);
 
 		if(is_active) {
 

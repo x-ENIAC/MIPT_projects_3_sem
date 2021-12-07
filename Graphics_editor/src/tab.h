@@ -51,7 +51,6 @@ class Tab : public View_object {
 		Button* title_button = new Button(tab_title_delegate, par_center, LIGHT_LIGHT_GREY, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON,
 										  text_on_tab, WHITE);
 
-		//printf("@ tab, center title (%lg, %lg), %lg, %lg\n", par_center.x, par_center.y, WIDTH_TABS_BUTTON, HEIGHT_TABS_BUTTON);
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_BUTTON);
 		number_of_title_in_button_manager = button_manager->count_of_buttons;
 		button_manager->add_view_object(title_button);
@@ -61,8 +60,7 @@ class Tab : public View_object {
 		Point center = par_center;
 		center += Point(WIDTH_TABS_BUTTON / 2.0 + WIDTH_CLOSE_BUTTON / 2.0, 0);
 
-		//printf("@ tab, center close (%lg, %lg), %lg, %lg\n", center.x, center.y, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON);
-		Button* close_button = new Button(NULL, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, "x", BLACK);
+		Button* close_button = new Button(NULL, center, LIGHT_LIGHT_GREY, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON, TEXT_CLOSE, BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_GREY_1_CLOSE_BUTTON);
 
 		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, par_is_alive);
@@ -73,7 +71,7 @@ class Tab : public View_object {
 		//printf("\nend add new tab %p\n\n", par_mouse_click_state);
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		//printf("click Tab\n");
 		//printf("\ttab: (%lg, %lg) width %lg, height %lg\n", rect->center.x, rect->center.y, rect->get_width(), rect->get_height());
 		return button_manager->check_click(mouse_x, mouse_y, par_mouse_status);

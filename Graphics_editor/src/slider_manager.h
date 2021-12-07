@@ -39,7 +39,7 @@ class Slider_manager: public View_object {
 		center_button += left_up_corner;
 
 		Button* close_button = new Button(NULL, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-										  "x", BLACK);
+										  TEXT_CLOSE, BLACK);
 		close_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_BLACK_CLOSE_BUTTON);
 
 		Close_delegate*  close_delegate = new Close_delegate(close_button, par_mouse_click_state, &is_alive);
@@ -54,7 +54,7 @@ class Slider_manager: public View_object {
 		center_button += left_up_corner;
 
 		Button* roll_up_button = new Button(roll_up_delegate, center_button, BLACK, WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-											"-", BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
+											TEXT_ROLL_UP, BLACK, PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
 		roll_up_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
 		panel->add_view_object(roll_up_button);
 
@@ -65,7 +65,7 @@ class Slider_manager: public View_object {
 		center_button += left_up_corner;
 
 		Button* title_button = new Button(title_delegate, center_button, DARK_GREY, par_width - 2 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON,
-										  "Title", BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
+										  TEXT_TITLE, BLACK, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 		title_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
 		panel->add_view_object(title_button);
 	}	
@@ -78,7 +78,7 @@ class Slider_manager: public View_object {
 		}
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
 

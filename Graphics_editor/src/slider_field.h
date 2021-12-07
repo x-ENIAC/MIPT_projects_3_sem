@@ -33,7 +33,7 @@ class Slider_field : public View_object {
 		}
 	}
 
-	bool check_click(const double mouse_x, const double mouse_y, const Mouse_click_state* par_mouse_status) override {
+	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
 				if(slider->check_click(mouse_x, mouse_y, par_mouse_status))
