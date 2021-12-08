@@ -17,11 +17,10 @@ class Pencil : public Tool {
 		thickness = 10;
 	}
 
-	Pencil(const Point par_center, const double par_width, const double par_height, Colour* par_color,
-		   const Widget_types par_widget_types = Widget_types::VIEW_OBJECT, const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) :
-	  Tool(par_center, par_width, par_height, par_widget_types, par_path_to_picture) /*{const Colour par_color, const size_t par_thickness)*/ {
-		// color = par_color;
-		// thickness = par_thickness;
+	Pencil(const Point par_center, Colour* par_color, const Widget_types par_widget_types = Widget_types::VIEW_OBJECT,
+			const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) :
+	  Tool(par_center, ICON_PLUGIN_SIZE, ICON_PLUGIN_SIZE, par_widget_types, par_path_to_picture) {
+
 		color = par_color;
 		thickness = 10;	
 	}
@@ -64,13 +63,6 @@ class Pencil : public Tool {
 		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction	= Tool_manager::get_tool_manager()->get_pen_colour();
 		active_canvas->cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness				= Tool_manager::get_tool_manager()->get_pen_size() * 2;
 
-
-
-		//Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
-
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
 		return true;
 	}
 

@@ -37,6 +37,8 @@ class Animation_manager {
 		return animation_manager;
 	}
 
+	static Animation_manager* get_animation_manager();
+
 	void operator=(const Animation_manager&) = delete;
 
 	void add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, View_object* view, double time_alive);

@@ -16,14 +16,9 @@
 #ifndef VIEW_MANAGER_H
 #define VIEW_MANAGER_H
 
-//class Animation_manager;
 class View_manager;
 
-//#include "app.h"
-//class App;
-
 class Create_new_canvas_delegate;
-//class Tool_manager;
 
 const double WIDTH_FILE_PANEL_BUTTON = 60;
 
@@ -31,7 +26,7 @@ const double WIDTH_TOOLS_WIDGET      = 100;
 const double HEIGHT_TOOLS_WIDGET     = 100;
 
 const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 600);
-const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 300; // 340;
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 340; // 340;
 const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 150; // 200;
 
 class View_manager : public View_object {
@@ -40,19 +35,15 @@ class View_manager : public View_object {
 	size_t count_of_view_objects;
 	int who_is_active;
 
-	// Pencil* pencil;
-
 	Button_manager* panel_buttons_manager;
-	// Tool_manager* tool_manager;
+
 	Manager_of_canvas_managers* manager_of_canvas_managers;
 
 	Mouse_click_state mouse_click_state;
 
 	Point old_pos_mouse, now_pos_mouse;
 
-	//PAppInterface* app_interface;
-
-	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color/*, Animation_manager* par_animation_manager*/) :
+	View_manager(const Point par_point, const double par_width, const double par_height, const Colour par_color) :
 	  View_object(par_point, par_width, par_height, LIGHT_GREY, Widget_types::VIEW_MANAGER) {
 
 		count_of_view_objects = 1;
@@ -65,103 +56,38 @@ class View_manager : public View_object {
 
 		mouse_click_state = Mouse_click_state::MOUSE_UP;
 
-		//pencil = new Pencil;
+		add_tool_manager();
 
-		/* ----------------------- add tool manager ---------------------------------------------------------- */
-
-		Tool_manager::get_tool_manager()->initialize(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER);
-
-		// tool_manager = new Tool_manager(Point(200, 500), 150, 150, DARK_GREY_2, Widget_types::TOOL_MANAGER); //, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-		fill_tool_manager();
-
-		add_view_object(Tool_manager::get_tool_manager());
-
-		/* ----------------------- add manager of canvas managers ---------------------------------------------------------- */		
-
-		printf("Start initialize the manager_of_canvas_managers\n");
-		manager_of_canvas_managers = new Manager_of_canvas_managers(CENTER_MANAGER_OF_CANVAS_MANAGERS,
-																	WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
-																	HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET,
-																	LIGHT_LIGHT_GREY,
-																	false,
-																	&mouse_click_state);
-
-		Point center_of_button_manager(par_width / 2.0, HEIGHT_CLOSE_BUTTON / 2.0), left_up_corner = rect->get_left_up_corner();
-		center_of_button_manager += left_up_corner;
-
-		panel_buttons_manager = new Button_manager(center_of_button_manager, par_width, HEIGHT_CLOSE_BUTTON, DARK_GREY_2, PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-		add_view_object(panel_buttons_manager);
-
-		fill_panel_button_manager(left_up_corner, par_width, par_height);
-
-		/* ----------------------- add colour palette ---------------------------------------------------------- */
+		add_manager_of_canvas_managers();
 
 		Point center_button(panel_buttons_manager->buttons[panel_buttons_manager->get_count_of_buttons() - 1]->rect->get_center());
 
-		Palette* palette = new Palette(par_width - WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &mouse_click_state);
-		add_view_object(palette);
+		add_palette(&center_button);
 
-		Open_window_delegate* open_colour_palette_delegate = new Open_window_delegate(&(palette->is_visible));
+		add_thickness_palette(&center_button);
 
-		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
-		Button* colour_palette_button = new Button(open_colour_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   TEXT_PALETTE_1, BLACK);
-		colour_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_PALETTE_BUTTON);
-		panel_buttons_manager->add_view_object(colour_palette_button);
+		add_slider();
 
-		/* ----------------------- add thickness palette ---------------------------------------------------------- \\	  */
+		add_spline(&center_button);
 
-		Thickness_palette* thickness_palette = new Thickness_palette(0 + 10 * WIDTH_CLOSE_BUTTON, HEIGHT_CLOSE_BUTTON * 3, &mouse_click_state);
-		add_view_object(thickness_palette);
-
-		Open_window_delegate* open_thickness_palette_delegate = new Open_window_delegate(&(thickness_palette->is_visible));
-
-		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
-		Button* thickness_palette_button = new Button(open_thickness_palette_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   TEXT_PALETTE_2, BLACK);
-		thickness_palette_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_THICKNESS_BUTTON);
-		panel_buttons_manager->add_view_object(thickness_palette_button);
-
-		Chart* chart = new Chart(Point(600, 300), 255, 255, WHITE, manager_of_canvas_managers, false, &mouse_click_state);
-		add_view_object(chart);
-
-		/* ----------------------- add slider ---------------------------------------------------------- \\	  */
-
-		Slider_manager* slider_manager = new Slider_manager(Point(300, 100), 10, 0, 100, &mouse_click_state);
-		add_view_object(slider_manager);
-
-		/* ----------------------- add spline screen ---------------------------------------------------------- */
-
-		/*Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center()*/
-		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
-
-		Open_window_delegate* open_spline_delegate = new Open_window_delegate(&(chart->is_visible));
-
-		Button* spline_panel_button = new Button(open_spline_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   TEXT_SPLINE, BLACK);
-
-		spline_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_SPLINE_BUTTON);
-		panel_buttons_manager->add_view_object(spline_panel_button);
-
-		/* ----------------------- add canvases ---------------------------------------------------------- */
-
-		//Point center_button(view_objects[count_of_view_objects - 1]->rect->get_center());
-		center_button += Point(WIDTH_FILE_PANEL_BUTTON, 0);
-
-		Open_window_delegate* open_canvases_delegate = new Open_window_delegate(&(manager_of_canvas_managers->is_visible));
-
-		Button* canvas_panel_button = new Button(open_canvases_delegate, center_button, DARK_GREY, WIDTH_FILE_PANEL_BUTTON, HEIGHT_CLOSE_BUTTON,
-											   TEXT_CANVASES, BLACK);
-		canvas_panel_button->texture->add_new_texture(PATH_TO_PICTURE_WITH_CANVAS_BUTTON);
-		panel_buttons_manager->add_view_object(canvas_panel_button);
-
-		//sdl_ticks = SDL_GetTicks();
-		//printf("%d\n", sdl_ticks);
-
-		//fill_app_interface();
+		add_canvases(&center_button);
 
 		old_pos_mouse = now_pos_mouse = Point(0, 0);
 	}
+
+	void add_tool_manager();
+
+	void add_manager_of_canvas_managers();
+
+	void add_palette(Point* center_button);
+
+	void add_thickness_palette(Point* center_button);
+
+	void add_slider();
+
+	void add_spline(Point* center_button);
+
+	void add_canvases(Point* center_button);
 
 	void fill_panel_button_manager(Point left_up_corner, const double par_width, const double par_height);
 

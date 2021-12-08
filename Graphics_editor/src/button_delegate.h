@@ -16,6 +16,6 @@ enum class Mouse_click_state;
 #include "animation_manager.h"
 class Animation_manager;
 
-extern Animation_manager* anim_manager;
+// extern Animation_manager* anim_manager;
 
 #endif

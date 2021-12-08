@@ -16,7 +16,7 @@
 extern SDL_Renderer* render;
 
 class Animation_manager;
-extern Animation_manager* anim_manager;
+// extern Animation_manager* anim_manager;
 extern const double TIME_DELTA;
 
 const Point CENTER_OF_SPAWN_CANVASES = Point(300, 500);
@@ -51,11 +51,13 @@ class Close_delegate : public Button_delegate {
 		bool now_lie = view_object->rect->is_point_belongs_to_rectangle(now_mouse);
 
 		if(!old_lie && now_lie)
-			anim_manager->add_animation(render, view_object->texture->path_to_picture, "textures/grey_1_close.bmp", view_object, TIME_DELTA);
+			Animation_manager::get_animation_manager()->add_animation(render, view_object->texture->path_to_picture,
+						"textures/grey_1_close.bmp", view_object, TIME_DELTA);
 		
 		else
 		if(old_lie && !now_lie)
-			anim_manager->add_animation(render, view_object->texture->path_to_picture, "textures/black_close.bmp", view_object, TIME_DELTA);
+			Animation_manager::get_animation_manager()->add_animation(render, view_object->texture->path_to_picture,
+						"textures/black_close.bmp", view_object, TIME_DELTA);
 	}
 };
 

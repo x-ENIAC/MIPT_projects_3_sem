@@ -38,7 +38,7 @@ class Canvas_manager : public View_object {
 		view_objects = new View_object*[MAX_COUNT_OF_VIEW_OBJECTS];
 		for(size_t i = 0; i < MAX_COUNT_OF_VIEW_OBJECTS; ++i)
 			view_objects[i] = new View_object;
-		count_of_views = 1;
+		count_of_views = 0;
 
 		tab = new Tab;
 	}
@@ -198,6 +198,10 @@ class Canvas_manager : public View_object {
 		for(size_t i = 0; i < count_of_views; ++i) {
 			view_objects[i]->update_position_from_delta(delta);
 		}
+	}
+
+	Canvas* get_canvas() {
+		return ((Canvas*)view_objects[0]);
 	}
 
 	/*inline Button_owner get_owner() const {

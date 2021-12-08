@@ -23,11 +23,13 @@ const int SCREEN_HEIGHT = 720;
 const double DELTA = 0.5;
 const double TIME_DELTA = 0.005;
 
-Animation_manager* anim_manager = Animation_manager::initialize();
+// Animation_manager* anim_manager = Animation_manager::initialize();
 
 int main() {
 	printf("Start initialize the app\n");
 	App::get_app()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	Animation_manager::get_animation_manager()->initialize();
 	
 	render = App::get_app()->get_render();
 

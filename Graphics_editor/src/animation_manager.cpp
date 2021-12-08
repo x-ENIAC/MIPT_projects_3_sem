@@ -4,6 +4,12 @@
 
 Animation_manager* Animation_manager::animation_manager = 0;
 
+Animation_manager* Animation_manager::get_animation_manager() {
+	if(!animation_manager)
+		animation_manager = new Animation_manager();
+	return animation_manager;
+}
+
 void Animation_manager::add_animation(SDL_Texture* old_texture, SDL_Texture* new_texture, View_object* view, double time_alive) {
 	Animation* new_anim = new Animation(old_texture, new_texture, view, time_alive);
 

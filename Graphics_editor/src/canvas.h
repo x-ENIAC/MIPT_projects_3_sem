@@ -83,15 +83,7 @@ class Canvas : public View_object {
 
                     // printf("\tDOWN MOUSE\n");
                     Tool_manager::get_tool_manager()->on_press(mouse_x, mouse_y, par_mouse_status);
-
-                    // Point left_up_corner(rect->get_center().x - rect->width / 2, rect->get_center().y - rect->height / 2);
-
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].begin_color            = Tool_manager::get_tool_manager()->get_pen_colour();
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].color_after_correction = Tool_manager::get_tool_manager()->get_pen_colour();
-                    // cells_color[(int)(mouse_x - left_up_corner.x)][(int)(mouse_y - left_up_corner.y)].thickness              = Tool_manager::get_tool_manager()->get_pen_size();
-                // } else if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
-                //     printf("\tMOOOOOOTION\n");
-                //     Tool_manager::get_tool_manager()->on_move(mouse_x, mouse_y, par_mouse_status);
+                    
                 } else if(*par_mouse_status == Mouse_click_state::MOUSE_UP) {
                     // printf("\tMOUSE UP\n");
                     Tool_manager::get_tool_manager()->on_release(mouse_x, mouse_y, par_mouse_status);

@@ -5,6 +5,7 @@
 #define PLUGIN_TOOL_H
 
 const char WAY_TO_LOOCHEK_BRUSH[] = "src/loochek_brush.so";
+const char WAY_TO_KCTF_SHARPY[] = "src/kctf_sharpy.so";
 
 class Plugin_tool: public Tool {
   public:
@@ -13,8 +14,8 @@ class Plugin_tool: public Tool {
   	void* library;
   	PPluginInterface* plugin_interface;
 
-	Plugin_tool(const char* file_name, const PAppInterface* app_interface) :
-	  Tool(Point(0, 0), 50, 50, Widget_types::PLUGIN_TOOL) {
+	Plugin_tool(const Point par_center, const char* file_name, const PAppInterface* app_interface) :
+	  Tool(par_center, ICON_PLUGIN_SIZE, ICON_PLUGIN_SIZE, Widget_types::PLUGIN_TOOL) {
 
 	  	printf("begin load plugin\n");
 
@@ -39,6 +40,10 @@ class Plugin_tool: public Tool {
 		}
 
 		printf("end load plugin\n");
+	}
+
+	~Plugin_tool() {
+		plugin_interface->general.deinit();
 	}
 
 	void draw(SDL_Renderer** render, SDL_Texture** texture, SDL_Surface** screen) {

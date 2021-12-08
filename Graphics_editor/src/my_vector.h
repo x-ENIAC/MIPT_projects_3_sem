@@ -85,7 +85,7 @@ class Vector {
 		SDL_RenderDrawLine(render, point_begin.x, point_begin.y, point_end.x, point_end.y);
 	}
 
-	double get_length_vector() const;	
+	double get_length_vector() const;
 
 	void rotate_clockwize_vector(const double delta_angle);
 
@@ -123,6 +123,20 @@ class Vector {
 
 	void set_point_end(const Point new_point_end) {
 		point_end = new_point_end;
+	}
+
+	void swap_ends() {
+		Point tmp = point_begin;
+		point_begin = point_end;
+		point_end = tmp;
+	}
+
+	int get_y_from_x(const int x) {
+		if(point_end.x == point_begin.x) {
+			return x - point_begin.x + point_begin.y;
+		} else {
+			return (point_end.y - point_begin.y) * (x - point_begin.x) / (point_end.x - point_begin.x) + point_begin.y;
+		}
 	}
 
   private:

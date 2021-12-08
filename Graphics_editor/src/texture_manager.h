@@ -31,6 +31,7 @@ const char PATH_TO_PICTURE_WITH_CANVAS_BUTTON[]	 	   = "textures/black_canvas.bm
 
 const char PATH_TO_PICTURE_WITH_PENCIL[]	= "textures/pencil.bmp";
 const char PATH_TO_PICTURE_WITH_PENCIL_1[]	= "textures/pencil_1.bmp";
+const char PATH_TO_PICTURE_WITH_SHARPY[]	= "textures/sharpy.bmp";
 
 struct Texture {
 	SDL_Texture* texture;
@@ -45,15 +46,7 @@ struct Texture {
 
 	~Texture() {}
 
-	void add_new_texture(const char par_path_to_picture[]) { // TRANSPARRENSY !!! DOESN'T WORK !!! STUPID SDL !!!
-		/*SDL_Surface *bmp = SDL_LoadBMP(par_path_to_picture);
-
-		if(!bmp) {
-			printf("add> %s (%s)\n", SDL_GetError(), par_path_to_picture);
-		}
-
-		texture = SDL_CreateTextureFromSurface(render, bmp);*/
-
+	void add_new_texture(const char par_path_to_picture[]) { 
 		texture = IMG_LoadTexture(render, par_path_to_picture);
 		if(!texture) {
 			printf("%s\n", IMG_GetError()); // Можно заменить на SDL_GetError()
@@ -61,7 +54,6 @@ struct Texture {
 		}
 
 		if(strcmp(par_path_to_picture, path_to_picture)) {
-			//printf("%s --> %s\n", path_to_picture, par_path_to_picture);
 			strcpy(path_to_picture, par_path_to_picture);
 		}
 
@@ -80,68 +72,5 @@ struct Texture {
 		SDL_RenderCopy(render, texture, NULL, rectangle);
 	}
 };
-
-/*
-class Texture_manager {
-  public:
-	SDL_Renderer* render;
-	SDL_Surface* screen;
-	Texture* textures_array;
-	size_t count_of_textures;
-
-	Texture_manager(SDL_Renderer* par_render, SDL_Surface* par_screen) {
-		render = par_render;
-		screen = par_screen;
-
-		textures_array = new Texture[MAX_SIZE_OF_TEXTURES_ARRAY];
-		count_of_textures = 0;
-
-		initialize();
-	}
-
-	void initialize() {
-		add_new_texture(PATH_TO_PICTURE_WITH_CLOSE_BUTTON);
-		add_new_texture(PATH_TO_PICTURE_WITH_ROLL_UP_BUTTON);
-		add_new_texture(PATH_TO_PICTURE_WITH_FILE_BUTTON);
-		add_new_texture(PATH_TO_PICTURE_WITH_NEW_BUTTON);
-		add_new_texture(PATH_TO_PICTURE_WITH_HELP_BUTTON);
-		add_new_texture(PATH_TO_PICTURE_WITH_TITLE_BUTTON);
-	}
-
-	void add_new_texture(const char* path_to_picture) {
-		SDL_Surface *bmp = SDL_LoadBMP(path_to_picture);
-
-		if(!bmp) {
-			printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %s\n", SDL_GetError());
-		}
-
-		//bmp = SDL_ConvertSurface(bmp, (screen)->format, NULL)	
-
-		textures_array[count_of_textures].texture = SDL_CreateTextureFromSurface(render, bmp);
-		strcpy(textures_array[count_of_textures++].path_to_picture, path_to_picture);
-	}
-
-	void draw_texture(const char* path_to_picture, SDL_Rect* rectangle) {
-		int number = get_texture_number(path_to_picture);
-
-		if(-1 == number) {
-			//printf("bad\n");
-			return;
-		}
-
-		SDL_RenderCopy(render, textures_array[number].texture, NULL, rectangle);
-	}
-
-	int get_texture_number(const char* path_to_picture) {
-		if(!strcmp(path_to_picture, NON_PATH_TO_PUCTURE))
-			return -1;
-
-		for(size_t i = 0; i < count_of_textures; ++i)
-			if(!strcmp(textures_array[i].path_to_picture, path_to_picture))
-				return i;
-
-		return -1;
-	}
-};*/
 
 #endif

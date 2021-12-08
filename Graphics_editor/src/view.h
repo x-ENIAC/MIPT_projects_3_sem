@@ -11,13 +11,14 @@
 #define VIEW_H
 
 
-const size_t MAX_COUNT_OF_VIEW_OBJECTS = 30;
-const double DELTA_BETWEEN_BUTTONS = 5;
+const int MAX_COUNT_OF_VIEW_OBJECTS = 30;
+const int DELTA_BETWEEN_BUTTONS = 5;
 
-const double WIDTH_CLOSE_BUTTON  = 20;
-const double HEIGHT_CLOSE_BUTTON = 20;
-const double WIDTH_TABS_BUTTON = 150;
-const double HEIGHT_TABS_BUTTON = 20;
+const int WIDTH_CLOSE_BUTTON  = 20;
+const int HEIGHT_CLOSE_BUTTON = 20;
+const int WIDTH_TABS_BUTTON = 150;
+const int HEIGHT_TABS_BUTTON = 20;
+const int ICON_PLUGIN_SIZE = 50;
 
 extern SDL_Renderer* render;
 

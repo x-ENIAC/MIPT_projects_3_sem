@@ -52,14 +52,14 @@ double get_absolute_time() {
 }
 
 void log(const char *fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
+	va_list args;
+	va_start(args, fmt);
 
-    FILE* log_file = fopen("log.txt", "w");
-    fprintf(log_file, fmt, args);
-    fclose(log_file);
+	FILE* log_file = fopen("log.txt", "w");
+	fprintf(log_file, fmt, args);
+	fclose(log_file);
 
-    va_end(args);
+	va_end(args);
 }
 
 void release_pixels(PRGBA *pixels) {
@@ -79,6 +79,7 @@ float get_size() {
 // ----------- Target ---------------------- 
 
 PRGBA* get_pixels() {
+	printf("get pixels!\n");
 	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
 
 	int width  = active_canvas->rect->get_width();
@@ -96,17 +97,17 @@ PRGBA* get_pixels() {
 }
 
 void get_size(size_t *width, size_t *height) {
-	Canvas_manager* active_canvas_manager = App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas;
+	Canvas* active_canvas = App::get_app()->get_active_canvas();
 
-	*width  = active_canvas_manager->view_objects[0]->rect->get_width();
-	*height = active_canvas_manager->view_objects[0]->rect->get_height();
+	*width  = active_canvas->rect->get_width();
+	*height = active_canvas->rect->get_height();
 }
 
 // ----------- Render ---------------------- 
 
 void circle(PVec2f position, float radius, PRGBA color, const PRenderMode *render_mode) {
 	printf("draw circle\n");
-	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
+	Canvas* active_canvas = App::get_app()->get_active_canvas();
 
 	Point left_up_corner = active_canvas->rect->get_left_up_corner();
 
@@ -117,42 +118,59 @@ void circle(PVec2f position, float radius, PRGBA color, const PRenderMode *rende
 
 	SDL_SetRenderDrawColor(render, color.r, color.g, color.b, color.a);
 
-	printf("position (%f, %f), colour (%d, %d, %d)\n", position.x, position.y, (int)color.r, (int)color.g, (int)color.b);
-
-	for(int x = x_begin; x <= x_end; ++x)
+	for(int x = x_begin; x <= x_end; ++x) {
 		for(int y = y_begin; y <= y_end; ++y) {
 			if((x - position.x) * (x - position.x) + (y - position.y) * (y - position.y) <= radius * radius) {
-				//printf("\tx = %d, y = %d, x_begin = %d, y_begin = %d, left_up_corner.x = %lg, left_up_corner.y = %lg\n", x, y, x_begin, y_begin, left_up_corner.x, left_up_corner.y);
-				printf("(%d - %f) ^ 2 + (%d - %f) ^ 2 <= %f ^ 2\n", x, position.x, y, position.y, radius);
 
-				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].begin_color 			  = from_prgba_to_colour(color);
+				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].begin_color 			= from_prgba_to_colour(color);
 				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].color_after_correction = from_prgba_to_colour(color);
-				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].thickness			  = 1;
+				active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].thickness			  	= 1;
 
 				SDL_RenderDrawPoint(render, x, y);
 			}
 		}
-
-	// Point center = {position.x, position.y, from_prgba_to_colour(color)};
-	// center.draw_big_point(App::get_app()->get_render(), radius);
-
-	// SDL_SetRenderDrawColor(render, color.r, color.g, color.b, 20);
-	// SDL_RenderDrawPoint(render, position.x, position.y);
+	}
 }
 
 void line(PVec2f start, PVec2f end, PRGBA color, const PRenderMode *render_mode) {
+	printf("draw line!\n");
 	Vector line({start.x, start.y}, {end.x, end.y});
+
+	if(start.x > end.x)
+		line.swap_ends();
+
 	line.draw(App::get_app()->get_render(), from_prgba_to_colour(color));
+
+	Canvas* active_canvas = App::get_app()->get_active_canvas();
+
+	Point left_up_corner = active_canvas->rect->get_left_up_corner();
+
+	for(int x = start.x; x <= end.x; ++x) {
+		int y = line.get_y_from_x(x);
+
+		active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].begin_color 			= from_prgba_to_colour(color);
+		active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].color_after_correction = from_prgba_to_colour(color);
+		active_canvas->cells_color[(int)(x - left_up_corner.x)][(int)(y - left_up_corner.y)].thickness			  	= 1;
+
+		SDL_RenderDrawPoint(render, x, y);		
+	}
 }
 
 void triangle(PVec2f p1, PVec2f p2, PVec2f p3, PRGBA color, const PRenderMode *render_mode) {
+	printf("triangle!\n");
+
 	Vector line1({p1.x, p1.y}, {p2.x, p2.y});
 	Vector line2({p2.x, p2.y}, {p3.x, p3.y});
 	Vector line3({p3.x, p3.y}, {p1.x, p1.y});
 
-	line1.draw(App::get_app()->get_render(), from_prgba_to_colour(color));
-	line2.draw(App::get_app()->get_render(), from_prgba_to_colour(color));
-	line3.draw(App::get_app()->get_render(), from_prgba_to_colour(color));
+	line({(float)line1.get_point_begin().x, (float)line1.get_point_begin().y},
+		{(float)line2.get_point_end().x, (float)line2.get_point_end().y}, color, render_mode);
+
+	line({(float)line2.get_point_begin().x, (float)line2.get_point_begin().y},
+		{(float)line3.get_point_end().x, (float)line3.get_point_end().y}, color, render_mode);
+
+	line({(float)line3.get_point_begin().x, (float)line3.get_point_begin().y},
+		{(float)line1.get_point_end().x, (float)line1.get_point_end().y}, color, render_mode);
 }
 
 void rectangle(PVec2f p1, PVec2f p2, PRGBA color, const PRenderMode *render_mode) {
@@ -253,7 +271,7 @@ void App::update() {
 		app->view_manager->draw(&app->render, &app->texture, &app->screen);
 
 		app->view_manager->tick(TIME_DELTA);
-		anim_manager->tick(TIME_DELTA);
+		Animation_manager::get_animation_manager()->tick(TIME_DELTA);
 
 		SDL_RenderPresent(app->render);
 	}		
@@ -276,18 +294,6 @@ App* App::get_app() {
 long long App::get_begin_era() {
 	return begin_era;
 }
-
-// Colour App::get_pen_colour() {
-// 	return pen_colour;
-// }
-
-// Colour* App::get_ptr_to_pen_colour()  {
-// 	return &pen_colour;
-// }
-
-// float App::get_pen_size() {
-// 	return pen_size;
-// }
 
 long long App::get_width_screen() {
 	return width_screen;

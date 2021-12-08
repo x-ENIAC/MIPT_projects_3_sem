@@ -100,7 +100,7 @@ class Spline_canvas : public View_object {
 		} else {
 			return (p_end.y - p_begin.y) * (x - p_begin.x) / (p_end.x - p_begin.x) + p_begin.y;
 		}
-	}	
+	}
 
 	void add_point(const double x, const double y, const Colour color = BLACK) {
 		visual_points[(int)(x - rect->get_left_up_corner().x)].y = y;

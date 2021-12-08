@@ -7,7 +7,7 @@
 #ifndef TOOL_MANAGER_H
 #define TOOL_MANAGER_H
 
-#define PATTERN_SINGLTONE
+#define PATTERN_SINGLETON
 
 class Tool_manager : public View_object {
   private:
@@ -21,8 +21,6 @@ class Tool_manager : public View_object {
 
 	Colour pen_colour;
 	float pen_size;
-
-  protected:
 
 	Tool_manager() : View_object() {
 		printf("Start construst the tool manager\n");
@@ -57,7 +55,6 @@ public:
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
 
 		if(rect->is_point_belongs_to_rectangle(mouse_x, mouse_y)) {
-			//printf("!!\n");
 			for(size_t i = 0; i < count_of_tools; ++i) {
 
 				// printf("center (%d, %d), width %d, height %d, mouse (%d, %d)\n", (int)tools[i]->rect->get_center().x,
@@ -87,8 +84,6 @@ public:
 			}
 		}
 
-		//printf("return false Button_manager\n");
-
 		return false;
 	}
 
@@ -99,7 +94,7 @@ public:
 				active_tool->on_press(mouse_x, mouse_y);
 
 			else if(active_tool->get_yourself_type() == Widget_types::PLUGIN_TOOL) {
-				// printf("\\\\\\\\\\\\\\\\\\ PLUGIN press \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
+				printf("\\\\\\\\\\\\\\\\\\ PLUGIN press \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
 				((Plugin_tool*)(active_tool))->plugin_interface->tool.on_press({mouse_x, mouse_y});
 			}
 
@@ -116,7 +111,7 @@ public:
 				active_tool->on_release(mouse_x, mouse_y);
 
 			else if(active_tool->get_yourself_type() == Widget_types::PLUGIN_TOOL) {
-				// printf("\\\\\\\\\\\\\\\\\\ PLUGIN release \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
+				printf("\\\\\\\\\\\\\\\\\\ PLUGIN release \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
 				((Plugin_tool*)(active_tool))->plugin_interface->tool.on_release({mouse_x, mouse_y});
 			}
 
@@ -133,33 +128,17 @@ public:
 				active_tool->on_move(old_pos, new_pos);
 
 			else if(active_tool->get_yourself_type() == Widget_types::PLUGIN_TOOL) {
-				// printf("\\\\\\\\\\\\\\\\\\ PLUGIN move \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
+				printf("\\\\\\\\\\\\\\\\\\ PLUGIN move \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
 				((Plugin_tool*)(active_tool))->plugin_interface->tool.on_move({(float)old_pos.x, (float)old_pos.y}, {(float)new_pos.x, (float)new_pos.y});
 			}
 
 			return true;
-		// } else if(*par_mouse_status == Mouse_click_state::MOUSE_MOTION) {
-		// 	if(active_tool->get_yourself_type() == Widget_types::PLUGIN_TOOL) {
-		// 		printf("\\\\\\\\\\\\\\\\\\ PLUGIN move \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
-		// 		((Plugin_tool*)(active_tool))->plugin_interface->tool.on_move({old_pos.x, old_pos.y}, {new_pos.x, new_pos.y});
-		// 	}
-
-		// 	return true;
 		}
 
 		return false;
 	}
 
 	void add_tool(Tool* new_tool) {
-		Point center = rect->get_left_up_corner();
-		if(count_of_tools > 0) {
-			center = tools[count_of_tools - 1]->rect->get_center();
-			center += Point(0, 60);
-		} else {
-			center += Point(30, 30);
-		}
-
-		new_tool->rect->set_center(center);
 		tools[count_of_tools] = new_tool;
 		++count_of_tools;
 

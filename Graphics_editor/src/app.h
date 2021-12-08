@@ -9,7 +9,7 @@
 #ifndef APP_H
 #define APP_H
 
-#define PATTERN_SINGLTONE
+#define PATTERN_SINGLETON
 
 extern const double TIME_DELTA;
 
@@ -24,7 +24,7 @@ enum SDL_STATUSES {
 	TEXTURE_NOT_CREATE = 7,
 };
 
-extern Animation_manager* anim_manager;
+// extern Animation_manager* anim_manager;
 class View_manager;
 
 class App {
@@ -44,10 +44,8 @@ class App {
 
 	View_manager* view_manager;
 
-	Colour screen_color; // , pen_colour;
-	// float pen_size;
+	Colour screen_color;
 
-  protected:
 	App() {
 		window = NULL;
 		render = NULL;
@@ -58,8 +56,6 @@ class App {
 
 		width_screen  = 920;
 		height_screen = 720;
-
-		// pen_size = 10;
 	}
 
 	~App() {}
@@ -81,12 +77,6 @@ class App {
 	static App* get_app();
 
 	long long get_begin_era();
-
-	// Colour get_pen_colour();
-
-	// Colour* get_ptr_to_pen_colour();
-
-	// float get_pen_size();
 
 	long long get_width_screen();
 
