@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include "rectangle.h"
+#include "Utils/rectangle.h"
 
 #ifndef TEXTURE_MANAGER_H
 #define TEXTURE_MANAGER_H
@@ -33,6 +33,8 @@ const char PATH_TO_PICTURE_WITH_PENCIL[]	= "textures/pencil.bmp";
 const char PATH_TO_PICTURE_WITH_PENCIL_1[]	= "textures/pencil_1.bmp";
 const char PATH_TO_PICTURE_WITH_SHARPY[]	= "textures/sharpy.bmp";
 
+const char PATH_TO_PICTURE_WITH_EFFECT_1[]	= "textures/sparks_1.bmp";
+
 struct Texture {
 	SDL_Texture* texture;
 	SDL_Renderer* render;
@@ -46,7 +48,7 @@ struct Texture {
 
 	~Texture() {}
 
-	void add_new_texture(const char par_path_to_picture[]) { 
+	void add_new_texture(const char par_path_to_picture[]) {
 		texture = IMG_LoadTexture(render, par_path_to_picture);
 		if(!texture) {
 			printf("%s\n", IMG_GetError()); // Можно заменить на SDL_GetError()

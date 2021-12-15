@@ -5,16 +5,16 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "view.h"
+#include "GUI/view.h"
 #include "app.h"
-#include "view_manager.h"
-#include "animation_manager.h"
+#include "Editor/view_manager.h"
+#include "GUI/animation_manager.h"
 
-#include "button.h"
+#include "GUI/button.h"
 
-#include "button_delegate.h"
-#include "text.h"
-#include "chart.h"
+#include "GUI/button_delegate.h"
+#include "GUI/text.h"
+#include "GUI/chart.h"
 
 SDL_Renderer* render;
 
@@ -23,7 +23,6 @@ const int SCREEN_HEIGHT = 720;
 const double DELTA = 0.5;
 const double TIME_DELTA = 0.005;
 
-// Animation_manager* anim_manager = Animation_manager::initialize();
 
 int main() {
 	printf("Start initialize the app\n");

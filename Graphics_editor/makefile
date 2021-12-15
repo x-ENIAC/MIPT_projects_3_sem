@@ -20,26 +20,26 @@ all: app.o tool_manager.o colour.o point.o view_manager.o manager_of_canvas_mana
 app.o: ./src/app.cpp ./src/app.h
 	$(CPP) $(CFLAGS) -c ./src/app.cpp -o app.o
 	
-tool_manager.o: ./src/tool_manager.cpp ./src/tool_manager.h
-	$(CPP) $(CFLAGS) -c ./src/tool_manager.cpp -o tool_manager.o
+tool_manager.o: ./src/Editor/Tools/tool_manager.cpp ./src/Editor/Tools/tool_manager.h
+	$(CPP) $(CFLAGS) -c ./src/Editor/Tools/tool_manager.cpp -o tool_manager.o
 
-colour.o: ./src/colour.cpp ./src/colour.h
-	$(CPP) $(CFLAGS) -c ./src/colour.cpp -o colour.o
+colour.o: ./src/Utils/colour.cpp ./src/Utils/colour.h
+	$(CPP) $(CFLAGS) -c ./src/Utils/colour.cpp -o colour.o
 	
-point.o: ./src/point.cpp ./src/point.h
-	$(CPP) $(CFLAGS) -c ./src/point.cpp -o point.o
+point.o: ./src/Utils/point.cpp ./src/Utils/point.h
+	$(CPP) $(CFLAGS) -c ./src/Utils/point.cpp -o point.o
 	
-view_manager.o: ./src/view_manager.cpp ./src/view_manager.h
-	$(CPP) $(CFLAGS) -c ./src/view_manager.cpp -o view_manager.o	
+view_manager.o: ./src/Editor/view_manager.cpp ./src/Editor/view_manager.h
+	$(CPP) $(CFLAGS) -c ./src/Editor/view_manager.cpp -o view_manager.o	
 	
-manager_of_canvas_managers.o: ./src/manager_of_canvas_managers.cpp ./src/manager_of_canvas_managers.h
-	$(CPP) $(CFLAGS) -c ./src/manager_of_canvas_managers.cpp -o manager_of_canvas_managers.o
+manager_of_canvas_managers.o: ./src/Editor/manager_of_canvas_managers.cpp ./src/Editor/manager_of_canvas_managers.h
+	$(CPP) $(CFLAGS) -c ./src/Editor/manager_of_canvas_managers.cpp -o manager_of_canvas_managers.o
 	
-animation_manager.o: ./src/animation_manager.cpp ./src/animation_manager.h
-	$(CPP) $(CFLAGS) -c ./src/animation_manager.cpp -o animation_manager.o
+animation_manager.o: ./src/GUI/animation_manager.cpp ./src/GUI/animation_manager.h
+	$(CPP) $(CFLAGS) -c ./src/GUI/animation_manager.cpp -o animation_manager.o
 	
-spline.o: ./src/spline.cpp ./src/spline.h
-	$(CPP) $(CFLAGS) -c ./src/spline.cpp -o spline.o		
+spline.o: ./src/Editor/spline.cpp ./src/Editor/spline.h
+	$(CPP) $(CFLAGS) -c ./src/Editor/spline.cpp -o spline.o		
 
 run: all
 	./$(CUR_PROG) $(ARGS)

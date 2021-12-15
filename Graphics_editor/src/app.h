@@ -2,9 +2,10 @@
 #include <SDL2/SDL_ttf.h>
 #include <ctime>
 
-#include "animation_manager.h"
-#include "view_manager.h"
-#include "my_vector.h"
+#include "GUI/animation_manager.h"
+#include "Editor/view_manager.h"
+#include "Utils/my_vector.h"
+#include "Plugins/plugin_manager.h"
 
 #ifndef APP_H
 #define APP_H
@@ -24,7 +25,6 @@ enum SDL_STATUSES {
 	TEXTURE_NOT_CREATE = 7,
 };
 
-// extern Animation_manager* anim_manager;
 class View_manager;
 
 class App {
@@ -75,6 +75,8 @@ class App {
 	SDL_Renderer* get_render();
 
 	static App* get_app();
+
+	Painter_tools_and_plugins* get_painter_tools_and_plugins();
 
 	long long get_begin_era();
 

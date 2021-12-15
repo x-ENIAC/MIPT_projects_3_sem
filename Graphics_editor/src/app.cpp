@@ -63,7 +63,20 @@ void log(const char *fmt, ...) {
 }
 
 void release_pixels(PRGBA *pixels) {
+	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
 
+	int width  = active_canvas->rect->get_width();
+	int height = active_canvas->rect->get_height();	
+
+	for(int i = 0; i < height; ++i) {
+		for(int j = 0; j < width; ++j) {
+			Colour now = {pixels[i * width + j].r, pixels[i * width + j].g, pixels[i * width + j].b, pixels[i * width + j].a};
+			active_canvas->cells_color[i][j].color_after_correction	= now;
+			active_canvas->cells_color[i][j].begin_color			= now;
+		}
+	}
+
+	delete[] pixels;
 }
 
 PRGBA get_color() {
@@ -79,16 +92,20 @@ float get_size() {
 // ----------- Target ---------------------- 
 
 PRGBA* get_pixels() {
-	printf("get pixels!\n");
+	// printf("get pixels!\n");
 	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
 
 	int width  = active_canvas->rect->get_width();
 	int height = active_canvas->rect->get_height();
+
+	// printf("CANVAAS !! %d !! %d\n", width, height);
 	PRGBA* pixels = new PRGBA[width * height];
 
 	for(int i = 0; i < height; ++i) {
 		for(int j = 0; j < width; ++j) {
 			Colour now = (active_canvas->cells_color[i][j].color_after_correction);
+			if(now != WHITE)
+				now.print();
 			pixels[i * width + j] = {(unsigned char)now.red, (unsigned char)now.green, (unsigned char)now.blue, (unsigned char)now.alpha};
 		}
 	}
@@ -106,7 +123,7 @@ void get_size(size_t *width, size_t *height) {
 // ----------- Render ---------------------- 
 
 void circle(PVec2f position, float radius, PRGBA color, const PRenderMode *render_mode) {
-	printf("draw circle\n");
+	// printf("draw circle\n");
 	Canvas* active_canvas = App::get_app()->get_active_canvas();
 
 	Point left_up_corner = active_canvas->rect->get_left_up_corner();
@@ -133,7 +150,7 @@ void circle(PVec2f position, float radius, PRGBA color, const PRenderMode *rende
 }
 
 void line(PVec2f start, PVec2f end, PRGBA color, const PRenderMode *render_mode) {
-	printf("draw line!\n");
+	// printf("draw line!\n");
 	Vector line({start.x, start.y}, {end.x, end.y});
 
 	if(start.x > end.x)
@@ -157,7 +174,7 @@ void line(PVec2f start, PVec2f end, PRGBA color, const PRenderMode *render_mode)
 }
 
 void triangle(PVec2f p1, PVec2f p2, PVec2f p3, PRGBA color, const PRenderMode *render_mode) {
-	printf("triangle!\n");
+	// printf("triangle!\n");
 
 	Vector line1({p1.x, p1.y}, {p2.x, p2.y});
 	Vector line2({p2.x, p2.y}, {p3.x, p3.y});
@@ -174,16 +191,35 @@ void triangle(PVec2f p1, PVec2f p2, PVec2f p3, PRGBA color, const PRenderMode *r
 }
 
 void rectangle(PVec2f p1, PVec2f p2, PRGBA color, const PRenderMode *render_mode) {
-	Point center = {p1.x, p1.y};
-	center += {p2.x, p2.y};
-	center /= 2.0;
+	// Point center = {p1.x, p1.y};
+	// center += {p2.x, p2.y};
+	// center /= 2.0;
 
-	double rwidth = fabs(p2.x - p1.x), rheight = fabs(p2.y - p1.y);
-	Rectangle rect(center, rwidth, rheight, from_prgba_to_colour(color), true);
-	rect.draw(render);
+	Vector line1({p1.x, p1.y}, {p1.x, p2.y});
+	Vector line2({p1.x, p2.y}, {p2.x, p2.y});
+	Vector line3({p2.x, p2.y}, {p2.x, p1.y});
+	Vector line4({p2.x, p1.y}, {p1.x, p1.y});
+
+	line({(float)line1.get_point_begin().x, (float)line1.get_point_begin().y},
+		{(float)line2.get_point_end().x, (float)line2.get_point_end().y}, color, render_mode);
+
+	line({(float)line2.get_point_begin().x, (float)line2.get_point_begin().y},
+		{(float)line3.get_point_end().x, (float)line3.get_point_end().y}, color, render_mode);	
+
+	line({(float)line3.get_point_begin().x, (float)line3.get_point_begin().y},
+		{(float)line4.get_point_end().x, (float)line4.get_point_end().y}, color, render_mode);	
+
+	line({(float)line4.get_point_begin().x, (float)line4.get_point_begin().y},
+		{(float)line1.get_point_end().x, (float)line1.get_point_end().y}, color, render_mode);	
+
+	// double rwidth = fabs(p2.x - p1.x), rheight = fabs(p2.y - p1.y);
+	// Rectangle rect(center, rwidth, rheight, from_prgba_to_colour(color), true);
+	// rect.draw(render);
 }
 
 void pixels(PVec2f position, const PRGBA *data, size_t width, size_t height, const PRenderMode *render_mode) {
+	Canvas* active_canvas = App::get_app()->get_active_canvas();
+
 	for(int i = 0; i < width; ++i) {
 		for(int j = 0; j < height; ++j) {
 			Point now_point({position.x, position.y});
@@ -191,6 +227,14 @@ void pixels(PVec2f position, const PRGBA *data, size_t width, size_t height, con
 
 			SDL_SetRenderDrawColor(render, data[i * height + j].r, data[i * height + j].g, data[i * height + j].b, 1);
 			SDL_RenderDrawPoint(render, now_point.x, now_point.y);
+
+			int now_index = i * height + j;
+
+			active_canvas->cells_color[i][j].begin_color			= {data[now_index].r, data[now_index].g,
+																		data[now_index].b, data[now_index].a};
+			active_canvas->cells_color[i][j].color_after_correction = {data[now_index].r, data[now_index].g,
+																		data[now_index].b, data[now_index].a};
+			active_canvas->cells_color[i][j].thickness = 1;
 		}
 	}
 }
@@ -251,8 +295,11 @@ void App::update() {
 	SDL_RenderClear(app->render);
 
 	printf("Start initialize the view manager\n");
+	// app->plugin_manager = new Plugin_manager();
+
 	app->view_manager = new View_manager(Point(width_screen / 2.0, height_screen / 2.0), width_screen, height_screen, screen_color/*, &animation_manager*/);
 
+	printf("\n\nBEGIN EVENTS CYCLE\n");
 	SDL_Event event = {};
 	bool is_run = true;
 	while(is_run) {
@@ -274,7 +321,7 @@ void App::update() {
 		Animation_manager::get_animation_manager()->tick(TIME_DELTA);
 
 		SDL_RenderPresent(app->render);
-	}		
+	}
 }
 
 Canvas* App::get_active_canvas() {
@@ -289,6 +336,13 @@ App* App::get_app() {
 	if(!app)
 		app = new App();
 	return app;
+}
+
+Painter_tools_and_plugins* App::get_painter_tools_and_plugins() {
+	if(!view_manager)
+		return NULL;
+
+	return view_manager->painter_tools_and_plugins;
 }
 
 long long App::get_begin_era() {
