@@ -173,7 +173,6 @@ class Change_colour_delegate : public Button_delegate {
 
 
 
-
 class Change_thickness_delegate : public Button_delegate {
   public:
 

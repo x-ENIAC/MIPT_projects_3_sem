@@ -92,13 +92,11 @@ float get_size() {
 // ----------- Target ---------------------- 
 
 PRGBA* get_pixels() {
-	// printf("get pixels!\n");
 	Canvas* active_canvas = (Canvas*)(App::get_app()->get_view_manager()->manager_of_canvas_managers->active_canvas->view_objects[0]);
 
 	int width  = active_canvas->rect->get_width();
 	int height = active_canvas->rect->get_height();
 
-	// printf("CANVAAS !! %d !! %d\n", width, height);
 	PRGBA* pixels = new PRGBA[width * height];
 
 	for(int i = 0; i < height; ++i) {

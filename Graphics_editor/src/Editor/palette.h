@@ -7,10 +7,7 @@
 #ifndef PALETTE_H
 #define PALETTE_H
 
-// extern const size_t MAX_COUNT_OF_VIEW_OBJECTS;
-// extern const double DELTA_BETWEEN_BUTTONS;
-// extern const double WIDTH_CLOSE_BUTTON;
-// extern const double HEIGHT_CLOSE_BUTTON;
+#include "Tools/tool_manager.h"
 
 class Palette : public View_object {
   public:
@@ -66,6 +63,9 @@ class Palette : public View_object {
 		add_colour_button(begin_width, begin_height, LIGHT_CARROT);
 		add_colour_button(begin_width, begin_height, WHITE);
 		add_colour_button(begin_width, begin_height, BLACK);
+		add_colour_button(begin_width, begin_height, Tool_manager::get_tool_manager()->get_pen_colour());
+
+		// !!! latest button shows current colour !!!
 
 		set_parameters_of_colours_button_manager();
 
@@ -115,7 +115,6 @@ class Palette : public View_object {
 		Point new_center(colour_buttons->buttons[old_count_of_buttons]->rect->get_center());
 		new_center += Point(rect->width / 2, 0);
 
-		//rect->center = center = new_center;
 		rect->width += WIDTH_CLOSE_BUTTON + DELTA_BETWEEN_BUTTONS;
 	}
 
@@ -161,7 +160,10 @@ class Palette : public View_object {
 		if(colour_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			//printf("color! Mouse (%lg, %lg); rect (%lg, %lg), w %lg, h %lg\n", mouse_x, mouse_y, colour_buttons->rect->get_center().x,
 			//								colour_buttons->rect->get_center().y, colour_buttons->rect->get_width(), colour_buttons->rect->get_height());
-			return colour_buttons->check_click(mouse_x, mouse_y, par_mouse_status);
+			if(colour_buttons->check_click(mouse_x, mouse_y, par_mouse_status)) {
+				update_button_with_current_colour();
+				return true;
+			}
 		}
 
 		if(tool_buttons->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
@@ -227,6 +229,10 @@ class Palette : public View_object {
 	void tick(const double delta_time) override {
 		tool_buttons->tick(delta_time);
 		colour_buttons->tick(delta_time);
+	}
+
+	void update_button_with_current_colour() {
+		colour_buttons->buttons[colour_buttons->get_count_of_buttons() - 1]->rect->set_colour(Tool_manager::get_tool_manager()->get_pen_colour());
 	}
 };
 
