@@ -1,21 +1,32 @@
+#include "button.h"
+
 #ifndef SLIDER_H
 #define SLIDER_H
+
+#include "../Editor/Tools/tool_manager.h"
 
 class Slider: public View_object {
   public:
 
-	long long min_limit, max_limit;
-	double now_value;
+	int min_limit, max_limit;
+	int x_left_limit, x_right_limit;
+	int now_value;
 
 	Slider (const Point par_center, const double par_width, const double par_height,
-			const long long par_min_limit, const long long par_max_limit, const Widget_types par_widget_types = Widget_types::SLIDER,
+			const int par_min_limit, const int par_max_limit,
+			const int par_x_left_limit, const int par_x_right_limit,
+			const Widget_types par_widget_types = Widget_types::SLIDER,
 			const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) :
 	  View_object(par_center, par_width, par_height, BLACK, par_widget_types, par_path_to_picture) {
 
 		min_limit = par_min_limit;
 		max_limit = par_max_limit;
 
+		x_left_limit  = par_x_left_limit;
+		x_right_limit = par_x_right_limit;
+
 		now_value = (max_limit + min_limit) / 2.0;
+		Tool_manager::get_tool_manager()->set_pen_size(now_value);
 
 		if(strcmp(par_path_to_picture, NON_PATH_TO_PUCTURE))
 			this->texture->add_new_texture(par_path_to_picture);
@@ -62,11 +73,34 @@ class Slider: public View_object {
 
 
 	void update_coords(const Point new_center) {
-		rect->center.x = new_center.x;
+		int x_delta = rect->center.x - new_center.x;
+
+		x_left_limit -= x_delta;
+		x_right_limit -= x_delta;
+
+		rect->center.x = new_center.x;		
 	}
 
 	void update_position_from_delta(const Point delta) {
+		// printf("rect->center.x %d - delta %d >= corner %d\n", (int)(rect->get_center().x), (int)(delta.x), (int)(rect->get_left_up_corner().x));
+		// printf("rect->center.x %d + delta %d <= corner %d\n", (int)(rect->get_center().x), (int)(delta.x), (int)(rect->get_right_up_corner().x));
+
 		rect->center -= delta;
+	}
+
+	bool check_if_can_change(const Point delta) {
+		if(delta.x > 0 && rect->get_center().x - delta.x >= x_left_limit ||
+			delta.x < 0 && rect->get_center().x + delta.x <= x_right_limit)
+			return true;
+		return false;
+	}
+
+	bool is_valid_value(const int delta) {
+		printf("min %d, now %d, delta %d, max %d\n", min_limit, now_value, delta, max_limit);
+		if(delta < 0 && now_value - delta > min_limit ||
+			delta > 0 && now_value + delta < max_limit)
+			return true;
+		return false;
 	}
 };
 

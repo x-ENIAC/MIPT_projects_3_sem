@@ -47,6 +47,8 @@ class Button : public View_object {
 																  const char* par_path_to_picture = NON_PATH_TO_PUCTURE) :
 	  View_object (par_point, par_width, par_height, par_button_color, Widget_types::BUTTON, par_path_to_picture) {
 
+	  	printf("%s\n", par_path_to_picture);
+
 		delegate = par_delegate;
 
 
@@ -77,8 +79,9 @@ class Button : public View_object {
 		if(rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
 			// printf("Begin check button\n");
 			//printf("!!! %d\n", *par_mouse_status);
-			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN)
+			if(*par_mouse_status == Mouse_click_state::MOUSE_DOWN) {
 				delegate->click_reaction(mouse_x, mouse_y);
+			}
 
 			return true;
 		}

@@ -183,9 +183,40 @@ class Change_thickness_delegate : public Button_delegate {
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
-		printf("\tbegin Change_thickness_delegate, pencil %ld\n", yourself_thickness);
+		// printf("\tbegin Change_thickness_delegate, pencil %ld\n", yourself_thickness);
 		Tool_manager::get_tool_manager()->set_pen_size(yourself_thickness);
-		printf("\tend Change_thickness_delegate, pencil\n");
+		// printf("\tend Change_thickness_delegate, pencil\n");
+	}
+
+	void motion_reaction(const double mouse_x, const double mouse_y) override {}
+
+	void reactive_reaction(Point old_mouse, Point now_mouse) override {}
+};
+
+
+
+
+class Slider_change_thickness_delegate : public Button_delegate {
+  public:
+
+  	int min_limit, max_limit;
+	int delta;
+
+	Slider_change_thickness_delegate(const int par_delta, const int par_min_limit, const int par_max_limit) {
+		delta = par_delta;
+		min_limit = par_min_limit;
+		max_limit = par_max_limit;
+	}
+
+	void click_reaction(const double mouse_x, const double mouse_y) override {
+		// printf("\tbegin Slider_change_thickness_delegate, pencil %d\n", delta);
+
+		int now_size = Tool_manager::get_tool_manager()->get_pen_size();
+
+		if(delta > 0 && delta + now_size < max_limit || delta < 0 && now_size + delta > min_limit)
+			Tool_manager::get_tool_manager()->set_pen_size(delta + now_size);
+		
+		// printf("\tend Slider_change_thickness_delegate, pencil\n");
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {}
@@ -227,11 +258,14 @@ class Slider_field_delegate : public Button_delegate {
 	Slider_field_delegate(Slider_field* par_slider_field, Point* par_center) {
 		slider_field = par_slider_field;
 		center = par_center;
+
 		//printf("tttttttttttt!\n");
 	}
 
 	void click_reaction(const double mouse_x, const double mouse_y) override {
+		// Tool_manager::get_tool_manager()->set_pen_size(yourself_thickness);
 		center->x = mouse_x;
+		printf("EEEEEEEEEEEEEEEEEEEEEE\n");
 	}
 
 	void motion_reaction(const double mouse_x, const double mouse_y) override {

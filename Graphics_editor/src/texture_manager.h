@@ -35,6 +35,10 @@ const char PATH_TO_PICTURE_WITH_SHARPY[]	= "textures/sharpy.bmp";
 
 const char PATH_TO_PICTURE_WITH_EFFECT_1[]	= "textures/sparks_1.bmp";
 
+const char PATH_TO_PICTURE_SLIDER[]					= "textures/slider.bmp";
+const char PATH_TO_PICTURE_LEFT_SLIDER_BUTTON[]		= "textures/left_slider.bmp";
+const char PATH_TO_PICTURE_RIGHT_SLIDER_BUTTON[]	= "textures/right_slider.bmp";
+
 struct Texture {
 	SDL_Texture* texture;
 	SDL_Renderer* render;
@@ -51,7 +55,7 @@ struct Texture {
 	void add_new_texture(const char par_path_to_picture[]) {
 		texture = IMG_LoadTexture(render, par_path_to_picture);
 		if(!texture) {
-			printf("%s\n", IMG_GetError()); // Можно заменить на SDL_GetError()
+			printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%s\n", IMG_GetError()); // Можно заменить на SDL_GetError()
 			return;
 		}
 

@@ -29,8 +29,8 @@ const double WIDTH_TOOLS_WIDGET      = 100;
 const double HEIGHT_TOOLS_WIDGET     = 100;
 
 const Point CENTER_MANAGER_OF_CANVAS_MANAGERS = Point(600, 600);
-const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 100; // 340;
-const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 100; // 200;
+const double WIDTH_MANAGER_OF_CANVAS_MANAGERS_WIDGET  = 200; // 340;
+const double HEIGHT_MANAGER_OF_CANVAS_MANAGERS_WIDGET = 200; // 200;
 
 class View_manager : public View_object {
   public:
@@ -180,12 +180,12 @@ class View_manager : public View_object {
 	}
 
 	bool check_click(const float mouse_x, const float mouse_y, const Mouse_click_state* par_mouse_status) override {
-		printf("\n\nview_manager check_click, mouse (%d, %d)\n", (int)mouse_x, (int)mouse_y);
+		// printf("\n\nview_manager check_click, mouse (%d, %d)\n", (int)mouse_x, (int)mouse_y);
 
 		if(is_active) {
 
 			if(manager_of_canvas_managers->check_click(mouse_x, mouse_y, par_mouse_status)) {
-				printf("manager_of_canvas_managers\n");
+				// printf("manager_of_canvas_managers\n");
 				find_not_alive();
 				return true;
 			}

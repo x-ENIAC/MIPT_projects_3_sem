@@ -8,14 +8,17 @@ class Slider_field : public View_object {
 
   	Button_delegate* delegate;
   	Slider* slider;
-	long long min_limit, max_limit;
+	int min_limit, max_limit;
 
-	Slider_field(Button_delegate* par_delegate, const Point par_center, const double par_height, const long long par_min_limit,
-				const long long par_max_limit, const Widget_types par_widget_types = Widget_types::SLIDER_FIELD,
+	Slider_field(Button_delegate* par_delegate, const Point par_center, const double par_height,
+				const int par_min_limit, const int par_max_limit,
+				const Widget_types par_widget_types = Widget_types::SLIDER_FIELD,
 				const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) : View_object(par_center, par_max_limit - par_min_limit,
 																						par_height, LIGHT_GREY_4, par_widget_types, par_path_to_picture) {
 
-		slider = new Slider(par_center, 20, 20, par_min_limit, par_max_limit, Widget_types::SLIDER, "textures/slider.bmp");
+		slider = new Slider(par_center, 20, 20, par_min_limit, par_max_limit,
+							rect->get_left_up_corner().x + 10, rect->get_right_up_corner().x - 20,
+							Widget_types::SLIDER, PATH_TO_PICTURE_SLIDER);
 
 		delegate = par_delegate;
 

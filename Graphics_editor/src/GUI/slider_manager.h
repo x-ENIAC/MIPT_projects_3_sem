@@ -10,11 +10,15 @@ class Slider_manager: public View_object {
 	Slider_field* slider_field;
 	Button_manager* panel;
 
-	Slider_manager (const Point par_center, const double par_height, const long long par_min_limit,
-					const long long par_max_limit, Mouse_click_state* par_mouse_click_state,
+	Button* left_button;
+	Button* right_button;
+
+	Slider_manager (const Point par_center, const double par_height,
+					const int par_min_limit, const int par_max_limit,
+					Mouse_click_state* par_mouse_click_state,
 					const Widget_types par_widget_types = Widget_types::SLIDER_MANAGER,
 					const char par_path_to_picture[] = NON_PATH_TO_PUCTURE) :
-	  View_object(par_center, par_max_limit - par_min_limit + 10, par_height + 20, DARK_GREY, par_widget_types, par_path_to_picture) {
+	  View_object(par_center, par_max_limit - par_min_limit + 50, par_height + 20, DARK_GREY, par_widget_types, par_path_to_picture) {
 
 	  	printf("start create Slider_manager\n");
 
@@ -22,7 +26,17 @@ class Slider_manager: public View_object {
 		Slider_field_delegate* slider_delegate = new Slider_field_delegate(slider_field, &(slider_field->slider->rect->center));
 		slider_field->delegate = slider_delegate;
 
-		Point center_of_button_manager(par_center);
+		Point center_of_button_manager = rect->get_left_up_corner();
+		center_of_button_manager += Point(10, 20);
+		left_button	 = new Button(NULL, center_of_button_manager, DARK_GREY, 20, 20, " ", BLACK, PATH_TO_PICTURE_LEFT_SLIDER_BUTTON);
+
+		center_of_button_manager = rect->get_right_up_corner();
+		center_of_button_manager -= Point(10, -20);
+		right_button = new Button(NULL, center_of_button_manager, DARK_GREY, 20, 20, " ", BLACK, PATH_TO_PICTURE_RIGHT_SLIDER_BUTTON);
+
+		fill_slider_buttons();
+
+		center_of_button_manager = par_center;
 		center_of_button_manager -= Point(0, par_height + HEIGHT_CLOSE_BUTTON / 2);
 		
 		panel = new Button_manager(center_of_button_manager, rect->width, HEIGHT_CLOSE_BUTTON, WHITE);
@@ -31,7 +45,22 @@ class Slider_manager: public View_object {
 
 		fill_button_manager(center_of_button_manager, rect->width, par_height, par_mouse_click_state);
 
+
 		printf("end create Slider_manager\n");
+	}
+
+	void fill_slider_buttons() {
+		left_button->texture->update_texture(PATH_TO_PICTURE_LEFT_SLIDER_BUTTON);
+		right_button->texture->update_texture(PATH_TO_PICTURE_RIGHT_SLIDER_BUTTON);
+
+		int min_limit = slider_field->slider->min_limit;
+		int max_limit = slider_field->slider->max_limit;
+
+		Slider_change_thickness_delegate* left_button_delegate = new Slider_change_thickness_delegate(-10, min_limit, max_limit);
+		Slider_change_thickness_delegate* right_button_delegate = new Slider_change_thickness_delegate(10, min_limit, max_limit);
+
+		left_button->delegate = left_button_delegate;
+		right_button->delegate = right_button_delegate;
 	}
 
 	void fill_button_manager(Point left_up_corner, const double par_width, const double par_height,
@@ -78,6 +107,8 @@ class Slider_manager: public View_object {
 			rect->draw(*render);
 			slider_field->draw(render, texture, screen);
 			panel->draw(render, texture, screen);
+			left_button->draw(render, texture, screen);
+			right_button->draw(render, texture, screen);
 		}
 	}
 
@@ -90,6 +121,24 @@ class Slider_manager: public View_object {
 
 				if(slider_field->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) ))
 					return slider_field->check_click(mouse_x, mouse_y, par_mouse_status);
+
+				int now_value = slider_field->slider->now_value, delta = ((Slider_change_thickness_delegate*)left_button->delegate)->delta;
+
+				if(left_button->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+					if(slider_field->slider->check_if_can_change(Point(-delta, 0)) && slider_field->slider->is_valid_value(delta))
+						slider_field->slider->update_position_from_delta(Point(-delta, 0));
+					
+					return left_button->check_click(mouse_x, mouse_y, par_mouse_status);			
+				}
+
+				delta = ((Slider_change_thickness_delegate*)right_button->delegate)->delta;
+
+				if(right_button->rect->is_point_belongs_to_rectangle( Point(mouse_x, mouse_y) )) {
+					if(slider_field->slider->check_if_can_change(Point(-delta, 0)) && slider_field->slider->is_valid_value(delta))
+						slider_field->slider->update_position_from_delta(Point(-delta, 0));
+
+					return right_button->check_click(mouse_x, mouse_y, par_mouse_status);			
+				}
 			}
 		}
 
@@ -127,6 +176,9 @@ class Slider_manager: public View_object {
 		panel->update_position_from_delta(delta);
 
 		slider_field->update_position_from_delta(delta);
+
+		left_button->update_position_from_delta(delta);
+		right_button->update_position_from_delta(delta);
 	}	
 
 };

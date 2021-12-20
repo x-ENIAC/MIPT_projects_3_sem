@@ -93,9 +93,7 @@ void View_manager::add_thickness_palette(Point* center_button) {
 
 void View_manager::add_slider() {
 	Slider_manager* slider_manager = new Slider_manager(Point(300, 100), 10, 0, 100, &mouse_click_state);
-	printf("maybe here??? %d\n", count_of_view_objects);
 	add_view_object(slider_manager);
-	printf("or here........\n");
 }
 
 void View_manager::add_spline(Point* center_button) {

@@ -17,8 +17,7 @@ class Rectangle {
 		height = 0;
 		color = BLACK;
 		is_active = true;
-	}    
-
+	}
 
 	Rectangle(const Point par_point, const double par_width, const double par_height, const Colour par_color, const bool par_is_active = true) {
 		center = par_point;
@@ -107,6 +106,10 @@ class Rectangle {
 	Point get_left_up_corner() const {
 		return Point(center.x - width / 2, center.y - height / 2);
 	}
+
+	Point get_right_up_corner() const {
+		return Point(center.x + width / 2, center.y - height / 2);
+	}	
 
 	inline Point get_center() const {
 		return center;

@@ -52,5 +52,6 @@ float Tool_manager::get_pen_size() {
 }
 
 void Tool_manager::set_pen_size(float new_size) {
+	printf("|||||||||||||| new size %d -> %d ||||||||||||||||||||||\n", (int)pen_size, (int)new_size);
 	pen_size = new_size;
 }
